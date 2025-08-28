@@ -58,6 +58,7 @@
 html {
   background-color: var(--bg-app) !important;
   color: var(--fg-primary) !important;
+  scroll-behavior: smooth;
 }
 
 body {
