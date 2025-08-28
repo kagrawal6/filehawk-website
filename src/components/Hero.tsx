@@ -23,10 +23,10 @@ const Hero: React.FC = () => {
             </span>
           </h1>
           
-          {/* Hero Subtext - Improved description */}
+          {/* Hero Subtext - Technical positioning */}
           <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-300 leading-relaxed">
-            FileHawk revolutionizes file search with AI-powered semantic understanding. 
-            Find files by describing what they contain, not just their names.
+            Advanced semantic search powered by local AI processing. Our neural embedding engine 
+            understands content meaning across 15+ file formats - completely offline and private.
           </p>
 
           {/* CTA Buttons */}
@@ -50,6 +50,30 @@ const Hero: React.FC = () => {
               Learn More
               <ArrowRight className="ml-2 h-5 w-5" />
             </GoldButton>
+          </div>
+
+          {/* Technical highlights for recruiters */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-brand-gold-300 mb-2">10,000+</div>
+              <div className="text-sm text-gray-400">Files Indexed</div>
+              <div className="text-xs text-gray-500">Under 2 minutes</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-brand-gold-300 mb-2">15+</div>
+              <div className="text-sm text-gray-400">File Formats</div>
+              <div className="text-xs text-gray-500">Specialized extraction</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-brand-gold-300 mb-2">100%</div>
+              <div className="text-sm text-gray-400">Local Processing</div>
+              <div className="text-xs text-gray-500">Privacy-first AI</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-brand-gold-300 mb-2">&lt;50ms</div>
+              <div className="text-sm text-gray-400">Search Latency</div>
+              <div className="text-xs text-gray-500">Semantic queries</div>
+            </div>
           </div>
         </div>
       </div>

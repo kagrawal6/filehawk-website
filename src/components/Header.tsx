@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Download } from 'lucide-react'
 import HawkIcon from './ui/HawkIcon'
 import HawkTrail from './ui/HawkTrail'
 import GoldButton from './ui/GoldButton'
+import ThemeToggle from './ui/ThemeToggle'
 import { useHawk } from './ui/HawkProvider'
 
 const Header: React.FC = () => {
@@ -11,14 +12,16 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: 'Features', href: '#features' },
+    { name: 'How It Works', href: '#how-it-works' },
     { name: 'Download', href: '#download' },
-    { name: 'GitHub', href: 'https://github.com/your-org/filehawk', target: '_blank' },
+    { name: 'GitHub', href: 'https://github.com/kagrawal6/filehawk-website', target: '_blank' },
   ]
 
   return (
-    <header className="bg-brand-coal border-b border-brand-border sticky top-0 z-50 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 backdrop-blur-lg border-b transition-colors duration-300" 
+            style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-6">
+        <div className="flex justify-between items-center py-4">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
@@ -47,12 +50,26 @@ const Header: React.FC = () => {
                 key={item.name}
                 href={item.href}
                 target={item.target}
-                className="text-gray-300 hover:text-brand-gold-300 transition-colors duration-200 text-sm font-medium"
+                className="transition-colors duration-200 text-sm font-medium hover:text-brand-gold-400"
+                style={{ color: 'var(--fg-secondary)' }}
               >
                 {item.name}
               </a>
             ))}
-
+            
+            {/* Theme Toggle */}
+            <ThemeToggle />
+            
+            {/* Download CTA */}
+            <GoldButton
+              variant="solid"
+              size="sm"
+              href="#download"
+              className="shadow-md"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </GoldButton>
           </nav>
 
           {/* Mobile menu button */}

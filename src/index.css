@@ -8,6 +8,7 @@
 
 /* CSS Variables for theming */
 :root {
+  /* Dark theme (default) */
   --bg-app: #0b0e12;
   --bg-elevated: #12151b;
   --bg-muted: #1a1f28;
@@ -25,6 +26,32 @@
   
   --focus-ring: rgba(231, 182, 80, 0.5);
   --selection-bg: rgba(231, 182, 80, 0.2);
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --bg-app: #fef7ed;
+  --bg-elevated: #ffffff;
+  --bg-muted: #f9fafb;
+  
+  --fg-primary: #1f2937;
+  --fg-secondary: #4b5563;
+  --fg-muted: #6b7280;
+  
+  --border-subtle: #e5e7eb;
+  --divider: #e5e7eb;
+  
+  --accent-solid: #92400e;
+  --accent-soft: rgba(146, 64, 14, 0.1);
+  --accent-contrast: #ffffff;
+  
+  /* Burgundy accents for light mode */
+  --burgundy-primary: #991b1b;
+  --burgundy-soft: rgba(153, 27, 27, 0.1);
+  --burgundy-hover: #7f1d1d;
+  
+  --focus-ring: rgba(146, 64, 14, 0.3);
+  --selection-bg: rgba(146, 64, 14, 0.15);
 }
 
 /* Global styles */
