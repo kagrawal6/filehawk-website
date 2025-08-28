@@ -1,0 +1,146 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+        },
+        gray: {
+          50: '#fafafa',
+          100: '#f5f5f5',
+          200: '#e5e5e5',
+          300: '#d4d4d4',
+          400: '#a3a3a3',
+          500: '#737373',
+          600: '#525252',
+          700: '#404040',
+          800: '#262626',
+          900: '#171717',
+        },
+        brand: {
+          onyx: '#0b0e12',
+          coal: '#12151b',
+          border: '#20242d',
+          gold: {
+            950: '#4a2e00',
+            900: '#5a3a00',
+            800: '#7a5200',
+            700: '#946300',
+            600: '#b57a06',
+            500: '#d39a25',
+            400: '#e7b650',
+            300: '#f3cc79',
+            200: '#f7dfa8',
+            100: '#fff2cd',
+            50: '#fffaf5',
+          },
+          glow: 'rgba(247, 223, 168, 0.35)',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Unbounded', 'Inter', 'system-ui', 'sans-serif'],
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.3s ease-in-out',
+        'slide-up': 'slideUp 0.2s ease-out',
+        'slide-down': 'slideDown 0.2s ease-out',
+        'bounce-gentle': 'bounceGentle 2s infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
+        'shimmer': 'shimmer 2s linear infinite',
+        'gold-shimmer': 'goldShimmer 3s ease-in-out infinite',
+        'gold-pulse': 'goldPulse 2s ease-in-out infinite',
+        'hawk-hover': 'hawkHover 4s ease-in-out infinite',
+        'hawk-fly': 'hawkFly 2s ease-in-out infinite',
+        'hawk-trail-grow': 'hawkTrailGrow 1.2s ease-out forwards',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(5px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(5px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDown: {
+          '0%': { transform: 'translateY(-5px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        bounceGentle: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-2px)' },
+        },
+        glow: {
+          '0%': { boxShadow: '0 0 3px rgba(59, 130, 246, 0.3)' },
+          '100%': { boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)' },
+        },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
+        goldShimmer: {
+          '0%, 100%': { opacity: '0.6', transform: 'scaleX(1)' },
+          '50%': { opacity: '1', transform: 'scaleX(1.05)' },
+        },
+        goldPulse: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.1)', opacity: '0.8' },
+        },
+        hawkHover: {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '25%': { transform: 'translateY(-2px) rotate(1deg)' },
+          '75%': { transform: 'translateY(-1px) rotate(-1deg)' },
+        },
+        hawkFly: {
+          '0%': { transform: 'translateX(0) translateY(0) rotate(0deg)' },
+          '25%': { transform: 'translateX(25%) translateY(-3px) rotate(2deg)' },
+          '50%': { transform: 'translateX(50%) translateY(-1px) rotate(0deg)' },
+          '75%': { transform: 'translateX(75%) translateY(-4px) rotate(-2deg)' },
+          '100%': { transform: 'translateX(100%) translateY(0) rotate(0deg)' },
+        },
+        hawkTrailGrow: {
+          '0%': { width: '0%' },
+          '100%': { width: '100%' },
+        },
+      },
+      boxShadow: {
+        'subtle': '0 1px 3px rgba(0, 0, 0, 0.1)',
+        'soft': '0 1px 2px rgba(0, 0, 0, 0.05)',
+        'medium': '0 2px 8px rgba(0, 0, 0, 0.1)',
+        'large': '0 4px 12px rgba(0, 0, 0, 0.15)',
+        'glow': '0 0 10px rgba(59, 130, 246, 0.3)',
+        'glow-lg': '0 0 20px rgba(59, 130, 246, 0.4)',
+        'gold-glow': '0 0 10px rgba(245, 166, 35, 0.3)',
+        'gold-glow-lg': '0 0 20px rgba(245, 166, 35, 0.4)',
+      },
+      backgroundImage: {
+        'gold-gradient': 'linear-gradient(135deg, #b57a06 0%, #d39a25 100%)',
+        'gold-gradient-hover': 'linear-gradient(135deg, #d39a25 0%, #e7b650 100%)',
+        'divider-gold': 'linear-gradient(90deg, transparent 0%, rgba(247, 223, 168, 0.2) 50%, transparent 100%)',
+        'vignette': 'radial-gradient(ellipse at center, transparent 0%, rgba(11, 14, 18, 0.3) 100%)',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+        '128': '32rem',
+      },
+    },
+  },
+  plugins: [],
+}
