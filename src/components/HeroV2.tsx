@@ -3,40 +3,85 @@ import { Search, ArrowRight, Play, Zap, Shield, FileText, Brain } from 'lucide-r
 import GoldButton from './ui/GoldButton'
 import { useHawk } from './ui/HawkProvider'
 
+// Sample search queries and results for demonstration
+const searchScenarios = [
+  {
+    query: "Find the contract with ABC Corp about data processing",
+    results: [
+      { name: 'abc-corp-contract-2024.pdf', match: '95%', type: 'PDF', snippet: 'Data processing agreement between...' },
+      { name: 'data-processing-agreement.docx', match: '87%', type: 'DOCX', snippet: 'GDPR compliance and data handling...' },
+      { name: 'abc-negotiations-email.eml', match: '82%', type: 'EMAIL', snippet: 'Re: Data processing terms discussion...' }
+    ]
+  },
+  {
+    query: "Python function that handles user authentication",
+    results: [
+      { name: 'auth_service.py', match: '98%', type: 'PY', snippet: 'def authenticate_user(username, password):' },
+      { name: 'user_management.py', match: '91%', type: 'PY', snippet: 'class UserAuthenticator:' },
+      { name: 'login_utils.js', match: '85%', type: 'JS', snippet: 'function validateUserCredentials() {' }
+    ]
+  },
+  {
+    query: "Meeting notes from last week's marketing review",
+    results: [
+      { name: 'marketing-weekly-notes.md', match: '94%', type: 'MD', snippet: '# Marketing Review - Week of Nov 13th' },
+      { name: 'q4-marketing-strategy.pptx', match: '88%', type: 'PPTX', snippet: 'Q4 Marketing Strategy Review' },
+      { name: 'campaign-feedback.txt', match: '83%', type: 'TXT', snippet: 'Feedback from marketing team meeting...' }
+    ]
+  }
+]
+
 const HeroV2: React.FC = () => {
   const { setMood } = useHawk()
   const [isVisible, setIsVisible] = useState(false)
+  const [currentScenario, setCurrentScenario] = useState(0)
+  const [isSearching, setIsSearching] = useState(false)
+  const [showResults, setShowResults] = useState(true)
 
   useEffect(() => {
     setIsVisible(true)
+    // Auto-cycle through scenarios every 8 seconds
+    const interval = setInterval(() => {
+      setCurrentScenario((prev) => (prev + 1) % searchScenarios.length)
+    }, 8000)
+    return () => clearInterval(interval)
   }, [])
+
+  const handleScenarioClick = (index: number) => {
+    if (index !== currentScenario) {
+      setIsSearching(true)
+      setShowResults(false)
+      setTimeout(() => {
+        setCurrentScenario(index)
+        setShowResults(true)
+        setIsSearching(false)
+      }, 800)
+    }
+  }
+
+  const scenario = searchScenarios[currentScenario]
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 transition-colors duration-500" style={{ backgroundColor: 'var(--bg-app)' }}>
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center_top,_var(--accent-soft)_0%,_transparent_50%)]" />
-        
-        {/* Animated particles for light mode */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-brand-gold-400/20 rounded-full animate-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
-              }}
-            />
-          ))}
-        </div>
+      {/* Subtle animated elements only */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full animate-pulse"
+            style={{
+              backgroundColor: 'var(--accent-solid)',
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 4}s`,
+              animationDuration: `${4 + Math.random() * 2}s`,
+              opacity: 0.3,
+            }}
+          />
+        ))}
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           {/* Left Column - Content */}
@@ -63,12 +108,12 @@ const HeroV2: React.FC = () => {
 
             {/* Subheadline */}
             <p className="text-xl leading-relaxed mb-12 max-w-2xl" style={{ color: 'var(--fg-secondary)' }}>
-              Revolutionary semantic search that understands <em>what you mean</em>, not just what you type. 
-              Find any file by describing its content, purpose, or context—all processed locally with complete privacy.
+              Search your files by describing what you're looking for. 
+              Find documents instantly using natural language—no more hunting through endless folders.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-16">
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <GoldButton
                 variant="solid"
                 size="lg"
@@ -120,7 +165,7 @@ const HeroV2: React.FC = () => {
           <div className={`transition-all duration-1000 delay-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'}`}>
             <div className="relative">
               {/* Main App Screenshot Placeholder */}
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border transition-colors duration-300"
+              <div className="relative rounded-3xl overflow-hidden card-shadow-lg border transition-all duration-300 hover:scale-[1.02]"
                    style={{ 
                      backgroundColor: 'var(--bg-elevated)', 
                      borderColor: 'var(--border-subtle)' 
@@ -141,66 +186,120 @@ const HeroV2: React.FC = () => {
                   </div>
                 </div>
 
-                {/* App Content Area */}
-                <div className="p-8 space-y-6">
-                  {/* Search Bar */}
-                  <div className="relative">
-                    <div className="flex items-center px-4 py-3 rounded-lg border transition-colors duration-300"
-                         style={{ 
-                           backgroundColor: 'var(--bg-muted)', 
-                           borderColor: 'var(--border-subtle)' 
-                         }}>
-                      <Search className="mr-3 h-5 w-5" style={{ color: 'var(--accent-solid)' }} />
-                      <span className="text-base" style={{ color: 'var(--fg-muted)' }}>
-                        "Find the contract with ABC Corp about data processing"
-                      </span>
-                    </div>
-                    <div className="absolute -bottom-2 left-4 w-32 h-1 rounded-full animate-pulse"
-                         style={{ backgroundColor: 'var(--accent-solid)' }} />
-                  </div>
-
-                  {/* Search Results */}
-                  <div className="space-y-3">
-                    {[
-                      { name: 'abc-corp-contract-2024.pdf', match: '95% match', type: 'PDF' },
-                      { name: 'data-processing-agreement.docx', match: '87% match', type: 'DOCX' },
-                      { name: 'abc-negotiations-email.eml', match: '82% match', type: 'EMAIL' }
-                    ].map((file, index) => (
-                      <div key={index} 
-                           className="flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.02]"
-                           style={{ 
-                             backgroundColor: 'var(--bg-app)', 
-                             borderColor: 'var(--border-subtle)' 
-                           }}>
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
-                               style={{ 
-                                 backgroundColor: 'var(--accent-soft)', 
-                                 color: 'var(--accent-solid)' 
-                               }}>
-                            {file.type}
-                          </div>
-                          <div>
-                            <div className="font-medium" style={{ color: 'var(--fg-primary)' }}>{file.name}</div>
-                            <div className="text-sm" style={{ color: 'var(--fg-muted)' }}>Semantic match</div>
-                          </div>
-                        </div>
-                        <div className="text-sm font-medium" style={{ color: 'var(--accent-solid)' }}>
-                          {file.match}
-                        </div>
-                      </div>
+                {/* Interactive Demo Controls */}
+                <div className="p-4 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+                  <div className="flex space-x-2">
+                    {searchScenarios.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleScenarioClick(index)}
+                        className={`px-3 py-1 rounded-md text-xs font-medium transition-all duration-300 ${
+                          currentScenario === index 
+                            ? 'scale-105' 
+                            : 'hover:scale-105 opacity-60 hover:opacity-80'
+                        }`}
+                        style={{
+                          backgroundColor: currentScenario === index ? 'var(--accent-solid)' : 'var(--accent-soft)',
+                          color: currentScenario === index ? 'var(--accent-contrast)' : 'var(--accent-solid)'
+                        }}
+                      >
+                        Demo {index + 1}
+                      </button>
                     ))}
                   </div>
+                </div>
 
-                  {/* Status Bar */}
+                {/* App Content Area */}
+                <div className="p-8 space-y-6">
+                  {/* Interactive Search Bar */}
+                  <div className="relative">
+                    <div className="flex items-center px-4 py-3 rounded-lg border transition-all duration-500"
+                         style={{ 
+                           backgroundColor: 'var(--bg-muted)', 
+                           borderColor: isSearching ? 'var(--accent-solid)' : 'var(--border-subtle)' 
+                         }}>
+                      <Search className={`mr-3 h-5 w-5 transition-all duration-300 ${isSearching ? 'animate-pulse' : ''}`} 
+                              style={{ color: 'var(--accent-solid)' }} />
+                      <span className="text-base transition-all duration-500" 
+                            style={{ color: 'var(--fg-primary)' }}>
+                        "{scenario.query}"
+                      </span>
+                    </div>
+                    {(isSearching || showResults) && (
+                      <div className={`absolute -bottom-2 left-4 h-1 rounded-full transition-all duration-1000 ${
+                        isSearching ? 'w-full animate-pulse' : 'w-32'
+                      }`}
+                           style={{ backgroundColor: 'var(--accent-solid)' }} />
+                    )}
+                  </div>
+
+                  {/* Dynamic Search Results */}
+                  {isSearching ? (
+                    <div className="space-y-3">
+                      {[1, 2, 3].map((index) => (
+                        <div key={index} 
+                             className="flex items-center justify-between p-4 rounded-lg border animate-pulse"
+                             style={{ 
+                               backgroundColor: 'var(--bg-app)', 
+                               borderColor: 'var(--border-subtle)' 
+                             }}>
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-lg"
+                                 style={{ backgroundColor: 'var(--accent-soft)' }} />
+                            <div className="space-y-2">
+                              <div className="h-4 w-32 rounded" style={{ backgroundColor: 'var(--accent-soft)' }} />
+                              <div className="h-3 w-20 rounded" style={{ backgroundColor: 'var(--accent-soft)' }} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : showResults && (
+                    <div className="space-y-3">
+                      {scenario.results.map((file, index) => (
+                        <div key={index} 
+                             className={`flex items-center justify-between p-4 rounded-lg border transition-all duration-700 hover:scale-[1.01] ${
+                               showResults ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                             }`}
+                             style={{ 
+                               backgroundColor: 'var(--bg-app)', 
+                               borderColor: 'var(--border-subtle)',
+                               transitionDelay: `${index * 150}ms`
+                             }}>
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
+                                 style={{ 
+                                   backgroundColor: 'var(--accent-soft)', 
+                                   color: 'var(--accent-solid)' 
+                                 }}>
+                              {file.type}
+                            </div>
+                            <div>
+                              <div className="font-medium" style={{ color: 'var(--fg-primary)' }}>{file.name}</div>
+                              <div className="text-sm truncate max-w-xs" style={{ color: 'var(--fg-muted)' }}>
+                                {file.snippet}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-sm font-medium" style={{ color: 'var(--accent-solid)' }}>
+                            {file.match}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Interactive Status Bar */}
                   <div className="flex items-center justify-between pt-4 border-t transition-colors duration-300"
                        style={{ borderColor: 'var(--border-subtle)' }}>
-                    <span className="text-sm" style={{ color: 'var(--fg-muted)' }}>
-                      Searched 12,847 files in 47ms
+                    <span className="text-sm transition-all duration-500" style={{ color: 'var(--fg-muted)' }}>
+                      {isSearching ? 'Searching...' : `Searched ${(Math.random() * 5000 + 10000).toFixed(0)} files in ${(Math.random() * 30 + 25).toFixed(0)}ms`}
                     </span>
                     <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                      <span className="text-sm" style={{ color: 'var(--fg-muted)' }}>Local AI Processing</span>
+                      <div className={`w-2 h-2 bg-green-500 rounded-full ${isSearching ? 'animate-bounce' : 'animate-pulse'}`} />
+                      <span className="text-sm" style={{ color: 'var(--fg-muted)' }}>
+                        {isSearching ? 'Processing...' : 'Local AI Processing'}
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Menu, X, Download } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
 import HawkIcon from './ui/HawkIcon'
 import HawkTrail from './ui/HawkTrail'
 import GoldButton from './ui/GoldButton'
@@ -9,12 +10,13 @@ import { useHawk } from './ui/HawkProvider'
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { setMood } = useHawk()
+  const location = useLocation()
 
   const navigation = [
-    { name: 'Features', href: '#features' },
-    { name: 'Technical', href: '#technical' },
-    { name: 'Download', href: '#download' },
-    { name: 'GitHub', href: 'https://github.com/kagrawal6/filehawk-website', target: '_blank' },
+    { name: 'How It Works', href: '#how-it-works', type: 'scroll' },
+    { name: 'Technical', href: '/technical', type: 'route' },
+    { name: 'Download', href: '#download', type: 'scroll' },
+    { name: 'GitHub', href: 'https://github.com/kagrawal6/filehawk-website', target: '_blank', type: 'external' },
   ]
 
   return (
@@ -24,7 +26,7 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center py-4">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               <img
                 src="/hawk.png"
                 alt="FileHawk"
@@ -40,22 +42,37 @@ const Header: React.FC = () => {
                   Local Semantic Search
                 </span>
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                target={item.target}
-                className="transition-colors duration-200 text-sm font-medium hover:text-brand-gold-400"
-                style={{ color: 'var(--fg-secondary)' }}
-              >
-                {item.name}
-              </a>
-            ))}
+            {navigation.map((item) => {
+              if (item.type === 'route') {
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="transition-colors duration-200 text-sm font-medium hover:text-brand-gold-400"
+                    style={{ color: 'var(--fg-secondary)' }}
+                  >
+                    {item.name}
+                  </Link>
+                )
+              } else {
+                return (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    target={item.target}
+                    className="transition-colors duration-200 text-sm font-medium hover:text-brand-gold-400"
+                    style={{ color: 'var(--fg-secondary)' }}
+                  >
+                    {item.name}
+                  </a>
+                )
+              }
+            })}
             
             {/* Theme Toggle */}
             <ThemeToggle />
@@ -98,17 +115,32 @@ const Header: React.FC = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-brand-onyx border-t border-brand-border">
           <div className="px-4 py-6 space-y-4">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                target={item.target}
-                className="block text-gray-300 hover:text-brand-gold-300 transition-colors duration-200 text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </a>
-            ))}
+            {navigation.map((item) => {
+              if (item.type === 'route') {
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className="block text-gray-300 hover:text-brand-gold-300 transition-colors duration-200 text-sm font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                )
+              } else {
+                return (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    target={item.target}
+                    className="block text-gray-300 hover:text-brand-gold-300 transition-colors duration-200 text-sm font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </a>
+                )
+              }
+            })}
 
           </div>
         </div>

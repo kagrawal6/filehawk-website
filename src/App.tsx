@@ -1,43 +1,14 @@
 import React from 'react'
-import Header from './components/Header'
-import HeroV2 from './components/HeroV2'
-import Problem from './components/Problem'
-import SolutionDemo from './components/SolutionDemo'
-import ProductDemo from './components/ProductDemo'
-import TechnicalShowcase from './components/TechnicalShowcase'
-import HowItWorks from './components/HowItWorks'
-import Features from './components/Features'
-import Download from './components/Download'
-import Footer from './components/Footer'
-import ScrollIndicator from './components/ui/ScrollIndicator'
-import FloatingCTA from './components/ui/FloatingCTA'
-import { HawkProvider } from './components/ui/HawkProvider'
-import { ThemeProvider } from './contexts/ThemeContext'
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import TechnicalPage from './pages/TechnicalPage'
 
 function App() {
   return (
-    <ThemeProvider>
-      <HawkProvider>
-        <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--fg-primary)' }}>
-          <ScrollIndicator />
-          <Header />
-          <main>
-            <HeroV2 />
-            <Problem />
-            <SolutionDemo />
-            <ProductDemo />
-            <section id="technical">
-              <TechnicalShowcase />
-            </section>
-            <HowItWorks />
-            <Features />
-            <Download />
-          </main>
-          <Footer />
-          <FloatingCTA />
-        </div>
-      </HawkProvider>
-    </ThemeProvider>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/technical" element={<TechnicalPage />} />
+    </Routes>
   )
 }
 

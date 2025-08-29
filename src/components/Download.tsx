@@ -47,17 +47,19 @@ const Download: React.FC = () => {
   }
 
   return (
-    <section id="download" className="py-16 sm:py-24 bg-gradient-to-b from-brand-coal to-brand-onyx relative">
+    <section id="download" className="py-8 relative overflow-hidden content-flow">
+      {/* Subtle section overlay */}
+      <div className="absolute inset-0 section-overlay" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white tracking-tight">
-            Download{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold-300 to-brand-gold-500">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight">
+            <span style={{ color: 'var(--fg-primary)' }}>Download</span>{' '}
+            <span className="bg-gradient-to-r from-brand-gold-400 to-brand-gold-600 bg-clip-text text-transparent">
               FileHawk
             </span>
           </h2>
-          <p className="mt-6 max-w-2xl mx-auto text-xl text-gray-300">
+          <p className="mt-6 max-w-2xl mx-auto text-xl leading-relaxed" style={{ color: 'var(--fg-secondary)' }}>
             Get started with FileHawk on your preferred platform. 
             All versions include the same powerful semantic search capabilities.
           </p>
