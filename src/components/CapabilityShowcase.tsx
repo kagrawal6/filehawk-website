@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Zap, Shield, Brain, FileText, Clock, Database, Cpu, Lock, ChevronRight } from 'lucide-react'
+import { Zap, Shield, Brain, Database, ChevronRight } from 'lucide-react'
 
 const CapabilityShowcase: React.FC = () => {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)

@@ -50,7 +50,7 @@ export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
 // Staggered animation hook for multiple elements
 export const useStaggeredAnimation = (count: number, delay: number = 100) => {
   const [visibleElements, setVisibleElements] = useState<Set<number>>(new Set())
-  const containerRef = useRef<HTMLElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const container = containerRef.current

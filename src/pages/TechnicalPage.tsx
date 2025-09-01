@@ -16,7 +16,6 @@ import { Link } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import InteractiveArchitecture from '../components/ui/InteractiveArchitecture'
-import { ThemeProvider } from '../contexts/ThemeContext'
 import { HawkProvider } from '../components/ui/HawkProvider'
 
 const TechnicalPage: React.FC = () => {
@@ -190,9 +189,8 @@ const TechnicalPage: React.FC = () => {
   }
 
   return (
-    <ThemeProvider>
-      <HawkProvider>
-        <div className="min-h-screen transition-colors duration-300 page-gradient" style={{ color: 'var(--fg-primary)' }}>
+    <HawkProvider>
+      <div className="min-h-screen transition-colors duration-300 page-gradient" style={{ color: 'var(--fg-primary)' }}>
           <Header />
           
           <main className="pt-8">
@@ -576,7 +574,6 @@ const TechnicalPage: React.FC = () => {
           <Footer />
         </div>
       </HawkProvider>
-    </ThemeProvider>
   )
 }
 

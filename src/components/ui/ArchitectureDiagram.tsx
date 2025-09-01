@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Monitor, Database, Cpu, FileText, Zap, GitBranch } from 'lucide-react'
+import { Monitor, Database, Cpu, FileText, Zap } from 'lucide-react'
 
 interface DiagramNode {
   id: string

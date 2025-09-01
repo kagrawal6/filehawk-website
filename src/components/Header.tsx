@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
 import { Menu, X, Download } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
-import HawkIcon from './ui/HawkIcon'
+import { Link } from 'react-router-dom'
 import HawkTrail from './ui/HawkTrail'
 import GoldButton from './ui/GoldButton'
 import ThemeToggle from './ui/ThemeToggle'
-import { useHawk } from './ui/HawkProvider'
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { setMood } = useHawk()
-  const location = useLocation()
 
   const navigation = [
     { name: 'How It Works', href: '#how-it-works', type: 'scroll' },

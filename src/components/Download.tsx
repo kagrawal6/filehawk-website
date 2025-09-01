@@ -73,29 +73,39 @@ const Download: React.FC = () => {
               <SoftCard 
                 key={index}
                 className={`p-8 text-center transition-all duration-300 hover:border-brand-gold-500/40 group ${
-                  download.primary ? 'ring-1 ring-brand-gold-500/30 bg-gradient-to-br from-brand-coal to-brand-onyx' : ''
+                  download.primary ? 'ring-1 ring-brand-gold-500/30' : ''
                 }`}
+                style={download.primary ? { 
+                  background: 'linear-gradient(135deg, var(--bg-elevated), var(--bg-muted))',
+                  borderColor: 'var(--accent-solid)'
+                } : {}}
                 hover
               >
                 <div className="flex flex-col items-center space-y-6">
                   {/* Platform Icon */}
-                  <div className={`p-4 rounded-xl transition-all duration-300 group-hover:scale-110 ${
-                    download.primary 
-                      ? 'bg-brand-gold-600/20 text-brand-gold-300 ring-1 ring-brand-gold-500/30' 
-                      : 'bg-gray-800 text-gray-300 group-hover:bg-brand-gold-600/10 group-hover:text-brand-gold-400'
-                  }`}>
+                  <div 
+                    className="p-4 rounded-xl transition-all duration-300 group-hover:scale-110"
+                    style={download.primary ? {
+                      backgroundColor: 'var(--accent-soft)',
+                      color: 'var(--accent-solid)',
+                      border: '1px solid var(--accent-solid)'
+                    } : {
+                      backgroundColor: 'var(--bg-muted)',
+                      color: 'var(--fg-secondary)'
+                    }}
+                  >
                     <Icon className="h-8 w-8" />
                   </div>
                   
                   {/* Platform Info */}
                   <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-white group-hover:text-brand-gold-200 transition-colors">
+                    <h3 className="text-xl font-semibold transition-colors" style={{ color: 'var(--fg-primary)' }}>
                       {download.platform}
                     </h3>
-                    <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+                    <p className="text-sm transition-colors" style={{ color: 'var(--fg-secondary)' }}>
                       {download.description}
                     </p>
-                    <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
+                    <div className="flex items-center justify-center space-x-4 text-xs" style={{ color: 'var(--fg-muted)' }}>
                       <span>{download.version}</span>
                       <span>•</span>
                       <span>{download.size}</span>
@@ -123,7 +133,7 @@ const Download: React.FC = () => {
 
         {/* Release Information */}
         <div className="text-center space-y-6">
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm text-gray-400">
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm" style={{ color: 'var(--fg-secondary)' }}>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span>Latest Release: v1.0.0</span>
@@ -139,8 +149,8 @@ const Download: React.FC = () => {
           </div>
 
           {/* Additional Download Options */}
-          <div className="pt-8 border-t border-brand-border/30">
-            <p className="text-gray-400 text-sm mb-4">
+          <div className="pt-8 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+            <p className="text-sm mb-4" style={{ color: 'var(--fg-secondary)' }}>
               Looking for other options?
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

@@ -34,7 +34,8 @@ const Footer: React.FC = () => {
   ]
 
   return (
-    <footer className="bg-brand-onyx border-t border-brand-border">
+    <footer className="border-t transition-colors duration-300" 
+            style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
@@ -54,7 +55,7 @@ const Footer: React.FC = () => {
                 </span>
               </div>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+            <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--fg-secondary)' }}>
               Revolutionizing file search with AI-powered semantic understanding. 
               Find files by meaning, not just filename.
             </p>
@@ -67,7 +68,8 @@ const Footer: React.FC = () => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-brand-gold-300 transition-colors duration-200"
+                    className="transition-colors duration-200 hover:text-brand-gold-300"
+                    style={{ color: 'var(--fg-muted)' }}
                     title={social.name}
                   >
                     <Icon className="h-5 w-5" />
@@ -80,13 +82,14 @@ const Footer: React.FC = () => {
           {/* Links Sections */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-8">
             <div>
-              <h4 className="text-white font-semibold mb-4">Product</h4>
+              <h4 className="font-semibold mb-4" style={{ color: 'var(--fg-primary)' }}>Product</h4>
               <ul className="space-y-3">
                 {links.product.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-gray-400 hover:text-brand-gold-300 transition-colors duration-200 text-sm"
+                      className="hover:text-brand-gold-300 transition-colors duration-200 text-sm"
+                      style={{ color: 'var(--fg-muted)' }}
                     >
                       {link.name}
                     </a>
@@ -96,13 +99,14 @@ const Footer: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-white font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-4" style={{ color: 'var(--fg-primary)' }}>Support</h4>
               <ul className="space-y-3">
                 {links.support.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-gray-400 hover:text-brand-gold-300 transition-colors duration-200 text-sm"
+                      className="hover:text-brand-gold-300 transition-colors duration-200 text-sm"
+                      style={{ color: 'var(--fg-muted)' }}
                     >
                       {link.name}
                     </a>
@@ -112,13 +116,14 @@ const Footer: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4" style={{ color: 'var(--fg-primary)' }}>Company</h4>
               <ul className="space-y-3">
                 {links.company.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-gray-400 hover:text-brand-gold-300 transition-colors duration-200 text-sm"
+                      className="hover:text-brand-gold-300 transition-colors duration-200 text-sm"
+                      style={{ color: 'var(--fg-muted)' }}
                     >
                       {link.name}
                     </a>
@@ -130,12 +135,12 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className="mt-12 pt-8 border-t border-brand-border/30">
+        <div className="mt-12 pt-8 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-            <p className="text-gray-400 text-sm">
+            <p className="text-sm" style={{ color: 'var(--fg-muted)' }}>
               © 2024 FileHawk. All rights reserved.
             </p>
-            <div className="flex items-center space-x-2 text-gray-400 text-sm">
+            <div className="flex items-center space-x-2 text-sm" style={{ color: 'var(--fg-muted)' }}>
               <span>Made with</span>
               <Heart className="h-4 w-4 text-red-500 animate-pulse" />
               <span>for developers and content creators</span>

@@ -1,6 +1,5 @@
 import React from 'react'
 import { FolderOpen, Brain, Search, FileText } from 'lucide-react'
-import SoftCard from './ui/SoftCard'
 import { useStaggeredAnimation } from '../hooks/useScrollAnimation'
 
 const HowItWorks: React.FC = () => {
