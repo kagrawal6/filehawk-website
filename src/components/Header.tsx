@@ -10,7 +10,7 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: 'How It Works', href: '#how-it-works', type: 'scroll' },
-    { name: 'Technical', href: '/technical', type: 'route' },
+    { name: 'Documentation', href: '/documentation', type: 'route' },
     { name: 'Download', href: '#download', type: 'scroll' },
     { name: 'GitHub', href: 'https://github.com/kagrawal6/filehawk-website', target: '_blank', type: 'external' },
   ]

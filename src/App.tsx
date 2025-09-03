@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
-import TechnicalPage from './pages/TechnicalPage'
+import DocumentationPage from './pages/DocumentationPage'
 import { ThemeProvider } from './contexts/ThemeContext'
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
     <ThemeProvider>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/technical" element={<TechnicalPage />} />
+        <Route path="/documentation/*" element={<DocumentationPage />} />
       </Routes>
     </ThemeProvider>
   )
