@@ -16,11 +16,12 @@ const CapabilityCard: React.FC<CapabilityCardProps> = ({ capability }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={`relative h-full min-h-[320px] p-6 rounded-xl transition-all duration-300 cursor-pointer ${
-        isHovered ? 'scale-[1.05] z-20' : ''
+        isHovered ? 'z-20' : ''
       }`}
       style={{ 
         backgroundColor: 'var(--bg-elevated)',
-        border: isHovered ? '2px solid var(--accent-solid)' : '1px solid var(--border-subtle)'
+        border: '1px solid var(--border-subtle)',
+        boxShadow: isHovered ? '0 0 0 2px var(--accent-solid)' : 'none'
       }}>
         {/* Icon */}
         <div className={`flex items-center justify-center w-12 h-12 rounded-lg mb-4 transition-all duration-300 ${
@@ -131,7 +132,7 @@ const CapabilityShowcase: React.FC = () => {
   ]
 
   return (
-    <section className="py-8 pb-16 relative overflow-hidden content-flow">
+    <section className="py-8 relative overflow-hidden content-flow">
       {/* Subtle section overlay for depth */}
       <div className="absolute inset-0 section-overlay" />
       
@@ -150,7 +151,7 @@ const CapabilityShowcase: React.FC = () => {
         </div>
 
         {/* Interactive Capabilities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-16">
           {capabilities.map((capability, index) => (
             <CapabilityCard 
               key={index}
