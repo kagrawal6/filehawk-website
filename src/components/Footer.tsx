@@ -1,5 +1,5 @@
 import React from 'react'
-import { Github, Twitter, Mail, Heart } from 'lucide-react'
+import { Github, Twitter, Mail } from 'lucide-react'
 import HawkIcon from './ui/HawkIcon'
 import { useHawk } from './ui/HawkProvider'
 

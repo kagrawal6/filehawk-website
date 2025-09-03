@@ -70,17 +70,6 @@ const HeroV2: React.FC = () => {
           
           {/* Left Column - Content */}
           <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 rounded-full border mb-8 backdrop-blur-sm transition-colors duration-300"
-                 style={{ 
-                   backgroundColor: 'var(--accent-soft)', 
-                   borderColor: 'var(--border-subtle)',
-                   color: 'var(--fg-secondary)'
-                 }}>
-              <Brain className="mr-2 h-4 w-4" style={{ color: 'var(--accent-solid)' }} />
-              <span className="text-sm font-medium">AI-Powered Local Search</span>
-            </div>
-
             {/* Main Headline */}
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-8">
               <span style={{ color: 'var(--fg-primary)' }}>Stop hunting for files.</span>

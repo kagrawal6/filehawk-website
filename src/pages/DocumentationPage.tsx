@@ -23,8 +23,8 @@ import {
 } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import ScrollIndicator from '../components/ui/ScrollIndicator'
-import FloatingCTA from '../components/ui/FloatingCTA'
+
+
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import { HawkProvider } from '../components/ui/HawkProvider'
 
@@ -185,7 +185,7 @@ const DocumentationPage: React.FC = () => {
     <HawkProvider>
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--fg-primary)' }}>
         <Header />
-        <ScrollIndicator />
+
       
       <div className="flex flex-1">
         {/* Sidebar */}
@@ -360,7 +360,7 @@ const DocumentationPage: React.FC = () => {
         />
       )}
 
-        <FloatingCTA />
+
         <Footer />
       </div>
     </HawkProvider>

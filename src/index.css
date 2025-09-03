@@ -13,6 +13,11 @@
   --bg-elevated: #12151b;
   --bg-muted: #1a1f28;
   
+  /* RGB versions for transparency */
+  --bg-app-rgb: 11, 14, 18;
+  --bg-elevated-rgb: 18, 21, 27;
+  --bg-muted-rgb: 26, 31, 40;
+  
   --fg-primary: #e5e7eb;
   --fg-secondary: #d1d5db;
   --fg-muted: #9ca3af;
@@ -33,6 +38,11 @@
   --bg-app: #f2eee7;
   --bg-elevated: #ebe6dd;
   --bg-muted: #e3dcd0;
+  
+  /* RGB versions for transparency */
+  --bg-app-rgb: 242, 238, 231;
+  --bg-elevated-rgb: 235, 230, 221;
+  --bg-muted-rgb: 227, 220, 208;
   
   --fg-primary: #141414;
   --fg-secondary: #2d2d2d;
@@ -472,4 +482,44 @@ h1, h2, h3, h4, h5, h6 {
   .hawk-trail::after {
     animation: none !important;
   }
+}
+
+/* Custom scrollbar styling - only the moving indicator */
+::-webkit-scrollbar {
+  width: 6px;
+  background: none;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+  border: none;
+  width: 0;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: none;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-solid);
+  border-radius: 3px;
+  border: none;
+  opacity: 1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-solid);
+  opacity: 1;
+}
+
+::-webkit-scrollbar-corner {
+  background: none;
+  display: none;
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-solid) transparent;
+  scrollbar-gutter: stable;
 }

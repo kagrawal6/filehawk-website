@@ -5,15 +5,15 @@ import CapabilityShowcase from '../components/CapabilityShowcase'
 import HowItWorks from '../components/HowItWorks'
 import Download from '../components/Download'
 import Footer from '../components/Footer'
-import ScrollIndicator from '../components/ui/ScrollIndicator'
-import FloatingCTA from '../components/ui/FloatingCTA'
+
+
 import { HawkProvider } from '../components/ui/HawkProvider'
 
 const HomePage: React.FC = () => {
   return (
     <HawkProvider>
       <div className="min-h-screen transition-colors duration-300 page-gradient" style={{ color: 'var(--fg-primary)' }}>
-        <ScrollIndicator />
+
         <Header />
         <main>
           <HeroV2 />
@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
           <Download />
         </main>
         <Footer />
-        <FloatingCTA />
+
       </div>
     </HawkProvider>
   )
