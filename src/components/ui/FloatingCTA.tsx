@@ -54,8 +54,8 @@ const FloatingCTA: React.FC = () => {
           Download FileHawk
         </GoldButton>
         
-        {/* Pulse Animation */}
-        <div className="absolute inset-0 rounded-xl animate-ping opacity-20"
+        {/* Subtle Pulse Animation - Reduced horizontal spread */}
+        <div className="absolute top-1 bottom-1 left-6 right-6 rounded-lg animate-ping opacity-10"
              style={{ backgroundColor: 'var(--accent-solid)' }} />
       </div>
     </div>

@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Download as DownloadIcon, Apple, Monitor, Smartphone } from 'lucide-react'
 import GoldButton from './ui/GoldButton'
-import SoftCard from './ui/SoftCard'
 import { useHawk } from './ui/HawkProvider'
 
 const Download: React.FC = () => {
@@ -27,16 +26,6 @@ const Download: React.FC = () => {
       description: 'macOS 11.0+ (Intel & Apple Silicon)',
       primary: true,
       downloadUrl: '#'
-    },
-    {
-      platform: 'Linux',
-      icon: Monitor,
-      version: 'v1.0.0',
-      size: '48 MB',
-      format: '.AppImage',
-      description: 'Ubuntu 20.04+, Fedora 35+',
-      primary: false,
-      downloadUrl: '#'
     }
   ]
 
@@ -46,8 +35,82 @@ const Download: React.FC = () => {
     console.log(`Downloading for ${platform}`)
   }
 
+  // Download Card Component with consistent hover behavior
+  const DownloadCard: React.FC<{ download: typeof downloads[0] }> = ({ download }) => {
+    const [isHovered, setIsHovered] = useState(false)
+    const Icon = download.icon
+
+    return (
+      <div
+        className="group relative h-full"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className={`relative h-full p-8 rounded-xl transition-all duration-300 cursor-pointer ${
+          isHovered ? 'z-20' : ''
+        }`}
+        style={{
+          backgroundColor: 'var(--bg-elevated)',
+          border: '1px solid var(--border-subtle)',
+          boxShadow: isHovered ? '0 0 0 2px var(--accent-solid)' : 'none'
+        }}>
+          <div className="flex flex-col items-center space-y-6">
+            {/* Platform Icon */}
+            <div 
+              className={`p-4 rounded-xl transition-all duration-300 ${
+                isHovered ? 'scale-110' : ''
+              }`}
+              style={{
+                backgroundColor: 'var(--accent-soft)',
+                color: 'var(--accent-solid)'
+              }}
+            >
+              <Icon className="h-8 w-8" />
+            </div>
+            
+            {/* Platform Info */}
+            <div className="space-y-2 text-center">
+              <h3 className={`text-xl font-semibold transition-all duration-300 origin-center ${
+                isHovered ? 'scale-105' : ''
+              }`} style={{ color: 'var(--fg-primary)' }}>
+                {download.platform}
+              </h3>
+              <p className={`text-sm transition-all duration-300 origin-center ${
+                isHovered ? 'scale-105' : ''
+              }`} style={{ color: 'var(--fg-secondary)' }}>
+                {download.description}
+              </p>
+              <div className={`flex items-center justify-center space-x-2 text-xs transition-all duration-300 origin-center ${
+                isHovered ? 'scale-105' : ''
+              }`} style={{ color: 'var(--fg-muted)' }}>
+                <span>{download.version}</span>
+                <span>•</span>
+                <span>{download.size}</span>
+                <span>•</span>
+                <span>{download.format}</span>
+              </div>
+            </div>
+
+            {/* Download Button */}
+            <GoldButton
+              variant="solid"
+              size="md"
+              onClick={() => handleDownload(download.platform)}
+              className={`w-full transition-all duration-300 origin-center ${
+                isHovered ? 'scale-105' : ''
+              }`}
+            >
+              <DownloadIcon className="h-4 w-4 mr-2" />
+              Download
+            </GoldButton>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <section id="download" className="py-8 relative overflow-hidden content-flow">
+    <section id="download" className="py-16 relative overflow-hidden content-flow">
       {/* Subtle section overlay */}
       <div className="absolute inset-0 section-overlay" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,69 +129,10 @@ const Download: React.FC = () => {
         </div>
 
         {/* Download Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {downloads.map((download, index) => {
-            const Icon = download.icon
-            return (
-              <SoftCard 
-                key={index}
-                className={`p-8 text-center transition-all duration-300 hover:border-brand-gold-500/40 group ${
-                  download.primary ? 'ring-1 ring-brand-gold-500/30' : ''
-                }`}
-                style={download.primary ? { 
-                  background: 'linear-gradient(135deg, var(--bg-elevated), var(--bg-muted))',
-                  borderColor: 'var(--accent-solid)'
-                } : {}}
-                hover
-              >
-                <div className="flex flex-col items-center space-y-6">
-                  {/* Platform Icon */}
-                  <div 
-                    className="p-4 rounded-xl transition-all duration-300 group-hover:scale-110"
-                    style={download.primary ? {
-                      backgroundColor: 'var(--accent-soft)',
-                      color: 'var(--accent-solid)',
-                      border: '1px solid var(--accent-solid)'
-                    } : {
-                      backgroundColor: 'var(--bg-muted)',
-                      color: 'var(--fg-secondary)'
-                    }}
-                  >
-                    <Icon className="h-8 w-8" />
-                  </div>
-                  
-                  {/* Platform Info */}
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold transition-colors" style={{ color: 'var(--fg-primary)' }}>
-                      {download.platform}
-                    </h3>
-                    <p className="text-sm transition-colors" style={{ color: 'var(--fg-secondary)' }}>
-                      {download.description}
-                    </p>
-                    <div className="flex items-center justify-center space-x-4 text-xs" style={{ color: 'var(--fg-muted)' }}>
-                      <span>{download.version}</span>
-                      <span>•</span>
-                      <span>{download.size}</span>
-                      <span>•</span>
-                      <span>{download.format}</span>
-                    </div>
-                  </div>
-
-                  {/* Download Button */}
-                  <GoldButton
-                    variant={download.primary ? 'solid' : 'ghost'}
-                    size="md"
-                    className="w-full"
-                    onClick={() => handleDownload(download.platform)}
-                    href={download.downloadUrl}
-                  >
-                    <DownloadIcon className="mr-2 h-4 w-4" />
-                    Download
-                  </GoldButton>
-                </div>
-              </SoftCard>
-            )
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
+          {downloads.map((download, index) => (
+            <DownloadCard key={index} download={download} />
+          ))}
         </div>
 
         {/* Release Information */}
@@ -145,31 +149,6 @@ const Download: React.FC = () => {
             <div className="flex items-center space-x-2">
               <Smartphone className="h-4 w-4" />
               <span>System Requirements: 8GB RAM, 500MB Storage</span>
-            </div>
-          </div>
-
-          {/* Additional Download Options */}
-          <div className="pt-8 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
-            <p className="text-sm mb-4" style={{ color: 'var(--fg-secondary)' }}>
-              Looking for other options?
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <GoldButton
-                variant="ghost"
-                size="sm"
-                href="https://github.com/your-org/filehawk/releases"
-                target="_blank"
-              >
-                View All Releases
-              </GoldButton>
-              <GoldButton
-                variant="ghost"
-                size="sm"
-                href="https://github.com/your-org/filehawk"
-                target="_blank"
-              >
-                Source Code
-              </GoldButton>
             </div>
           </div>
         </div>

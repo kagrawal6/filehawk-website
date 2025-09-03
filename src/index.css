@@ -30,28 +30,24 @@
 
 /* Light theme */
 [data-theme="light"] {
-  --bg-app: #fef7ed;
-  --bg-elevated: #ffffff;
-  --bg-muted: #f9fafb;
+  --bg-app: #f2eee7;
+  --bg-elevated: #ebe6dd;
+  --bg-muted: #e3dcd0;
   
-  --fg-primary: #1f2937;
-  --fg-secondary: #4b5563;
-  --fg-muted: #6b7280;
+  --fg-primary: #141414;
+  --fg-secondary: #2d2d2d;
+  --fg-muted: #555555;
   
-  --border-subtle: #e5e7eb;
-  --divider: #e5e7eb;
+  --border-subtle: #d4cbbd;
+  --divider: #ddd4c7;
   
-  --accent-solid: #92400e;
-  --accent-soft: rgba(146, 64, 14, 0.1);
+  /* Replace gold with burgundy/red family in light mode */
+  --accent-solid: #8c1d18;
+  --accent-soft: rgba(140, 29, 24, 0.12);
   --accent-contrast: #ffffff;
   
-  /* Burgundy accents for light mode */
-  --burgundy-primary: #991b1b;
-  --burgundy-soft: rgba(153, 27, 27, 0.1);
-  --burgundy-hover: #7f1d1d;
-  
-  --focus-ring: rgba(146, 64, 14, 0.3);
-  --selection-bg: rgba(146, 64, 14, 0.15);
+  --focus-ring: #8c1d18;
+  --selection-bg: rgba(140, 29, 24, 0.18);
 }
 
 /* Global styles */
@@ -75,8 +71,99 @@ html {
 
 .gradient-border {
   background: linear-gradient(135deg, var(--accent-solid), var(--accent-soft));
-  padding: 1px;
-  border-radius: 1rem;
+}
+
+/* Map gold elements to burgundy in light mode for consistency with desktop app */
+[data-theme="light"] .text-brand-gold-300,
+[data-theme="light"] .text-brand-gold-400,
+[data-theme="light"] .text-brand-gold-500,
+[data-theme="light"] .text-brand-gold-600,
+[data-theme="light"] .text-brand-gold-800 {
+  color: #8c1d18 !important;
+}
+
+[data-theme="light"] .hover\:text-brand-gold-300:hover,
+[data-theme="light"] .hover\:text-brand-gold-400:hover {
+  color: #a3211b !important;
+}
+
+[data-theme="light"] .bg-brand-gold-100,
+[data-theme="light"] .bg-brand-gold-400,
+[data-theme="light"] .bg-brand-gold-500,
+[data-theme="light"] .bg-brand-gold-600 {
+  background-color: #8c1d18 !important;
+}
+
+[data-theme="light"] .bg-brand-gold-500\/10,
+[data-theme="light"] .bg-brand-gold-500\/20 {
+  background-color: rgba(140, 29, 24, 0.12) !important;
+}
+
+[data-theme="light"] .hover\:bg-brand-gold-500\/10:hover {
+  background-color: rgba(140, 29, 24, 0.18) !important;
+}
+
+[data-theme="light"] .border-brand-gold-400,
+[data-theme="light"] .border-brand-gold-500,
+[data-theme="light"] .border-brand-gold-600 {
+  border-color: #8c1d18 !important;
+}
+
+[data-theme="light"] .hover\:border-brand-gold-500:hover,
+[data-theme="light"] .hover\:border-brand-gold-500\/40:hover,
+[data-theme="light"] .hover\:border-brand-gold-500\/50:hover {
+  border-color: #8c1d18 !important;
+}
+
+/* Gradient text in light mode should use burgundy */
+[data-theme="light"] .bg-gradient-to-r.from-brand-gold-400.to-brand-gold-600.bg-clip-text.text-transparent {
+  background: linear-gradient(to right, #8c1d18, #8c1d18) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+/* Gradient backgrounds in light mode should use burgundy */
+[data-theme="light"] .bg-gradient-to-r.from-brand-gold-500.to-brand-gold-600 {
+  background: linear-gradient(to right, #8c1d18, #8c1d18) !important;
+}
+
+/* Gold button overrides for light mode - use burgundy theme */
+[data-theme="light"] .gold-button--solid {
+  background: linear-gradient(135deg, #8c1d18 0%, #a3211b 100%) !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .gold-button--solid:hover {
+  background: linear-gradient(135deg, #a3211b 0%, #b3261e 100%) !important;
+}
+
+[data-theme="light"] .gold-button--ghost {
+  background: transparent !important;
+  color: #8c1d18 !important;
+  border: 1px solid rgba(140, 29, 24, 0.3) !important;
+}
+
+[data-theme="light"] .gold-button--ghost:hover {
+  background: rgba(140, 29, 24, 0.1) !important;
+  border-color: rgba(140, 29, 24, 0.5) !important;
+}
+
+[data-theme="light"] .gold-button--chip {
+  background: rgba(140, 29, 24, 0.12) !important;
+  color: #8c1d18 !important;
+  border: 1px solid rgba(140, 29, 24, 0.3) !important;
+}
+
+[data-theme="light"] .gold-button--chip:hover {
+  background: rgba(140, 29, 24, 0.18) !important;
+  border-color: rgba(140, 29, 24, 0.5) !important;
+}
+
+/* Focus ring for light mode */
+[data-theme="light"] .gold-button:focus-visible,
+[data-theme="light"] .focus-visible\:ring-brand-gold-400:focus-visible {
+  ring-color: #8c1d18 !important;
 }
 
 .gradient-border-content {

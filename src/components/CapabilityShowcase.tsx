@@ -33,17 +33,20 @@ const CapabilityCard: React.FC<CapabilityCardProps> = ({ capability }) => {
         
         {/* Metric */}
         <div className="mb-4">
-          <div className="text-3xl font-bold mb-1 bg-gradient-to-r from-brand-gold-400 to-brand-gold-600 bg-clip-text text-transparent">
+          <div className={`text-3xl font-bold mb-1 bg-gradient-to-r from-brand-gold-400 to-brand-gold-600 bg-clip-text text-transparent transition-all duration-300 origin-left ${
+            isHovered ? 'scale-105' : ''
+          }`}>
             {capability.metric}
           </div>
-          <div className="text-sm font-medium" style={{ color: 'var(--fg-muted)' }}>
+          <div className={`text-sm font-medium transition-all duration-300 origin-left ${
+            isHovered ? 'scale-105' : ''
+          }`} style={{ color: 'var(--fg-muted)' }}>
             {capability.detail}
           </div>
         </div>
         
         {/* Content */}
-        <h3 className="text-lg font-bold mb-3"
-            style={{ color: 'var(--fg-primary)' }}>
+        <h3 className="text-lg font-bold mb-3" style={{ color: 'var(--fg-primary)' }}>
           {capability.title}
         </h3>
         
@@ -52,11 +55,11 @@ const CapabilityCard: React.FC<CapabilityCardProps> = ({ capability }) => {
           {capability.description}
         </p>
 
-        {/* Expanded Content - Absolutely positioned overlay */}
+                {/* Expanded Content - Absolutely positioned overlay */}
         {isHovered && (
-          <div className="absolute bottom-4 left-4 right-4 p-4 rounded-lg shadow-lg transition-all duration-300"
-               style={{ 
-                 backgroundColor: 'var(--bg-elevated)', 
+          <div className="absolute bottom-4 left-4 right-4 p-4 rounded-lg transition-all duration-300 origin-center scale-105"
+               style={{
+                 backgroundColor: 'var(--bg-elevated)',
                  border: '1px solid var(--border-subtle)',
                  backdropFilter: 'blur(8px)'
                }}>
@@ -132,7 +135,7 @@ const CapabilityShowcase: React.FC = () => {
   ]
 
   return (
-    <section className="py-8 relative overflow-hidden content-flow">
+    <section className="py-16 relative overflow-hidden content-flow">
       {/* Subtle section overlay for depth */}
       <div className="absolute inset-0 section-overlay" />
       
@@ -151,7 +154,7 @@ const CapabilityShowcase: React.FC = () => {
         </div>
 
         {/* Interactive Capabilities Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {capabilities.map((capability, index) => (
             <CapabilityCard 
               key={index}

@@ -40,10 +40,10 @@ const HeroV2: React.FC = () => {
 
   useEffect(() => {
     setIsVisible(true)
-    // Auto-cycle through scenarios every 8 seconds
+    // Auto-cycle through scenarios every 6 seconds
     const interval = setInterval(() => {
       setCurrentScenario((prev) => (prev + 1) % searchScenarios.length)
-    }, 8000)
+    }, 6000)
     return () => clearInterval(interval)
   }, [])
 
@@ -62,26 +62,10 @@ const HeroV2: React.FC = () => {
   const scenario = searchScenarios[currentScenario]
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Subtle animated elements only */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 rounded-full animate-pulse"
-            style={{
-              backgroundColor: 'var(--accent-solid)',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${4 + Math.random() * 2}s`,
-              opacity: 0.3,
-            }}
-          />
-        ))}
-      </div>
+    <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           
           {/* Left Column - Content */}
@@ -293,7 +277,7 @@ const HeroV2: React.FC = () => {
                   <div className="flex items-center justify-between pt-4 border-t transition-colors duration-300"
                        style={{ borderColor: 'var(--border-subtle)' }}>
                     <span className="text-sm transition-all duration-500" style={{ color: 'var(--fg-muted)' }}>
-                      {isSearching ? 'Searching...' : `Searched ${(Math.random() * 5000 + 10000).toFixed(0)} files in ${(Math.random() * 30 + 25).toFixed(0)}ms`}
+                      {isSearching ? 'Searching...' : `Searched ${(Math.random() * 400 + 100).toFixed(0)} files in ${(Math.random() * 30 + 25).toFixed(0)}ms`}
                     </span>
                     <div className="flex items-center space-x-2">
                       <div className={`w-2 h-2 bg-green-500 rounded-full ${isSearching ? 'animate-bounce' : 'animate-pulse'}`} />
@@ -308,8 +292,6 @@ const HeroV2: React.FC = () => {
               {/* Floating Elements */}
               <div className="absolute -top-4 -right-4 w-8 h-8 rounded-full animate-bounce"
                    style={{ backgroundColor: 'var(--accent-solid)' }} />
-              <div className="absolute -bottom-6 -left-6 w-12 h-12 rounded-lg rotate-12 animate-pulse"
-                   style={{ backgroundColor: 'var(--accent-soft)' }} />
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Menu, X, Download } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import HawkTrail from './ui/HawkTrail'
+import HawkIcon from './ui/HawkIcon'
 import GoldButton from './ui/GoldButton'
 import ThemeToggle from './ui/ThemeToggle'
 
@@ -23,13 +24,7 @@ const Header: React.FC = () => {
           {/* Logo and Brand */}
           <div className="flex items-center space-x-4">
             <Link to="/" className="flex items-center space-x-3">
-              <img
-                src="/hawk.png"
-                alt="FileHawk"
-                width={32}
-                height={32}
-                className="transition-all duration-300"
-              />
+              <HawkIcon size={32} className="transition-all duration-300" />
               <div className="flex flex-col">
                 <h1 className="font-display text-2xl tracking-[-0.01em] text-brand-gold-300">
                   FileHawk
