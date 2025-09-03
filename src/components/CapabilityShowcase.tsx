@@ -75,9 +75,9 @@ const CapabilityCard: React.FC<CapabilityCardProps> = ({ capability }) => {
               ))}
             </div>
             
-            <p className="text-xs font-bold italic text-brand-gold-400">
-              {capability.expanded.benefit}
-            </p>
+                                    <p className="text-xs font-bold text-brand-gold-400">
+                          {capability.expanded.benefit}
+                        </p>
           </div>
         )}
       </div>

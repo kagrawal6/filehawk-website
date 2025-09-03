@@ -134,7 +134,7 @@ const HowItWorks: React.FC = () => {
                 ))}
               </div>
               
-              <p className="text-xs font-bold italic text-brand-gold-400">
+              <p className="text-xs font-bold text-brand-gold-400">
                 {step.expanded.details}
               </p>
             </div>

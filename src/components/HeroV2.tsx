@@ -82,7 +82,7 @@ const HeroV2: React.FC = () => {
             {/* Subheadline */}
             <p className="text-xl leading-relaxed mb-12 max-w-2xl" style={{ color: 'var(--fg-secondary)' }}>
               Search your files by describing what you're looking for. 
-              Find documents instantly using natural language—no more hunting through endless folders.
+              Find documents instantly using natural language, no more hunting through endless folders.
             </p>
 
             {/* CTA Buttons */}
