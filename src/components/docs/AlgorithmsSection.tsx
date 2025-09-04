@@ -442,7 +442,7 @@ def apply_overlap_strategy(
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8 }}
@@ -486,7 +486,7 @@ def apply_overlap_strategy(
 
       {/* Comprehensive Dual-Model AI Visualization */}
       <motion.section
-        className="mb-16"
+        className="mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8, delay: 0.4 }}
@@ -496,7 +496,7 @@ def apply_overlap_strategy(
 
       {/* Comprehensive Dual-Chunking Algorithm */}
       <motion.section
-        className="mb-16"
+        className="mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8, delay: 0.6 }}
@@ -506,7 +506,7 @@ def apply_overlap_strategy(
 
       {/* Advanced Confidence Scoring Engine */}
       <motion.section
-        className="mb-16"
+        className="mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8, delay: 0.8 }}

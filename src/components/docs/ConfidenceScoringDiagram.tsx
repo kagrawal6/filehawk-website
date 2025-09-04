@@ -406,7 +406,7 @@ const ConfidenceScoringDiagram: React.FC = () => {
       </div>
 
       {/* Confidence Scoring Flow Diagram */}
-      <div className="relative w-full rounded-xl overflow-auto border" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)', height: '780px' }}>
+      <div className="relative w-full rounded-xl overflow-auto border aspect-[4/3] min-h-[600px] max-h-[780px]" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)' }}>
         <svg width="100%" height="100%" viewBox="0 0 1300 750" className="absolute inset-0">
           {/* Background Grid */}
           <defs>

@@ -27,6 +27,8 @@ import Footer from '../components/Footer'
 
 import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import { HawkProvider } from '../components/ui/HawkProvider'
+import Breadcrumbs from '../components/ui/Breadcrumbs'
+import StickyTableOfContents from '../components/ui/StickyTableOfContents'
 
 // Import documentation section components
 import OverviewSection from '../components/docs/RevisedOverviewSection'
@@ -181,6 +183,28 @@ const DocumentationPage: React.FC = () => {
   const currentSection = getCurrentSection()
   const isHomePage = location.pathname === '/documentation' || location.pathname === '/documentation/'
 
+  // Generate breadcrumbs
+  const getBreadcrumbs = () => {
+    if (isHomePage) {
+      return [{ label: 'Documentation', path: '/documentation' }]
+    }
+    
+    return [
+      { label: 'Documentation', path: '/documentation' },
+      { 
+        label: currentSection.title, 
+        path: currentSection.path, 
+        icon: currentSection.icon 
+      }
+    ]
+  }
+
+  // Generate table of contents sections (this would be expanded based on current section)
+  const getTocSections = () => {
+    // For now, return empty array. Each section component could provide its own TOC
+    return []
+  }
+
   return (
     <HawkProvider>
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg-app)', color: 'var(--fg-primary)' }}>
@@ -305,6 +329,26 @@ const DocumentationPage: React.FC = () => {
               {isHomePage ? 'Documentation' : currentSection.title}
             </h1>
           </div>
+
+          {/* Breadcrumbs */}
+          {!isHomePage && (
+            <div className="sticky top-16 lg:top-0 z-20 border-b" 
+                 style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+              <div className="px-4 py-3">
+                <Breadcrumbs items={getBreadcrumbs()} />
+              </div>
+            </div>
+          )}
+
+          {/* Table of Contents (when not on home page) */}
+          {!isHomePage && (
+            <StickyTableOfContents 
+              sections={getTocSections()}
+              onSectionChange={() => {
+                // Handle section change if needed
+              }}
+            />
+          )}
 
           {/* Content Area */}
           <div className="min-h-screen">

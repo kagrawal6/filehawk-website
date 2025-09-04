@@ -27,7 +27,7 @@ const RevisedArchitectureSection: React.FC = () => {
 
       {/* Header */}
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8 }}
@@ -64,7 +64,6 @@ const RevisedArchitectureSection: React.FC = () => {
           <SystemArchitectureDiagram 
             title="Interactive System Architecture"
             description="Explore FileHawk's complete local-first architecture with layer filtering and animation controls"
-            height="800px"
             interactive={true}
           />
         </div>
@@ -230,7 +229,6 @@ const RevisedArchitectureSection: React.FC = () => {
           <DataFlowDiagram 
             title="Interactive Data Processing Flow"
             description="Real-time visualization of document indexing and search query processing with performance metrics"
-            height="700px"
             interactive={true}
           />
         </div>

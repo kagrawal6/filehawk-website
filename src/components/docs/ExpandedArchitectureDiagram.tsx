@@ -496,7 +496,7 @@ const ExpandedArchitectureDiagram: React.FC = () => {
       </div>
 
       {/* Comprehensive Architecture Diagram */}
-      <div className="relative w-full rounded-xl overflow-auto border" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)', height: '1600px' }}>
+      <div className="relative w-full rounded-xl overflow-auto border max-h-[800px] min-h-[600px]" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)' }}>
         <svg width="100%" height="100%" viewBox="0 0 1400 1500" className="absolute inset-0">
           {/* Background Grid */}
           <defs>

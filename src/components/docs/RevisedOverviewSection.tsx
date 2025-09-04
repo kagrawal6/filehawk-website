@@ -22,6 +22,7 @@ import {
   ExpandableSection 
 } from './DocumentationNavigation'
 import { SystemArchitectureDiagram } from './InteractiveDiagrams'
+import SectionSummaryCard from '../ui/SectionSummaryCard'
 
 const RevisedOverviewSection: React.FC = () => {
   const isAnimated = useScrollAnimation()
@@ -31,7 +32,7 @@ const RevisedOverviewSection: React.FC = () => {
 
       {/* Header */}
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8 }}
@@ -56,6 +57,24 @@ const RevisedOverviewSection: React.FC = () => {
           not just keywords. Transform how your organization finds, accesses, and utilizes knowledge across all digital content.
         </p>
       </motion.div>
+
+      {/* Section Summary */}
+      <SectionSummaryCard
+        title="System Overview"
+        subtitle="Complete Introduction to FileHawk"
+        description="Get a comprehensive understanding of FileHawk's AI-powered semantic search platform, from basic concepts to enterprise deployment strategies."
+        keyPoints={[
+          "Dual-model AI architecture (Gist + Pinpoint modes)",
+          "Local-first data sovereignty principles", 
+          "14-component confidence scoring system",
+          "Enterprise scalability and performance metrics",
+          "GitHub integration and workflow automation",
+          "Production deployment patterns"
+        ]}
+        estimatedTime="15-20 min read"
+        complexity="beginner"
+        isExpanded={false}
+      />
 
       {/* Introduction Section */}
       <DocumentationSection 
@@ -327,7 +346,6 @@ const RevisedOverviewSection: React.FC = () => {
           <SystemArchitectureDiagram 
             title="Interactive System Architecture"
             description="Explore FileHawk's complete architecture with layer filtering and component details"
-            height="700px"
             interactive={true}
           />
           

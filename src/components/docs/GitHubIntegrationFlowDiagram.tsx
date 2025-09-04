@@ -412,7 +412,7 @@ const GitHubIntegrationFlowDiagram: React.FC = () => {
       </div>
 
       {/* GitHub Integration Flow Diagram */}
-      <div className="relative w-full rounded-xl overflow-auto border" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)', height: '720px' }}>
+      <div className="relative w-full rounded-xl overflow-auto border aspect-[16/9] min-h-[500px] max-h-[720px]" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)' }}>
         <svg width="100%" height="100%" viewBox="0 0 1300 700" className="absolute inset-0">
           {/* Background Grid */}
           <defs>

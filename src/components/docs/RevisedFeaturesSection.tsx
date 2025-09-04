@@ -18,6 +18,7 @@ import {
 } from './DocumentationNavigation'
 import DualModelAIDiagram from './DualModelAIDiagram'
 import DualChunkingDiagram from './DualChunkingDiagram'
+import SectionSummaryCard from '../ui/SectionSummaryCard'
 
 const RevisedFeaturesSection: React.FC = () => {
   const isAnimated = useScrollAnimation()
@@ -27,7 +28,7 @@ const RevisedFeaturesSection: React.FC = () => {
 
       {/* Header */}
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8 }}
@@ -52,6 +53,24 @@ const RevisedFeaturesSection: React.FC = () => {
           and enterprise-grade features that understand <strong>meaning and context</strong>, not just keywords.
         </p>
       </motion.div>
+
+      {/* Section Summary */}
+      <SectionSummaryCard
+        title="Features & Capabilities"
+        subtitle="Comprehensive Feature Overview"
+        description="Explore FileHawk's powerful feature set including dual-mode AI search, advanced chunking strategies, enterprise integration, and production monitoring capabilities."
+        keyPoints={[
+          "Semantic search with contextual understanding",
+          "Dual-chunking modes for different use cases",
+          "Real-time performance monitoring dashboard",
+          "GitHub integration with OAuth device flow",
+          "Enterprise-grade security and compliance",
+          "API-first architecture with RESTful endpoints"
+        ]}
+        estimatedTime="20-25 min read"
+        complexity="intermediate"
+        isExpanded={false}
+      />
 
       {/* Feature Overview */}
       <DocumentationSection 

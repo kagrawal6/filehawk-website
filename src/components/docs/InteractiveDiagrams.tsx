@@ -30,7 +30,6 @@ interface DiagramProps {
 export const SystemArchitectureDiagram: React.FC<DiagramProps> = ({ 
   title = "FileHawk System Architecture", 
   description = "Complete local-first semantic search architecture",
-  height = "800px",
   interactive = true 
 }) => {
   const [activeLayer, setActiveLayer] = useState<string>('all')
@@ -88,7 +87,7 @@ export const SystemArchitectureDiagram: React.FC<DiagramProps> = ({
   }
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full aspect-[4/3] min-h-[500px] max-h-[800px]">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-brand-gold-400 mb-2">{title}</h3>
         <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>{description}</p>
@@ -260,7 +259,6 @@ export const SystemArchitectureDiagram: React.FC<DiagramProps> = ({
 export const AlgorithmFlowDiagram: React.FC<DiagramProps> = ({ 
   title = "Advanced Gist Ranking Algorithm Flow", 
   description = "14-component scoring system with mathematical precision",
-  height = "600px",
   interactive = true 
 }) => {
   const [activeStep, setActiveStep] = useState<number>(0)
@@ -294,7 +292,7 @@ export const AlgorithmFlowDiagram: React.FC<DiagramProps> = ({
   }
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full aspect-[16/9] min-h-[400px] max-h-[600px]">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-brand-gold-400 mb-2">{title}</h3>
         <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>{description}</p>
@@ -420,7 +418,6 @@ export const AlgorithmFlowDiagram: React.FC<DiagramProps> = ({
 export const DataFlowDiagram: React.FC<DiagramProps> = ({ 
   title = "FileHawk Data Processing Flow", 
   description = "End-to-end document processing and search pipeline",
-  height = "700px",
   interactive = true 
 }) => {
   const [activeFlow, setActiveFlow] = useState<string>('indexing')
@@ -459,7 +456,7 @@ export const DataFlowDiagram: React.FC<DiagramProps> = ({
   }
 
   return (
-    <div className="w-full" style={{ height }}>
+    <div className="w-full aspect-[4/3] min-h-[500px] max-h-[700px]">
       <div className="text-center mb-6">
         <h3 className="text-2xl font-bold text-brand-gold-400 mb-2">{title}</h3>
         <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>{description}</p>

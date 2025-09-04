@@ -42,7 +42,7 @@ const RevisedAlgorithmsSection: React.FC = () => {
 
       {/* Header */}
       <motion.div 
-        className="text-center mb-16"
+        className="text-center mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8 }}
@@ -79,7 +79,6 @@ const RevisedAlgorithmsSection: React.FC = () => {
           <AlgorithmFlowDiagram 
             title="Interactive Algorithm Flow"
             description="Step-by-step visualization of FileHawk's complete scoring pipeline"
-            height="600px"
             interactive={true}
           />
         </div>

@@ -140,7 +140,7 @@ export const DocumentationSection: React.FC<{
   className?: string
 }> = ({ id, title, subtitle, children, className = '' }) => {
   return (
-    <section id={id} className={`mb-16 scroll-mt-20 ${className}`}>
+    <section id={id} className={`mb-8 scroll-mt-20 ${className}`}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

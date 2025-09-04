@@ -413,7 +413,7 @@ const DualModelAIDiagram: React.FC = () => {
       </div>
 
       {/* Main AI Flow Diagram */}
-      <div className="relative w-full rounded-xl overflow-hidden border" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)', height: '700px' }}>
+      <div className="relative w-full rounded-xl overflow-hidden border aspect-[4/3] min-h-[500px] max-h-[700px]" style={{ backgroundColor: 'var(--bg-app)', borderColor: 'var(--border-subtle)' }}>
         <svg width="100%" height="100%" viewBox="0 0 1400 650" className="absolute inset-0">
           {/* Background Grid */}
           <defs>
