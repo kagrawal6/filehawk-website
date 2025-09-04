@@ -1,0 +1,292 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>indexing-pipeline.md – diagram 1/1</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    background: rgba(0,0,0,.03);
+    z-index: 10;
+  }
+  .toolbar input[type="range"] {
+    width: 250px;
+  }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 52px);
+    overflow: auto;
+    padding: 16px;
+    cursor: grab;
+  }
+  .stage {
+    transform-origin: 0 0;
+    display: inline-block;
+  }
+  /* make SVG selectable and crisp */
+  svg {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+  .hint {
+    opacity: .7;
+    font-size: 12px;
+    margin-left: auto;
+  }
+  button {
+    cursor: pointer;
+  }
+  .panning {
+    cursor: grabbing !important;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>indexing-pipeline.md – diagram 1/1</strong>
+    <label style="margin-left:1rem;">Zoom
+      <input id="zoom" type="range" min="0.25" max="4" step="0.05" value="1.2">
+    </label>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <button id="reset">Reset</button>
+    <span class="hint">Tip: Ctrl/Cmd + mouse wheel zooms · Drag to pan</span>
+  </div>
+  <div class="stage-wrap" id="wrap">
+    <div class="stage" id="stage">
+      <pre class="mermaid">
+flowchart TD
+    %% Input Sources
+    LOCAL_FOLDER[📁 Local Folders&lt;br/&gt;User-Selected Directories]
+    GITHUB_REPO[🔗 GitHub Repositories&lt;br/&gt;Cloned Locally]
+    FILE_CHANGES[⚡ File Changes&lt;br/&gt;Real-time Detection]
+    
+    %% File Discovery
+    SCAN_DIRS[Directory Scanner&lt;br/&gt;Recursive File Discovery]
+    FILE_FILTER[File Filter&lt;br/&gt;Type &amp; Size Validation]
+    EXCLUSION_CHECK[Exclusion Check&lt;br/&gt;Skip Hidden/System Files]
+    
+    %% File Processing
+    FILE_READ[File Reader&lt;br/&gt;Content Extraction]
+    TEXT_EXTRACT[Text Extraction&lt;br/&gt;15+ File Types Supported]
+    ENCODING_DETECT[Encoding Detection&lt;br/&gt;UTF-8, ASCII, etc.]
+    
+    %% Content Processing
+    CONTENT_CLEAN[Content Cleaning&lt;br/&gt;Remove Artifacts]
+    DUAL_CHUNKING[Dual-Mode Chunking&lt;br/&gt;Gist + Pinpoint]
+    GIST_CHUNKS[Gist Chunks&lt;br/&gt;35-line Segments]
+    PINPOINT_CHUNKS[Pinpoint Chunks&lt;br/&gt;10-line Segments]
+    
+    %% Metadata Generation
+    METADATA_GEN[Metadata Generation&lt;br/&gt;File Path, Size, Hash]
+    SHA256_HASH[SHA-256 Hashing&lt;br/&gt;Change Detection]
+    TIMESTAMP[Timestamp Recording&lt;br/&gt;Modified Date]
+    
+    %% AI Processing
+    GIST_EMBED[Gist Embedding&lt;br/&gt;MSMarco Model]
+    PINPOINT_EMBED[Pinpoint Embedding&lt;br/&gt;AllMiniLM Model]
+    VECTOR_GEN[Vector Generation&lt;br/&gt;384-Dimensional]
+    
+    %% Storage
+    CHROMA_GIST[ChromaDB Gist Collection&lt;br/&gt;Topic-level Storage]
+    CHROMA_PINPOINT[ChromaDB Pinpoint Collection&lt;br/&gt;Precise Storage]
+    METADATA_STORE[Metadata Store&lt;br/&gt;File State Tracking]
+    
+    %% Progress Tracking
+    PROGRESS_UPDATE[Progress Updates&lt;br/&gt;Real-time Feedback]
+    STATUS_BROADCAST[Status Broadcast&lt;br/&gt;UI Notifications]
+    
+    %% Error Handling
+    ERROR_CHECK{Processing&lt;br/&gt;Successful?}
+    ERROR_LOG[Error Logging&lt;br/&gt;Failed File Tracking]
+    RETRY_QUEUE[Retry Queue&lt;br/&gt;Failure Recovery]
+    
+    %% Flow Connections
+    LOCAL_FOLDER --&gt; SCAN_DIRS
+    GITHUB_REPO --&gt; SCAN_DIRS
+    FILE_CHANGES --&gt; FILE_FILTER
+    
+    SCAN_DIRS --&gt; FILE_FILTER
+    FILE_FILTER --&gt; EXCLUSION_CHECK
+    EXCLUSION_CHECK --&gt; FILE_READ
+    
+    FILE_READ --&gt; TEXT_EXTRACT
+    TEXT_EXTRACT --&gt; ENCODING_DETECT
+    ENCODING_DETECT --&gt; CONTENT_CLEAN
+    
+    CONTENT_CLEAN --&gt; DUAL_CHUNKING
+    DUAL_CHUNKING --&gt; GIST_CHUNKS
+    DUAL_CHUNKING --&gt; PINPOINT_CHUNKS
+    
+    FILE_READ --&gt; METADATA_GEN
+    METADATA_GEN --&gt; SHA256_HASH
+    METADATA_GEN --&gt; TIMESTAMP
+    
+    GIST_CHUNKS --&gt; GIST_EMBED
+    PINPOINT_CHUNKS --&gt; PINPOINT_EMBED
+    GIST_EMBED --&gt; VECTOR_GEN
+    PINPOINT_EMBED --&gt; VECTOR_GEN
+    
+    VECTOR_GEN --&gt; CHROMA_GIST
+    VECTOR_GEN --&gt; CHROMA_PINPOINT
+    SHA256_HASH --&gt; METADATA_STORE
+    TIMESTAMP --&gt; METADATA_STORE
+    
+    VECTOR_GEN --&gt; PROGRESS_UPDATE
+    PROGRESS_UPDATE --&gt; STATUS_BROADCAST
+    
+    VECTOR_GEN --&gt; ERROR_CHECK
+    ERROR_CHECK --&gt;|Success| PROGRESS_UPDATE
+    ERROR_CHECK --&gt;|Failure| ERROR_LOG
+    ERROR_LOG --&gt; RETRY_QUEUE
+
+    %% Styling
+    classDef input fill:#E3F2FD,stroke:#1976D2,color:#000
+    classDef discovery fill:#F3E5F5,stroke:#7B1FA2,color:#000
+    classDef processing fill:#E8F5E8,stroke:#388E3C,color:#000
+    classDef chunking fill:#FFF3E0,stroke:#F57C00,color:#000
+    classDef metadata fill:#FCE4EC,stroke:#C2185B,color:#000
+    classDef ai fill:#F1F8E9,stroke:#689F38,color:#000
+    classDef storage fill:#E0F2F1,stroke:#00796B,color:#000
+    classDef feedback fill:#FFF8E1,stroke:#F9A825,color:#000
+    classDef error fill:#FFEBEE,stroke:#D32F2F,color:#000
+
+    class LOCAL_FOLDER,GITHUB_REPO,FILE_CHANGES input
+    class SCAN_DIRS,FILE_FILTER,EXCLUSION_CHECK discovery
+    class FILE_READ,TEXT_EXTRACT,ENCODING_DETECT,CONTENT_CLEAN processing
+    class DUAL_CHUNKING,GIST_CHUNKS,PINPOINT_CHUNKS chunking
+    class METADATA_GEN,SHA256_HASH,TIMESTAMP metadata
+    class GIST_EMBED,PINPOINT_EMBED,VECTOR_GEN ai
+    class CHROMA_GIST,CHROMA_PINPOINT,METADATA_STORE storage
+    class PROGRESS_UPDATE,STATUS_BROADCAST feedback
+    class ERROR_CHECK,ERROR_LOG,RETRY_QUEUE error
+      </pre>
+    </div>
+  </div>
+
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    const userConfig = {
+      startOnLoad: true,
+      theme: "default",
+      themeVariables: {
+        fontSize: "20px",
+        lineHeight: "24px"
+      }
+    };
+    mermaid.initialize(userConfig);
+
+    const zoomEl = document.getElementById('zoom');
+    const stage = document.getElementById('stage');
+    const wrap = document.getElementById('wrap');
+    const btnIn = document.getElementById('zoomIn');
+    const btnOut = document.getElementById('zoomOut');
+    const btnReset = document.getElementById('reset');
+
+    let svgEl = null;
+    let baseWidth = 0, baseHeight = 0;
+
+    function applyZoom(z) {
+      const scale = typeof z === 'string' ? parseFloat(z) : z;
+      if (svgEl) {
+        svgEl.style.transformOrigin = '0 0';
+        svgEl.style.transform = `scale(${scale})`;
+        if (baseWidth && baseHeight) {
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+        }
+      } else {
+        // Fallback if SVG not yet found: scale the stage
+        stage.style.transformOrigin = '0 0';
+        stage.style.transform = `scale(${scale})`;
+      }
+      zoomEl.value = scale.toFixed(2);
+    }
+
+    zoomEl.addEventListener('input', () => applyZoom(zoomEl.value));
+
+    btnIn.addEventListener('click', () => {
+      const z = Math.min(4, (parseFloat(zoomEl.value) + 0.1));
+      applyZoom(z);
+    });
+    btnOut.addEventListener('click', () => {
+      const z = Math.max(0.25, (parseFloat(zoomEl.value) - 0.1));
+      applyZoom(z);
+    });
+    btnReset.addEventListener('click', () => applyZoom(1.2));
+
+    // Ctrl/Cmd + wheel zoom
+    wrap.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const z = Math.min(4, Math.max(0.25, parseFloat(zoomEl.value) + delta));
+      applyZoom(z);
+    }, {passive:false});
+
+    // Auto-fit width on load (approx)
+    window.addEventListener('load', () => {
+      // Give Mermaid a moment to render
+      setTimeout(() => {
+        try {
+          svgEl = stage.querySelector('svg');
+          if (!svgEl) return;
+          const bbox = svgEl.getBBox();
+          baseWidth = Math.max(1, bbox.width);
+          baseHeight = Math.max(1, bbox.height);
+          const target = wrap.clientWidth - 32; // padding margin
+          let z = target / baseWidth;
+          z = Math.max(0.25, Math.min(2.5, z));
+          applyZoom(z);
+        } catch (e) {}
+      }, 250);
+    });
+
+    // Drag to pan
+    let isPanning = false;
+    let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left-click only
+      isPanning = true;
+      wrap.classList.add('panning');
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      startScrollLeft = wrap.scrollLeft;
+      startScrollTop = wrap.scrollTop;
+    });
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - wrap.offsetLeft;
+      const y = e.pageY - wrap.offsetTop;
+      const dx = x - startX;
+      const dy = y - startY;
+      wrap.scrollLeft = startScrollLeft - dx;
+      wrap.scrollTop = startScrollTop - dy;
+    });
+  </script>
+</body>
+</html>

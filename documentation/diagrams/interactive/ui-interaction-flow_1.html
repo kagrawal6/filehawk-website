@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ui-interaction-flow.md – diagram 1/1</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    background: rgba(0,0,0,.03);
+    z-index: 10;
+  }
+  .toolbar input[type="range"] {
+    width: 250px;
+  }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 52px);
+    overflow: auto;
+    padding: 16px;
+    cursor: grab;
+  }
+  .stage {
+    transform-origin: 0 0;
+    display: inline-block;
+  }
+  /* make SVG selectable and crisp */
+  svg {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+  .hint {
+    opacity: .7;
+    font-size: 12px;
+    margin-left: auto;
+  }
+  button {
+    cursor: pointer;
+  }
+  .panning {
+    cursor: grabbing !important;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>ui-interaction-flow.md – diagram 1/1</strong>
+    <label style="margin-left:1rem;">Zoom
+      <input id="zoom" type="range" min="0.25" max="4" step="0.05" value="1.2">
+    </label>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <button id="reset">Reset</button>
+    <span class="hint">Tip: Ctrl/Cmd + mouse wheel zooms · Drag to pan</span>
+  </div>
+  <div class="stage-wrap" id="wrap">
+    <div class="stage" id="stage">
+      <pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant React_Components as React Components
+    participant App_State as App State
+    participant Electron_IPC as Electron IPC
+    participant Main_Process as Main Process
+    participant Flask_API as Flask API
+    participant AI_Backend as AI Backend
+
+    %% Application Startup
+    Note over User,AI_Backend: Application Startup Flow
+    User-&gt;&gt;Main_Process: Launch Filevate
+    Main_Process-&gt;&gt;Flask_API: Start Python backend
+    Flask_API-&gt;&gt;AI_Backend: Initialize AI models
+    AI_Backend--&gt;&gt;Flask_API: Models loaded
+    Flask_API--&gt;&gt;Main_Process: API server ready
+    Main_Process-&gt;&gt;React_Components: Create window &amp; load UI
+    React_Components-&gt;&gt;App_State: Initialize application state
+    App_State--&gt;&gt;React_Components: State initialized
+    React_Components--&gt;&gt;User: Show application interface
+
+    %% Search Interaction Flow
+    Note over User,AI_Backend: Search Interaction Flow
+    User-&gt;&gt;React_Components: Enter search query
+    React_Components-&gt;&gt;App_State: Update query state
+    React_Components-&gt;&gt;React_Components: Validate input
+    User-&gt;&gt;React_Components: Select search mode (Gist/Pinpoint)
+    React_Components-&gt;&gt;App_State: Update mode state
+    User-&gt;&gt;React_Components: Apply filters (optional)
+    React_Components-&gt;&gt;App_State: Update filter state
+    
+    User-&gt;&gt;React_Components: Submit search
+    React_Components-&gt;&gt;App_State: Set loading state
+    React_Components-&gt;&gt;Electron_IPC: Send search request
+    Electron_IPC-&gt;&gt;Main_Process: Forward search request
+    Main_Process-&gt;&gt;Flask_API: HTTP POST /api/search
+    Flask_API-&gt;&gt;AI_Backend: Process query with AI
+    AI_Backend--&gt;&gt;Flask_API: Return ranked results
+    Flask_API--&gt;&gt;Main_Process: HTTP response with results
+    Main_Process--&gt;&gt;Electron_IPC: Forward results
+    Electron_IPC--&gt;&gt;React_Components: Receive search results
+    React_Components-&gt;&gt;App_State: Update results state
+    React_Components--&gt;&gt;User: Display search results
+
+    %% File Interaction Flow
+    Note over User,AI_Backend: File Interaction Flow
+    User-&gt;&gt;React_Components: Click on search result
+    React_Components-&gt;&gt;Electron_IPC: Request file open
+    Electron_IPC-&gt;&gt;Main_Process: Handle file open request
+    Main_Process-&gt;&gt;Main_Process: Open file with system default
+    Main_Process--&gt;&gt;Electron_IPC: File open confirmation
+    Electron_IPC--&gt;&gt;React_Components: Update UI feedback
+    React_Components--&gt;&gt;User: Show file opened feedback
+
+    %% Folder Indexing Flow
+    Note over User,AI_Backend: Folder Indexing Flow
+    User-&gt;&gt;React_Components: Click "Index Folder"
+    React_Components-&gt;&gt;Electron_IPC: Request folder selection
+    Electron_IPC-&gt;&gt;Main_Process: Show native folder dialog
+    Main_Process--&gt;&gt;Electron_IPC: Return selected folder
+    Electron_IPC--&gt;&gt;React_Components: Folder path received
+    React_Components-&gt;&gt;App_State: Update folder state
+    
+    User-&gt;&gt;React_Components: Start indexing
+    React_Components-&gt;&gt;App_State: Set indexing state
+    React_Components-&gt;&gt;Electron_IPC: Send indexing request
+    Electron_IPC-&gt;&gt;Main_Process: Forward indexing request
+    Main_Process-&gt;&gt;Flask_API: HTTP POST /api/index
+    Flask_API-&gt;&gt;AI_Backend: Start background indexing
+    
+    loop Real-time Progress Updates
+        AI_Backend-&gt;&gt;Flask_API: Progress update
+        Flask_API-&gt;&gt;Main_Process: WebSocket progress event
+        Main_Process-&gt;&gt;Electron_IPC: Forward progress
+        Electron_IPC-&gt;&gt;React_Components: Update progress
+        React_Components-&gt;&gt;App_State: Update progress state
+        React_Components--&gt;&gt;User: Show progress bar
+    end
+    
+    AI_Backend--&gt;&gt;Flask_API: Indexing complete
+    Flask_API--&gt;&gt;Main_Process: Completion notification
+    Main_Process--&gt;&gt;Electron_IPC: Indexing done
+    Electron_IPC--&gt;&gt;React_Components: Completion received
+    React_Components-&gt;&gt;App_State: Set completion state
+    React_Components--&gt;&gt;User: Show completion notification
+
+    %% GitHub Integration Flow
+    Note over User,AI_Backend: GitHub Integration Flow
+    User-&gt;&gt;React_Components: Navigate to GitHub page
+    React_Components-&gt;&gt;App_State: Update route state
+    User-&gt;&gt;React_Components: Click "Connect GitHub"
+    React_Components-&gt;&gt;Electron_IPC: Start GitHub OAuth
+    Electron_IPC-&gt;&gt;Main_Process: Handle OAuth initiation
+    Main_Process-&gt;&gt;Flask_API: POST /api/github/auth/start
+    Flask_API--&gt;&gt;Main_Process: Device code &amp; verification URL
+    Main_Process--&gt;&gt;Electron_IPC: OAuth details
+    Electron_IPC--&gt;&gt;React_Components: Show device code
+    React_Components--&gt;&gt;User: Display code &amp; URL
+    
+    User-&gt;&gt;User: Complete OAuth in browser
+    
+    loop OAuth Polling
+        React_Components-&gt;&gt;Electron_IPC: Poll for token
+        Electron_IPC-&gt;&gt;Main_Process: Check OAuth status
+        Main_Process-&gt;&gt;Flask_API: POST /api/github/auth/poll
+        Flask_API--&gt;&gt;Main_Process: OAuth status
+        Main_Process--&gt;&gt;Electron_IPC: Status update
+        Electron_IPC--&gt;&gt;React_Components: Update status
+    end
+    
+    Flask_API--&gt;&gt;Main_Process: OAuth complete + token
+    Main_Process--&gt;&gt;Electron_IPC: Authentication success
+    Electron_IPC--&gt;&gt;React_Components: GitHub connected
+    React_Components-&gt;&gt;App_State: Update GitHub state
+    React_Components--&gt;&gt;User: Show connected status
+
+    %% Settings Management Flow
+    Note over User,AI_Backend: Settings Management Flow
+    User-&gt;&gt;React_Components: Navigate to Settings
+    React_Components-&gt;&gt;App_State: Update route state
+    React_Components-&gt;&gt;Electron_IPC: Load current settings
+    Electron_IPC-&gt;&gt;Main_Process: Get configuration
+    Main_Process-&gt;&gt;Flask_API: GET /api/config
+    Flask_API--&gt;&gt;Main_Process: Current configuration
+    Main_Process--&gt;&gt;Electron_IPC: Settings data
+    Electron_IPC--&gt;&gt;React_Components: Receive settings
+    React_Components-&gt;&gt;App_State: Update settings state
+    React_Components--&gt;&gt;User: Display settings interface
+    
+    User-&gt;&gt;React_Components: Modify settings
+    React_Components-&gt;&gt;App_State: Update settings state
+    User-&gt;&gt;React_Components: Save settings
+    React_Components-&gt;&gt;Electron_IPC: Send updated settings
+    Electron_IPC-&gt;&gt;Main_Process: Forward settings
+    Main_Process-&gt;&gt;Flask_API: POST /api/config
+    Flask_API--&gt;&gt;Main_Process: Settings saved
+    Main_Process--&gt;&gt;Electron_IPC: Save confirmation
+    Electron_IPC--&gt;&gt;React_Components: Settings updated
+    React_Components-&gt;&gt;App_State: Confirm settings state
+    React_Components--&gt;&gt;User: Show save confirmation
+
+    %% Error Handling Flow
+    Note over User,AI_Backend: Error Handling Flow
+    alt API Error Occurs
+        Flask_API--&gt;&gt;Main_Process: HTTP error response
+        Main_Process--&gt;&gt;Electron_IPC: Error details
+        Electron_IPC--&gt;&gt;React_Components: Error received
+        React_Components-&gt;&gt;App_State: Set error state
+        React_Components--&gt;&gt;User: Display error notification
+        User-&gt;&gt;React_Components: Retry action
+        React_Components-&gt;&gt;App_State: Clear error state
+        React_Components-&gt;&gt;Electron_IPC: Retry request
+    else Network Error
+        Electron_IPC--&gt;&gt;React_Components: Network timeout
+        React_Components-&gt;&gt;App_State: Set offline state
+        React_Components--&gt;&gt;User: Show offline indicator
+    else Model Loading Error
+        AI_Backend--&gt;&gt;Flask_API: Model load failure
+        Flask_API--&gt;&gt;Main_Process: Critical error
+        Main_Process--&gt;&gt;Electron_IPC: Show error dialog
+        Electron_IPC--&gt;&gt;React_Components: Critical error
+        React_Components--&gt;&gt;User: Show restart prompt
+    end
+      </pre>
+    </div>
+  </div>
+
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    const userConfig = {
+      startOnLoad: true,
+      theme: "default",
+      themeVariables: {
+        fontSize: "20px",
+        lineHeight: "24px"
+      }
+    };
+    mermaid.initialize(userConfig);
+
+    const zoomEl = document.getElementById('zoom');
+    const stage = document.getElementById('stage');
+    const wrap = document.getElementById('wrap');
+    const btnIn = document.getElementById('zoomIn');
+    const btnOut = document.getElementById('zoomOut');
+    const btnReset = document.getElementById('reset');
+
+    let svgEl = null;
+    let baseWidth = 0, baseHeight = 0;
+
+    function applyZoom(z) {
+      const scale = typeof z === 'string' ? parseFloat(z) : z;
+      if (svgEl) {
+        svgEl.style.transformOrigin = '0 0';
+        svgEl.style.transform = `scale(${scale})`;
+        if (baseWidth && baseHeight) {
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+        }
+      } else {
+        // Fallback if SVG not yet found: scale the stage
+        stage.style.transformOrigin = '0 0';
+        stage.style.transform = `scale(${scale})`;
+      }
+      zoomEl.value = scale.toFixed(2);
+    }
+
+    zoomEl.addEventListener('input', () => applyZoom(zoomEl.value));
+
+    btnIn.addEventListener('click', () => {
+      const z = Math.min(4, (parseFloat(zoomEl.value) + 0.1));
+      applyZoom(z);
+    });
+    btnOut.addEventListener('click', () => {
+      const z = Math.max(0.25, (parseFloat(zoomEl.value) - 0.1));
+      applyZoom(z);
+    });
+    btnReset.addEventListener('click', () => applyZoom(1.2));
+
+    // Ctrl/Cmd + wheel zoom
+    wrap.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const z = Math.min(4, Math.max(0.25, parseFloat(zoomEl.value) + delta));
+      applyZoom(z);
+    }, {passive:false});
+
+    // Auto-fit width on load (approx)
+    window.addEventListener('load', () => {
+      // Give Mermaid a moment to render
+      setTimeout(() => {
+        try {
+          svgEl = stage.querySelector('svg');
+          if (!svgEl) return;
+          const bbox = svgEl.getBBox();
+          baseWidth = Math.max(1, bbox.width);
+          baseHeight = Math.max(1, bbox.height);
+          const target = wrap.clientWidth - 32; // padding margin
+          let z = target / baseWidth;
+          z = Math.max(0.25, Math.min(2.5, z));
+          applyZoom(z);
+        } catch (e) {}
+      }, 250);
+    });
+
+    // Drag to pan
+    let isPanning = false;
+    let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left-click only
+      isPanning = true;
+      wrap.classList.add('panning');
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      startScrollLeft = wrap.scrollLeft;
+      startScrollTop = wrap.scrollTop;
+    });
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - wrap.offsetLeft;
+      const y = e.pageY - wrap.offsetTop;
+      const dx = x - startX;
+      const dy = y - startY;
+      wrap.scrollLeft = startScrollLeft - dx;
+      wrap.scrollTop = startScrollTop - dy;
+    });
+  </script>
+</body>
+</html>

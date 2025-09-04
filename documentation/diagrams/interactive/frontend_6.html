@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>frontend.md – diagram 6/8</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    background: rgba(0,0,0,.03);
+    z-index: 10;
+  }
+  .toolbar input[type="range"] {
+    width: 250px;
+  }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 52px);
+    overflow: auto;
+    padding: 16px;
+    cursor: grab;
+  }
+  .stage {
+    transform-origin: 0 0;
+    display: inline-block;
+  }
+  /* make SVG selectable and crisp */
+  svg {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+  .hint {
+    opacity: .7;
+    font-size: 12px;
+    margin-left: auto;
+  }
+  button {
+    cursor: pointer;
+  }
+  .panning {
+    cursor: grabbing !important;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>frontend.md – diagram 6/8</strong>
+    <label style="margin-left:1rem;">Zoom
+      <input id="zoom" type="range" min="0.25" max="4" step="0.05" value="1.2">
+    </label>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <button id="reset">Reset</button>
+    <span class="hint">Tip: Ctrl/Cmd + mouse wheel zooms · Drag to pan</span>
+  </div>
+  <div class="stage-wrap" id="wrap">
+    <div class="stage" id="stage">
+      <pre class="mermaid">
+graph TD
+    subgraph "Search Interface"
+        A[SearchBar Component] --&gt; B[Query Input Field]
+        A --&gt; C[Search Button]
+        A --&gt; D[Granular Toggle]
+        A --&gt; E[Loading State]
+    end
+
+    subgraph "Results Display"
+        F[SearchResults Container] --&gt; G[Results List]
+        F --&gt; H[Empty State]
+        F --&gt; I[Loading State]
+        
+        G --&gt; J[FileResult Component]
+        J --&gt; K[File Header&lt;br/&gt;Name, type, confidence]
+        J --&gt; L[Matches List&lt;br/&gt;Lines or chunks]
+        J --&gt; M[Action Buttons&lt;br/&gt;Reindex, granular toggle]
+    end
+
+    subgraph "Progress Tracking"
+        N[IndexingStatus Component] --&gt; O[Progress Display]
+        N --&gt; P[Status Message]
+        N --&gt; Q[File Counter]
+        N --&gt; R[Select Folders Button]
+        
+        O --&gt; S[ProgressBar Component]
+        S --&gt; T[Visual Progress Bar]
+        S --&gt; U[Percentage Display]
+    end
+
+    subgraph "Custom UI Elements"
+        V[GoldButton Component] --&gt; W[Styled Button&lt;br/&gt;Gold theme]
+        X[GoldProgress Component] --&gt; Y[Custom Progress&lt;br/&gt;Gold theme]
+        
+        Z[Hawk Animation System] --&gt; AA[HawkProvider&lt;br/&gt;Context provider]
+        Z --&gt; BB[HawkActor&lt;br/&gt;Animated icon]
+        Z --&gt; CC[HawkTrail&lt;br/&gt;Trail effects]
+        Z --&gt; DD[useHawk&lt;br/&gt;Animation hook]
+    end
+      </pre>
+    </div>
+  </div>
+
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    const userConfig = {
+      startOnLoad: true,
+      theme: "default",
+      themeVariables: {
+        fontSize: "20px",
+        lineHeight: "24px"
+      }
+    };
+    mermaid.initialize(userConfig);
+
+    const zoomEl = document.getElementById('zoom');
+    const stage = document.getElementById('stage');
+    const wrap = document.getElementById('wrap');
+    const btnIn = document.getElementById('zoomIn');
+    const btnOut = document.getElementById('zoomOut');
+    const btnReset = document.getElementById('reset');
+
+    let svgEl = null;
+    let baseWidth = 0, baseHeight = 0;
+
+    function applyZoom(z) {
+      const scale = typeof z === 'string' ? parseFloat(z) : z;
+      if (svgEl) {
+        svgEl.style.transformOrigin = '0 0';
+        svgEl.style.transform = `scale(${scale})`;
+        if (baseWidth && baseHeight) {
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+        }
+      } else {
+        // Fallback if SVG not yet found: scale the stage
+        stage.style.transformOrigin = '0 0';
+        stage.style.transform = `scale(${scale})`;
+      }
+      zoomEl.value = scale.toFixed(2);
+    }
+
+    zoomEl.addEventListener('input', () => applyZoom(zoomEl.value));
+
+    btnIn.addEventListener('click', () => {
+      const z = Math.min(4, (parseFloat(zoomEl.value) + 0.1));
+      applyZoom(z);
+    });
+    btnOut.addEventListener('click', () => {
+      const z = Math.max(0.25, (parseFloat(zoomEl.value) - 0.1));
+      applyZoom(z);
+    });
+    btnReset.addEventListener('click', () => applyZoom(1.2));
+
+    // Ctrl/Cmd + wheel zoom
+    wrap.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const z = Math.min(4, Math.max(0.25, parseFloat(zoomEl.value) + delta));
+      applyZoom(z);
+    }, {passive:false});
+
+    // Auto-fit width on load (approx)
+    window.addEventListener('load', () => {
+      // Give Mermaid a moment to render
+      setTimeout(() => {
+        try {
+          svgEl = stage.querySelector('svg');
+          if (!svgEl) return;
+          const bbox = svgEl.getBBox();
+          baseWidth = Math.max(1, bbox.width);
+          baseHeight = Math.max(1, bbox.height);
+          const target = wrap.clientWidth - 32; // padding margin
+          let z = target / baseWidth;
+          z = Math.max(0.25, Math.min(2.5, z));
+          applyZoom(z);
+        } catch (e) {}
+      }, 250);
+    });
+
+    // Drag to pan
+    let isPanning = false;
+    let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left-click only
+      isPanning = true;
+      wrap.classList.add('panning');
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      startScrollLeft = wrap.scrollLeft;
+      startScrollTop = wrap.scrollTop;
+    });
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - wrap.offsetLeft;
+      const y = e.pageY - wrap.offsetTop;
+      const dx = x - startX;
+      const dy = y - startY;
+      wrap.scrollLeft = startScrollLeft - dx;
+      wrap.scrollTop = startScrollTop - dy;
+    });
+  </script>
+</body>
+</html>
