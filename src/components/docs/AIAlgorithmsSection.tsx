@@ -16,8 +16,7 @@ import {
   Activity,
   Search,
   ChevronRight,
-  Info,
-  Calculator
+  Info
 } from 'lucide-react'
 import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 
@@ -29,7 +28,6 @@ import GistIndexingDemo from '../demos/GistIndexingDemo'
 import PinpointIndexingDemo from '../demos/PinpointIndexingDemo'
 import GistSearchDemo from '../demos/GistSearchDemo'
 import PinpointSearchDemo from '../demos/PinpointSearchDemo'
-import HolisticScoringDemo from '../demos/HolisticScoringDemo'
 
 const AIAlgorithmsSection: React.FC = () => {
   const isAnimated = useScrollAnimation()
@@ -150,34 +148,6 @@ const AIAlgorithmsSection: React.FC = () => {
             file_scores[file] = chunk.similarity
           else:
             file_scores[file] = max(file_scores[file], chunk.similarity)
-      `
-    },
-    {
-      id: 'scoring',
-      title: 'Holistic Scoring System',
-      subtitle: 'Multi-Component Relevance Calculation',
-      icon: Calculator,
-      color: 'orange',
-      description: 'Weighted combination of similarity metrics for comprehensive relevance scoring.',
-      complexity: 'O(k)',
-      model: 'Ensemble scoring approach',
-      component: HolisticScoringDemo,
-      technicalSpecs: {
-        'Components': '4 scoring dimensions',
-        's_max Weight': '0.45 (bullseye chunk)',
-        's_topk Weight': '0.25 (mean top-k)',
-        's_centroid Weight': '0.20 (file similarity)',
-        's_bm25 Weight': '0.10 (term matching)'
-      },
-      mathFormula: `
-        // Component Calculations
-        s_max = max(chunk_similarities)
-        s_topk = mean(sorted(similarities, reverse=True)[:k])
-        s_centroid = cosine_sim(query, file_centroid)
-        s_bm25 = bm25_score(query_terms, file_top_terms)
-        
-        // Final Score
-        final = 0.45*s_max + 0.25*s_topk + 0.20*s_centroid + 0.10*s_bm25
       `
     },
     {

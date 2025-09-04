@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, RotateCcw, Search } from 'lucide-react';
+import { Play, RotateCcw } from 'lucide-react';
 
 interface SearchChunk {
   id: string;
@@ -22,45 +22,45 @@ const PinpointSearchDemo: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('React component state management');
+  const [searchQuery] = useState('neural network training algorithms');
   const [similarityThreshold, setSimilarityThreshold] = useState(0.75);
   const [searchedCount, setSearchedCount] = useState(0);
   const [matchedCount, setMatchedCount] = useState(0);
 
   const [searchFiles] = useState<SearchFile[]>([
     {
-      name: 'components.tsx',
+      name: 'neural_networks.py',
       chunks: [
-        { id: '1', file: 'components.tsx', content: 'useState hook for state', position: { x: 100, y: 100 }, similarity: 0, isSearching: false, isMatched: false },
-        { id: '2', file: 'components.tsx', content: 'component lifecycle methods', position: { x: 150, y: 150 }, similarity: 0, isSearching: false, isMatched: false },
-        { id: '3', file: 'components.tsx', content: 'props and state management', position: { x: 200, y: 120 }, similarity: 0, isSearching: false, isMatched: false }
+        { id: '1', file: 'neural_networks.py', content: 'Neural network training with backpropagation', position: { x: 100, y: 100 }, similarity: 0, isSearching: false, isMatched: false },
+        { id: '2', file: 'neural_networks.py', content: 'Training algorithms for deep learning', position: { x: 150, y: 150 }, similarity: 0, isSearching: false, isMatched: false },
+        { id: '3', file: 'neural_networks.py', content: 'Network architecture design patterns', position: { x: 200, y: 120 }, similarity: 0, isSearching: false, isMatched: false }
       ],
       bestSimilarity: 0,
       rank: null
     },
     {
-      name: 'hooks.js',
+      name: 'deep_learning.py',
       chunks: [
-        { id: '4', file: 'hooks.js', content: 'custom hooks implementation', position: { x: 300, y: 180 }, similarity: 0, isSearching: false, isMatched: false },
-        { id: '5', file: 'hooks.js', content: 'useEffect for side effects', position: { x: 350, y: 140 }, similarity: 0, isSearching: false, isMatched: false }
+        { id: '4', file: 'deep_learning.py', content: 'Deep neural network training loops', position: { x: 300, y: 180 }, similarity: 0, isSearching: false, isMatched: false },
+        { id: '5', file: 'deep_learning.py', content: 'Training optimization algorithms', position: { x: 350, y: 140 }, similarity: 0, isSearching: false, isMatched: false }
       ],
       bestSimilarity: 0,
       rank: null
     },
     {
-      name: 'utils.py',
+      name: 'data_utils.py',
       chunks: [
-        { id: '6', file: 'utils.py', content: 'utility functions for data', position: { x: 120, y: 250 }, similarity: 0, isSearching: false, isMatched: false },
-        { id: '7', file: 'utils.py', content: 'helper methods and constants', position: { x: 180, y: 280 }, similarity: 0, isSearching: false, isMatched: false }
+        { id: '6', file: 'data_utils.py', content: 'Data preprocessing utilities', position: { x: 120, y: 250 }, similarity: 0, isSearching: false, isMatched: false },
+        { id: '7', file: 'data_utils.py', content: 'Dataset loading helper functions', position: { x: 180, y: 280 }, similarity: 0, isSearching: false, isMatched: false }
       ],
       bestSimilarity: 0,
       rank: null
     },
     {
-      name: 'state.tsx',
+      name: 'project_docs.md',
       chunks: [
-        { id: '8', file: 'state.tsx', content: 'React state management patterns', position: { x: 280, y: 250 }, similarity: 0, isSearching: false, isMatched: false },
-        { id: '9', file: 'state.tsx', content: 'global state with context', position: { x: 330, y: 280 }, similarity: 0, isSearching: false, isMatched: false }
+        { id: '8', file: 'project_docs.md', content: 'Project documentation and setup', position: { x: 280, y: 250 }, similarity: 0, isSearching: false, isMatched: false },
+        { id: '9', file: 'project_docs.md', content: 'Installation and configuration guide', position: { x: 330, y: 280 }, similarity: 0, isSearching: false, isMatched: false }
       ],
       bestSimilarity: 0,
       rank: null
@@ -69,16 +69,21 @@ const PinpointSearchDemo: React.FC = () => {
 
   const [queryEmbedding] = useState({ x: 250, y: 50 });
 
-  const calculateSimilarity = (chunkContent: string, query: string): number => {
-    const queryWords = query.toLowerCase().split(' ');
-    const chunkWords = chunkContent.toLowerCase().split(' ');
-    const intersection = queryWords.filter(word => chunkWords.some(cWord => cWord.includes(word) || word.includes(cWord)));
-    const union = [...new Set([...queryWords, ...chunkWords])];
-    const jaccard = intersection.length / union.length;
+  const calculateSimilarity = (chunkContent: string): number => {
+    // Realistic predefined similarities for "neural network training algorithms"
+    const similarities: { [key: string]: number } = {
+      'Neural network training with backpropagation': 0.94,
+      'Training algorithms for deep learning': 0.89,
+      'Network architecture design patterns': 0.72,
+      'Deep neural network training loops': 0.91,
+      'Training optimization algorithms': 0.87,
+      'Data preprocessing utilities': 0.23,
+      'Dataset loading helper functions': 0.18,
+      'Project documentation and setup': 0.12,
+      'Installation and configuration guide': 0.08
+    };
     
-    // Add some realistic variation
-    const variation = (Math.random() - 0.5) * 0.3;
-    return Math.max(0, Math.min(1, jaccard + variation));
+    return similarities[chunkContent] || 0.15;
   };
 
   const drawCanvas = () => {
@@ -198,7 +203,7 @@ const PinpointSearchDemo: React.FC = () => {
         drawCanvas();
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        const similarity = calculateSimilarity(chunk.content, searchQuery);
+        const similarity = calculateSimilarity(chunk.content);
         chunk.similarity = similarity;
         chunk.isSearching = false;
         
@@ -301,16 +306,9 @@ const PinpointSearchDemo: React.FC = () => {
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Search Query</label>
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <textarea
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 p-2 bg-gray-800 border border-gray-600 rounded text-sm resize-none"
-                  rows={2}
-                  disabled={isRunning}
-                />
+              <label className="block text-sm font-medium mb-2">Demo Query</label>
+              <div className="p-3 bg-gray-800 border border-gray-600 rounded">
+                <div className="font-mono text-amber-400">"{searchQuery}"</div>
               </div>
             </div>
 
@@ -337,7 +335,7 @@ const PinpointSearchDemo: React.FC = () => {
               disabled={isRunning}
               className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded transition-colors"
             >
-              {isRunning ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              <Play className="w-4 h-4" />
               {isRunning ? 'Running...' : 'Start Search'}
             </button>
             <button

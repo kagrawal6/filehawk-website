@@ -45,7 +45,7 @@ interface GistSearchDemoProps {
 }
 
 const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
-  const [query, setQuery] = useState('')
+  const [query] = useState('machine learning algorithms neural networks')
   const [isSearching, setIsSearching] = useState(false)
   const [searchStage, setSearchStage] = useState(0)
   const [queryEmbedding, setQueryEmbedding] = useState<number[]>([])
@@ -59,79 +59,71 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
   })
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // Mock file database
+  // Mock file database with realistic scoring for "machine learning algorithms neural networks"
   const mockDatabase: MockFile[] = [
     {
       id: 'file1',
       name: 'machine_learning_guide.md',
       path: '/docs/ai/machine_learning_guide.md',
-      centroid: [0.8, 0.2, 0.9, 0.7, 0.5],
+      centroid: [0.95, 0.88, 0.92, 0.85, 0.78], // Very high ML similarity
       chunks: [
-        { id: 'chunk1-1', text: 'Machine learning algorithms are powerful tools for pattern recognition and data analysis.', embedding: [0.9, 0.1, 0.8, 0.6, 0.4] },
-        { id: 'chunk1-2', text: 'Neural networks represent a subset of machine learning that mimics brain structure.', embedding: [0.7, 0.3, 0.9, 0.8, 0.2] },
-        { id: 'chunk1-3', text: 'Decision trees and random forests are interpretable ML algorithms.', embedding: [0.6, 0.4, 0.7, 0.9, 0.3] }
+        { id: 'chunk1-1', text: 'Machine learning algorithms are powerful tools for pattern recognition and data analysis.', embedding: [0.98, 0.85, 0.89, 0.82, 0.75] },
+        { id: 'chunk1-2', text: 'Neural networks represent a subset of machine learning that mimics brain structure.', embedding: [0.94, 0.91, 0.96, 0.88, 0.81] },
+        { id: 'chunk1-3', text: 'Decision trees and random forests are interpretable ML algorithms.', embedding: [0.87, 0.79, 0.84, 0.76, 0.69] }
       ]
     },
     {
       id: 'file2',
       name: 'neural_networks.py',
       path: '/src/ai/neural_networks.py',
-      centroid: [0.9, 0.1, 0.8, 0.9, 0.3],
+      centroid: [0.91, 0.94, 0.87, 0.89, 0.83], // High neural network similarity
       chunks: [
-        { id: 'chunk2-1', text: 'def create_neural_network(layers, activation="relu"):', embedding: [0.8, 0.2, 0.9, 0.7, 0.1] },
-        { id: 'chunk2-2', text: 'Neural network training involves backpropagation and gradient descent.', embedding: [0.9, 0.1, 0.8, 0.9, 0.2] }
+        { id: 'chunk2-1', text: 'def create_neural_network(layers, activation="relu"):', embedding: [0.89, 0.96, 0.84, 0.87, 0.80] },
+        { id: 'chunk2-2', text: 'Neural network training involves backpropagation and gradient descent.', embedding: [0.93, 0.92, 0.90, 0.91, 0.86] }
       ]
     },
     {
       id: 'file3',
-      name: 'project_management.md',
-      path: '/docs/business/project_management.md',
-      centroid: [0.2, 0.8, 0.3, 0.4, 0.9],
+      name: 'deep_learning_models.py',
+      path: '/src/ai/deep_learning_models.py',
+      centroid: [0.88, 0.90, 0.85, 0.86, 0.79], // High deep learning similarity
       chunks: [
-        { id: 'chunk3-1', text: 'Agile methodology emphasizes iterative development and team collaboration.', embedding: [0.1, 0.9, 0.2, 0.3, 0.8] },
-        { id: 'chunk3-2', text: 'Project management involves planning, executing, and monitoring tasks.', embedding: [0.3, 0.7, 0.4, 0.5, 0.9] }
+        { id: 'chunk3-1', text: 'Convolutional neural networks excel at image recognition tasks.', embedding: [0.86, 0.88, 0.83, 0.84, 0.77] },
+        { id: 'chunk3-2', text: 'Recurrent neural networks process sequential data like text and time series.', embedding: [0.90, 0.92, 0.87, 0.88, 0.81] }
       ]
     },
     {
       id: 'file4',
       name: 'algorithms_overview.md',
       path: '/docs/technical/algorithms_overview.md',
-      centroid: [0.7, 0.4, 0.8, 0.8, 0.4],
+      centroid: [0.65, 0.45, 0.58, 0.52, 0.41], // Moderate algorithm similarity
       chunks: [
-        { id: 'chunk4-1', text: 'Sorting algorithms like quicksort and mergesort are fundamental CS concepts.', embedding: [0.5, 0.6, 0.7, 0.8, 0.3] },
-        { id: 'chunk4-2', text: 'Graph algorithms including Dijkstra and A* are used in pathfinding.', embedding: [0.4, 0.5, 0.6, 0.9, 0.4] }
+        { id: 'chunk4-1', text: 'Sorting algorithms like quicksort and mergesort are fundamental CS concepts.', embedding: [0.62, 0.42, 0.55, 0.49, 0.38] },
+        { id: 'chunk4-2', text: 'Graph algorithms including Dijkstra and A* are used in pathfinding.', embedding: [0.68, 0.48, 0.61, 0.55, 0.44] }
       ]
     },
     {
       id: 'file5',
-      name: 'database_design.sql',
-      path: '/src/db/database_design.sql',
-      centroid: [0.3, 0.6, 0.4, 0.5, 0.8],
+      name: 'project_management.md',
+      path: '/docs/business/project_management.md',
+      centroid: [0.25, 0.18, 0.22, 0.19, 0.15], // Very low ML similarity
       chunks: [
-        { id: 'chunk5-1', text: 'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100));', embedding: [0.2, 0.8, 0.3, 0.4, 0.9] },
-        { id: 'chunk5-2', text: 'Database normalization reduces data redundancy and improves integrity.', embedding: [0.4, 0.7, 0.5, 0.6, 0.8] }
+        { id: 'chunk5-1', text: 'Agile methodology emphasizes iterative development and team collaboration.', embedding: [0.23, 0.16, 0.20, 0.17, 0.13] },
+        { id: 'chunk5-2', text: 'Project management involves planning, executing, and monitoring tasks.', embedding: [0.27, 0.20, 0.24, 0.21, 0.17] }
       ]
     },
     {
       id: 'file6',
-      name: 'web_development.html',
-      path: '/web/frontend/web_development.html',
-      centroid: [0.4, 0.5, 0.6, 0.3, 0.7],
+      name: 'database_design.sql',
+      path: '/src/db/database_design.sql',
+      centroid: [0.15, 0.12, 0.18, 0.14, 0.10], // Very low ML similarity
       chunks: [
-        { id: 'chunk6-1', text: '<div class="container">Web development involves HTML, CSS, and JavaScript.</div>', embedding: [0.3, 0.4, 0.8, 0.2, 0.6] },
-        { id: 'chunk6-2', text: 'Responsive design ensures websites work across different device sizes.', embedding: [0.5, 0.6, 0.4, 0.4, 0.8] }
+        { id: 'chunk6-1', text: 'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100));', embedding: [0.12, 0.09, 0.15, 0.11, 0.07] },
+        { id: 'chunk6-2', text: 'Database normalization reduces data redundancy and improves integrity.', embedding: [0.18, 0.15, 0.21, 0.17, 0.13] }
       ]
     }
   ]
 
-  // Sample queries
-  const sampleQueries = [
-    'machine learning algorithms',
-    'neural networks training',
-    'project management agile',
-    'sorting algorithms quicksort',
-    'database design normalization'
-  ]
 
   // Calculate cosine similarity
   const cosineSimilarity = (a: number[], b: number[]): number => {
@@ -261,7 +253,6 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
   const resetSearch = () => {
     setIsSearching(false)
     setSearchStage(0)
-    setQuery('')
     setQueryEmbedding([])
     setCandidateFiles([])
     setFinalResults([])
@@ -437,18 +428,18 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
 
       {/* Right Panel - Visualization */}
       <div className="lg:col-span-2 space-y-6">
-        {/* Query Input */}
+        {/* Search Demo Controls */}
         <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <Search className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Search Query</h4>
+              <h4 className="font-semibold text-white">Demo Query</h4>
             </div>
             
             <div className="flex gap-2">
               <button
                 onClick={performSearch}
-                disabled={isSearching || !query.trim()}
+                disabled={isSearching}
                 className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg flex items-center transition-colors"
               >
                 {isSearching ? (
@@ -459,7 +450,7 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
                 ) : (
                   <>
                     <Play className="h-4 w-4 mr-2" />
-                    Search
+                    Run Demo
                   </>
                 )}
               </button>
@@ -474,30 +465,9 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
             </div>
           </div>
 
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            disabled={isSearching}
-            className="w-full p-3 rounded-lg border mb-4"
-            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', color: '#ffffff' }}
-            placeholder="Enter your search query..."
-            onKeyPress={(e) => e.key === 'Enter' && performSearch()}
-          />
-
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm text-gray-400">Try:</span>
-            {sampleQueries.map(sampleQuery => (
-              <button
-                key={sampleQuery}
-                onClick={() => setQuery(sampleQuery)}
-                disabled={isSearching}
-                className="px-3 py-1 text-sm border rounded-full hover:bg-gray-700 transition-colors disabled:opacity-50"
-                style={{ borderColor: '#404040', color: '#d1d5db' }}
-              >
-                {sampleQuery}
-              </button>
-            ))}
+          <div className="p-3 rounded-lg border bg-gray-800" style={{ borderColor: '#404040' }}>
+            <div className="text-sm text-gray-400 mb-1">Search Query:</div>
+            <div className="font-mono text-amber-400 text-lg">"{query}"</div>
           </div>
         </div>
 
