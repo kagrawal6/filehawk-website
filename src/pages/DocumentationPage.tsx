@@ -3,18 +3,9 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
   Book,
-  Layers,
   Zap,
   Brain,
-  Code,
   GitBranch,
-  Shield,
-  Gauge,
-  Database,
-  Settings,
-  Users,
-  ScrollText,
-  Activity,
   Menu,
   X,
   ChevronRight,
@@ -30,19 +21,9 @@ import { HawkProvider } from '../components/ui/HawkProvider'
 import Breadcrumbs from '../components/ui/Breadcrumbs'
 import StickyTableOfContents from '../components/ui/StickyTableOfContents'
 
-// Import documentation section components
-import OverviewSection from '../components/docs/RevisedOverviewSection'
-import FeaturesSection from '../components/docs/RevisedFeaturesSection'
-import ArchitectureSection from '../components/docs/RevisedArchitectureSection'
-import AlgorithmsSection from '../components/docs/RevisedAlgorithmsSection'
-import APISection from '../components/docs/APISection'
-import DeploymentSection from '../components/docs/DeploymentSection'
-import TestingSection from '../components/docs/TestingSection'
-import GitHubIntegrationSection from '../components/docs/GitHubIntegrationSection'
-import SecuritySection from '../components/docs/SecuritySection'
-import PerformanceSection from '../components/docs/PerformanceSection'
-import DevelopmentSection from '../components/docs/DevelopmentSection'
-import ChangelogSection from '../components/docs/ChangelogSection'
+// Import new documentation section components
+import FeatureCapabilitiesSection from '../components/docs/FeatureCapabilitiesSection'
+import AIAlgorithmsSection from '../components/docs/AIAlgorithmsSection'
 
 interface DocSection {
   id: string
@@ -57,116 +38,24 @@ interface DocSection {
 
 const docSections: DocSection[] = [
   {
-    id: 'overview',
-    title: 'System Overview',
-    description: 'Enterprise AI-powered semantic search platform with dual-model intelligence',
-    icon: Layers,
-    path: '/documentation/overview',
-    component: OverviewSection,
-    featured: true,
-    category: 'getting-started'
-  },
-  {
     id: 'features',
     title: 'Features & Capabilities',
-    description: 'Semantic search, dual-chunking modes, real-time monitoring, GitHub integration',
+    description: 'Comprehensive overview of FileHawk\'s semantic search capabilities, dual-mode search, GitHub integration, and intelligent file management',
     icon: Zap,
     path: '/documentation/features',
-    component: FeaturesSection,
+    component: FeatureCapabilitiesSection,
     featured: true,
     category: 'core'
   },
   {
     id: 'algorithms',
-    title: 'AI Algorithms & ML',
-    description: 'Gist ranking, confidence scoring, dual-chunking strategies, embedding models',
+    title: 'AI Algorithms & Math',
+    description: 'Deep dive into FileHawk\'s AI algorithms with interactive visualizations, mathematical formulas, and technical implementations',
     icon: Brain,
     path: '/documentation/algorithms',
-    component: AlgorithmsSection,
+    component: AIAlgorithmsSection,
     featured: true,
     category: 'core'
-  },
-  {
-    id: 'architecture',
-    title: 'Architecture & Design',
-    description: 'System architecture, AI/ML systems, performance characteristics, scalability',
-    icon: Database,
-    path: '/documentation/architecture',
-    component: ArchitectureSection,
-    featured: true,
-    category: 'core'
-  },
-  {
-    id: 'api',
-    title: 'API Reference',
-    description: 'Complete REST API documentation with search, indexing, and GitHub endpoints',
-    icon: Code,
-    path: '/documentation/api',
-    component: APISection,
-    category: 'reference'
-  },
-  {
-    id: 'deployment',
-    title: 'Installation & Deployment',
-    description: 'Installation guides, configuration options, monitoring, and deployment patterns',
-    icon: Settings,
-    path: '/documentation/deployment',
-    component: DeploymentSection,
-    category: 'getting-started'
-  },
-  {
-    id: 'github',
-    title: 'GitHub Integration',
-    description: 'OAuth device flow, repository management, branch intelligence, real-time sync',
-    icon: GitBranch,
-    path: '/documentation/github',
-    component: GitHubIntegrationSection,
-    category: 'advanced'
-  },
-  {
-    id: 'testing',
-    title: 'Testing & Validation',
-    description: 'Comprehensive testing framework, semantic validation, benchmarking suites',
-    icon: ScrollText,
-    path: '/documentation/testing',
-    component: TestingSection,
-    category: 'advanced'
-  },
-  {
-    id: 'performance',
-    title: 'Performance & Metrics',
-    description: 'Enterprise-scale performance, optimization strategies, monitoring dashboards',
-    icon: Gauge,
-    path: '/documentation/performance',
-    component: PerformanceSection,
-    category: 'advanced'
-  },
-  {
-    id: 'security',
-    title: 'Security & Privacy',
-    description: 'Local-first architecture, data privacy principles, security implementation',
-    icon: Shield,
-    path: '/documentation/security',
-    component: SecuritySection,
-    category: 'advanced'
-  },
-  {
-    id: 'development',
-    title: 'Developer Guide',
-    description: 'Development environment, contribution guidelines, testing frameworks',
-    icon: Users,
-    path: '/documentation/development',
-    component: DevelopmentSection,
-    category: 'reference'
-  },
-  {
-    id: 'changelog',
-    title: 'Changelog',
-    description: 'Version history, release notes, feature evolution, migration guides',
-    icon: Activity,
-    path: '/documentation/changelog',
-    component: ChangelogSection,
-    category: 'reference'
   }
 ]
 
@@ -235,53 +124,38 @@ const DocumentationPage: React.FC = () => {
               </button>
             </div>
             
-            <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
-              {/* All Documentation Sections */}
-              {(['getting-started', 'core', 'advanced', 'reference'] as const).map(category => {
-                const categoryTitle = {
-                  'getting-started': 'GETTING STARTED',
-                  'core': 'CORE FEATURES',
-                  'advanced': 'ADVANCED TOPICS',
-                  'reference': 'REFERENCE'
-                }[category]
-
-                const categorySections = docSections.filter(s => s.category === category)
-
-                return (
-                  <div key={category}>
-                    <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
-                      {categoryTitle}
-                    </h3>
-                    <div className="space-y-1">
-                      {categorySections.map((section) => (
-                        <Link
-                          key={section.id}
-                          to={section.path}
-                          className={`
-                            flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 group
-                            ${currentSection.id === section.id 
-                              ? 'bg-gradient-to-r from-brand-gold-500/20 to-transparent text-brand-gold-300 border-r-2 border-brand-gold-500' 
-                              : 'hover:bg-gray-700/50'
-                            }
-                          `}
-                          style={{ color: currentSection.id === section.id ? 'var(--accent-solid)' : 'var(--fg-secondary)' }}
-                        >
-                          <section.icon className="h-4 w-4 mr-3 group-hover:text-brand-gold-400 transition-colors" />
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium truncate">{section.title}</div>
-                            {!section.featured && (
-                              <div className="text-xs mt-1 opacity-75 truncate">
-                                {section.description.split(',')[0]}
-                              </div>
-                            )}
-                          </div>
-                          <ChevronRight className="h-3 w-3 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )
-              })}
+            <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto">
+              {/* Documentation Sections */}
+              <div>
+                <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
+                  TECHNICAL DOCUMENTATION
+                </h3>
+                <div className="space-y-2">
+                  {docSections.map((section) => (
+                    <Link
+                      key={section.id}
+                      to={section.path}
+                      className={`
+                        flex items-center px-3 py-3 text-sm rounded-lg transition-all duration-200 group
+                        ${currentSection.id === section.id 
+                          ? 'bg-gradient-to-r from-brand-gold-500/20 to-transparent text-brand-gold-300 border-r-2 border-brand-gold-500' 
+                          : 'hover:bg-gray-700/50'
+                        }
+                      `}
+                      style={{ color: currentSection.id === section.id ? 'var(--accent-solid)' : 'var(--fg-secondary)' }}
+                    >
+                      <section.icon className="h-5 w-5 mr-3 group-hover:text-brand-gold-400 transition-colors" />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium mb-1">{section.title}</div>
+                        <div className="text-xs opacity-75 leading-relaxed">
+                          {section.description}
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
 
               {/* External Links */}
               <div>
@@ -414,9 +288,9 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         </h1>
         
         <p className="text-xl leading-relaxed max-w-4xl mx-auto mb-8" style={{ color: 'var(--fg-secondary)' }}>
-          Comprehensive technical documentation for the AI-powered semantic search platform. 
-          Explore our architecture, algorithms, APIs, and deployment guides with 
-          <strong> enhanced navigation, interactive diagrams, and progressive disclosure</strong> for better understanding.
+          Comprehensive technical documentation for FileHawk's AI-powered semantic search platform. 
+          Explore our <strong>Features & Capabilities</strong> for business insights and <strong>AI Algorithms & Math</strong> for deep technical understanding with 
+          <strong> interactive visualizations, algorithm playgrounds, and mathematical demonstrations</strong>.
         </p>
         
         {/* Key Metrics */}
