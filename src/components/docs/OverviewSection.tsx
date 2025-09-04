@@ -414,20 +414,290 @@ const OverviewSection: React.FC = () => {
         </div>
       </motion.section>
 
+      {/* Enterprise Capabilities */}
+      <motion.section 
+        className="mb-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-12" style={{ color: 'var(--fg-primary)' }}>
+          Enterprise-Grade Capabilities
+        </h2>
+        
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Current Capabilities */}
+          <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <h3 className="text-xl font-bold mb-6 text-brand-gold-400">
+              Production Implementation
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Dual-model AI semantic search (Gist + Pinpoint modes)</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Advanced confidence scoring with multi-factor ranking</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Real-time file monitoring and synchronization</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>GitHub OAuth integration with repository management</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Cross-platform desktop application (Electron + React)</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Comprehensive REST API (25+ endpoints)</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Flask backend with ChromaDB vector storage</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                <span style={{ color: 'var(--fg-secondary)' }}>Advanced chunking strategies for optimal search</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Technical Specifications */}
+          <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <h3 className="text-xl font-bold mb-6 text-brand-gold-400">
+              Technical Specifications
+            </h3>
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>AI Models</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>MSMarco MiniLM (Gist) + AllMiniLM (Pinpoint)</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Search Intelligence</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Multi-factor ranking with semantic boosting</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>File Support</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>15+ file types with intelligent text extraction</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Real-time Sync</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Watchdog-based file change detection</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Performance</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>&lt;500ms search response times</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Storage</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Local ChromaDB with persistent metadata tracking</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Documentation Scope */}
+      <motion.section 
+        className="mb-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+        transition={{ duration: 0.8, delay: 1.4 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-12" style={{ color: 'var(--fg-primary)' }}>
+          Comprehensive Documentation Coverage
+        </h2>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            {
+              icon: Layers,
+              title: "System Architecture",
+              items: [
+                "High-level platform architecture",
+                "AI/ML systems deep dive", 
+                "Backend architecture patterns",
+                "Frontend architecture design",
+                "Performance characteristics"
+              ]
+            },
+            {
+              icon: Brain,
+              title: "AI & Algorithms",
+              items: [
+                "Gist ranking algorithm",
+                "Confidence scoring mathematics",
+                "Dual chunking strategy",
+                "Multi-factor scoring systems",
+                "Semantic validation framework"
+              ]
+            },
+            {
+              icon: Network,
+              title: "API & Integration",
+              items: [
+                "Complete REST API (25+ endpoints)",
+                "Search & indexing endpoints",
+                "GitHub integration API",
+                "Authentication & security",
+                "Real-time WebSocket events"
+              ]
+            },
+            {
+              icon: GitBranch,
+              title: "GitHub Enterprise",
+              items: [
+                "OAuth 2.0 device flow",
+                "Repository management",
+                "Branch intelligence",
+                "Manifest tracking",
+                "Real-time synchronization"
+              ]
+            },
+            {
+              icon: Shield,
+              title: "Security & Privacy",
+              items: [
+                "Local-first architecture",
+                "Data privacy principles",
+                "Security implementation",
+                "Token management",
+                "Audit & compliance"
+              ]
+            },
+            {
+              icon: Activity,
+              title: "Testing & Quality",
+              items: [
+                "Comprehensive testing framework",
+                "Semantic validation suite",
+                "Performance benchmarking",
+                "Quality assurance metrics",
+                "Regression testing"
+              ]
+            }
+          ].map((category, index) => (
+            <motion.div
+              key={category.title}
+              className="p-6 rounded-xl border transition-all duration-300 hover:border-brand-gold-500/40 hover:shadow-xl group"
+              style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+              transition={{ duration: 0.8, delay: 1.6 + index * 0.1 }}
+            >
+              <div className="flex items-center mb-4">
+                <div className="p-3 rounded-lg bg-brand-gold-500/20 text-brand-gold-400 group-hover:bg-brand-gold-500/30 transition-colors">
+                  <category.icon className="h-6 w-6" />
+                </div>
+                <h3 className="ml-3 font-semibold" style={{ color: 'var(--fg-primary)' }}>
+                  {category.title}
+                </h3>
+              </div>
+              <ul className="space-y-2">
+                {category.items.map((item, itemIndex) => (
+                  <li key={itemIndex} className="flex items-start">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold-400 mt-2 mr-3 flex-shrink-0"></div>
+                    <span className="text-sm" style={{ color: 'var(--fg-secondary)' }}>
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Interactive Diagrams Preview */}
+      <motion.section 
+        className="mb-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+        transition={{ duration: 0.8, delay: 2.0 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-12" style={{ color: 'var(--fg-primary)' }}>
+          Interactive Documentation Features
+        </h2>
+        
+        <div className="grid lg:grid-cols-2 gap-12">
+          <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <h3 className="text-xl font-bold mb-6 text-brand-gold-400">
+              Advanced Diagrams & Visualizations
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <span style={{ color: 'var(--fg-secondary)' }}>Architecture Diagrams</span>
+                <span className="text-xs text-brand-gold-400 font-mono">21 Interactive</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <span style={{ color: 'var(--fg-secondary)' }}>Confidence Scoring Flow</span>
+                <span className="text-xs text-brand-gold-400 font-mono">Dynamic</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <span style={{ color: 'var(--fg-secondary)' }}>Dual AI Model Architecture</span>
+                <span className="text-xs text-brand-gold-400 font-mono">Animated</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <span style={{ color: 'var(--fg-secondary)' }}>Chunking Strategies</span>
+                <span className="text-xs text-brand-gold-400 font-mono">Comparative</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <span style={{ color: 'var(--fg-secondary)' }}>GitHub Integration Flow</span>
+                <span className="text-xs text-brand-gold-400 font-mono">Step-by-step</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <span style={{ color: 'var(--fg-secondary)' }}>API Endpoint Mapping</span>
+                <span className="text-xs text-brand-gold-400 font-mono">Interactive</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <h3 className="text-xl font-bold mb-6 text-brand-gold-400">
+              Code Examples & Implementation
+            </h3>
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>API Usage Examples</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Python, JavaScript, and curl examples for every endpoint</p>
+              </div>
+              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Algorithm Implementation</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Complete mathematical formulations with code samples</p>
+              </div>
+              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Configuration Templates</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Production-ready configuration examples</p>
+              </div>
+              <div className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Testing Frameworks</h4>
+                <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>Complete testing suite with validation examples</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
       {/* Quick Navigation */}
       <motion.section 
         className="text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
+        transition={{ duration: 0.8, delay: 2.2 }}
       >
         <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
           <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--fg-primary)' }}>
-            Ready to Dive Deeper?
+            Explore the Complete Documentation
           </h3>
-          <p className="mb-8 max-w-2xl mx-auto" style={{ color: 'var(--fg-secondary)' }}>
-            Explore the comprehensive documentation to understand FileHawk's advanced capabilities, 
-            from AI algorithms to deployment strategies.
+          <p className="mb-8 max-w-3xl mx-auto" style={{ color: 'var(--fg-secondary)' }}>
+            Dive deep into FileHawk's sophisticated architecture, advanced AI algorithms, comprehensive APIs, 
+            and enterprise-grade deployment strategies. Every aspect is documented with interactive diagrams, 
+            code examples, and detailed technical specifications.
           </p>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

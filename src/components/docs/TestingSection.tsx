@@ -555,28 +555,281 @@ const TestingSection: React.FC = () => {
         )
       )}
 
+      {/* Multi-Layer Testing Strategy */}
+      <motion.section 
+        className="mb-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-12" style={{ color: 'var(--fg-primary)' }}>
+          Multi-Layer Testing Strategy
+        </h2>
+        
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            {
+              title: "Unit Testing Layer",
+              icon: Target,
+              description: "Individual component and algorithm validation",
+              tests: [
+                "Algorithm Unit Tests - Individual function validation", 
+                "API Endpoint Tests - Request/response validation",
+                "Chunking Logic Tests - Boundary detection validation",
+                "Scoring Function Tests - Mathematical accuracy"
+              ],
+              coverage: "90%+ code coverage requirement"
+            },
+            {
+              title: "Semantic Validation Layer", 
+              icon: Activity,
+              description: "AI model quality and accuracy assessment",
+              tests: [
+                "Semantic Clustering - Query similarity validation",
+                "Confidence Calibration - Score accuracy assessment", 
+                "Natural Language Tests - Human query understanding",
+                "Typo Tolerance Tests - Robustness validation"
+              ],
+              coverage: "85%+ semantic correlation"
+            },
+            {
+              title: "Performance Testing Layer",
+              icon: Zap,
+              description: "Enterprise scalability and load validation",
+              tests: [
+                "Load Testing - Concurrent user simulation",
+                "Stress Testing - Resource limit validation",
+                "Benchmark Testing - Performance regression detection",
+                "Scalability Testing - Enterprise scale validation"
+              ],
+              coverage: "<50ms search latency target"
+            },
+            {
+              title: "Integration Testing Layer",
+              icon: CheckCircle,
+              description: "End-to-end workflow validation",
+              tests: [
+                "Search Pipeline Integration - End-to-end flow testing",
+                "Indexing Pipeline Integration - Content processing flow",
+                "GitHub Integration Tests - Repository management flow", 
+                "Real-time Sync Tests - File monitoring flow"
+              ],
+              coverage: "99.9%+ endpoint success rate"
+            },
+            {
+              title: "Production Validation Layer",
+              icon: Shield,
+              description: "Real-world scenario and edge case testing",
+              tests: [
+                "Large Corpus Validation - Real-world data testing",
+                "User Behavior Simulation - Realistic usage patterns",
+                "Edge Case Testing - Boundary condition validation",
+                "Regression Testing - Change impact assessment"
+              ],
+              coverage: "95%+ boundary condition coverage"
+            },
+            {
+              title: "Continuous Integration",
+              icon: TrendingUp,
+              description: "Automated testing pipeline validation",
+              tests: [
+                "Automated Unit Test Execution",
+                "Semantic Quality Gate Validation",
+                "Performance Regression Detection",
+                "Integration Flow Verification"
+              ],
+              coverage: "100% automated validation"
+            }
+          ].map((layer, index) => (
+            <motion.div
+              key={layer.title}
+              className="p-6 rounded-xl border transition-all duration-300 hover:border-brand-gold-500/40 hover:shadow-xl"
+              style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+              transition={{ duration: 0.8, delay: 1.0 + index * 0.1 }}
+            >
+              <div className="flex items-center mb-4">
+                <div className="p-3 rounded-lg bg-brand-gold-500/20 text-brand-gold-400 mr-4">
+                  <layer.icon className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-brand-gold-400">{layer.title}</h3>
+                  <p className="text-sm" style={{ color: 'var(--fg-secondary)' }}>{layer.description}</p>
+                </div>
+              </div>
+              
+              <ul className="space-y-2 mb-4">
+                {layer.tests.map((test, testIndex) => (
+                  <li key={testIndex} className="flex items-start">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-gold-400 mt-2 mr-3 flex-shrink-0"></div>
+                    <span className="text-sm" style={{ color: 'var(--fg-secondary)' }}>{test}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <div className="p-3 rounded-lg" style={{ backgroundColor: 'var(--bg-app)' }}>
+                <span className="text-xs font-semibold text-brand-gold-400">{layer.coverage}</span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* Quality Gates & Standards */}
+      <motion.section 
+        className="mb-20"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
+        transition={{ duration: 0.8, delay: 1.4 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-12" style={{ color: 'var(--fg-primary)' }}>
+          Quality Gates & Testing Standards
+        </h2>
+        
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Testing Standards */}
+          <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <h3 className="text-xl font-bold mb-6 text-brand-gold-400">
+              Performance & Quality Standards
+            </h3>
+            <div className="space-y-6">
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <h4 className="font-semibold mb-3" style={{ color: 'var(--fg-primary)' }}>Unit Testing Requirements</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Minimum Coverage</span>
+                    <span className="text-xs font-mono text-brand-gold-400">90%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Test Pass Rate</span>
+                    <span className="text-xs font-mono text-brand-gold-400">100%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Performance Tests</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&lt;100ms per function</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <h4 className="font-semibold mb-3" style={{ color: 'var(--fg-primary)' }}>Semantic Validation Standards</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Semantic Clustering</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&gt;85% correlation</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Natural Language Tolerance</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&gt;70% overlap</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Typo Resilience</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&gt;80% confidence retention</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Confidence Calibration</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&gt;70% correlation</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <h4 className="font-semibold mb-3" style={{ color: 'var(--fg-primary)' }}>Performance Standards</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Search Response Time</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&lt;50ms average</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Concurrent Users</span>
+                    <span className="text-xs font-mono text-brand-gold-400">100+ simultaneous</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Indexing Throughput</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&gt;3,000 files/minute</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span style={{ color: 'var(--fg-secondary)' }}>Memory Usage</span>
+                    <span className="text-xs font-mono text-brand-gold-400">&lt;200MB + 2MB/1K files</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CI/CD Testing Pipeline */}
+          <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <h3 className="text-xl font-bold mb-6 text-brand-gold-400">
+              Automated CI/CD Testing Pipeline
+            </h3>
+            <div className="space-y-4">
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-app)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>GitHub Actions Workflow</h4>
+                <div className="text-xs font-mono space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+                  <div>name: Comprehensive Testing Pipeline</div>
+                  <div>on: [push, pull_request]</div>
+                  <div>jobs: [unit-tests, semantic-validation, performance-tests]</div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-app)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Automated Test Execution</h4>
+                <div className="text-xs space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+                  <div>• Unit tests with pytest and coverage reporting</div>
+                  <div>• Semantic validation with AI model downloads</div>
+                  <div>• Performance benchmarking and memory testing</div>
+                  <div>• Integration tests with API server simulation</div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-app)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Quality Gate Enforcement</h4>
+                <div className="text-xs space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+                  <div>• 90%+ code coverage requirement</div>
+                  <div>• All semantic validation tests must pass</div>
+                  <div>• Performance regression detection (&lt;5% degradation)</div>
+                  <div>• Integration endpoint success &gt;99.9%</div>
+                </div>
+              </div>
+              
+              <div className="p-4 rounded-lg" style={{ backgroundColor: 'var(--bg-app)' }}>
+                <h4 className="font-semibold mb-2" style={{ color: 'var(--fg-primary)' }}>Test Reporting & Artifacts</h4>
+                <div className="text-xs space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+                  <div>• Comprehensive HTML test reports</div>
+                  <div>• Performance metrics and charts</div>
+                  <div>• Code coverage analysis upload</div>
+                  <div>• Regression comparison artifacts</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
       {/* Testing Infrastructure Summary */}
       <motion.section 
         className="text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
+        transition={{ duration: 0.8, delay: 1.8 }}
       >
         <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
           <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--fg-primary)' }}>
-            Enterprise Testing Infrastructure
+            Comprehensive Testing & Validation Framework
           </h3>
           <p className="mb-8 max-w-3xl mx-auto" style={{ color: 'var(--fg-secondary)' }}>
-            Comprehensive testing framework ensuring production reliability through automated validation, 
-            continuous integration, and real-world performance benchmarking across all system components.
+            Enterprise-grade testing infrastructure ensuring production reliability through automated validation, 
+            continuous integration, and real-world performance benchmarking across all semantic search components.
+            From individual algorithm validation to large-scale corpus testing.
           </p>
           
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[
-              { metric: '450+', label: 'Test Cases', description: 'Comprehensive coverage across all components' },
-              { metric: '97.2%', label: 'Overall Score', description: 'Weighted average across all test categories' },
-              { metric: '1.2M', label: 'Documents Tested', description: 'Enterprise-scale validation dataset' },
-              { metric: '99.97%', label: 'Reliability Score', description: 'Production uptime and stability metrics' }
+              { metric: '5 Layers', label: 'Testing Strategy', description: 'Unit, Integration, Semantic, Performance, Production' },
+              { metric: '90%+', label: 'Code Coverage', description: 'Comprehensive unit test coverage requirement' },
+              { metric: '85%+', label: 'Semantic Quality', description: 'Correlation threshold for AI validation' },
+              { metric: '<5%', label: 'Regression Tolerance', description: 'Performance degradation threshold limit' }
             ].map((metric) => (
               <div key={metric.metric} className="p-4 rounded-lg border" style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}>
                 <div className="text-2xl font-bold text-brand-gold-400 mb-2">
@@ -590,6 +843,10 @@ const TestingSection: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+          
+          <div className="text-sm text-brand-gold-400">
+            Validated through comprehensive unit tests, semantic quality assessment, and production-scale performance benchmarking
           </div>
         </div>
       </motion.section>

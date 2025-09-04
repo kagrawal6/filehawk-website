@@ -29,10 +29,10 @@ import { useScrollAnimation } from '../hooks/useScrollAnimation'
 import { HawkProvider } from '../components/ui/HawkProvider'
 
 // Import documentation section components
-import OverviewSection from '../components/docs/OverviewSection'
-import FeaturesSection from '../components/docs/FeaturesSection'
-import ArchitectureSection from '../components/docs/ArchitectureSection'
-import AlgorithmsSection from '../components/docs/AlgorithmsSection'
+import OverviewSection from '../components/docs/RevisedOverviewSection'
+import FeaturesSection from '../components/docs/RevisedFeaturesSection'
+import ArchitectureSection from '../components/docs/RevisedArchitectureSection'
+import AlgorithmsSection from '../components/docs/RevisedAlgorithmsSection'
 import APISection from '../components/docs/APISection'
 import DeploymentSection from '../components/docs/DeploymentSection'
 import TestingSection from '../components/docs/TestingSection'
@@ -211,35 +211,8 @@ const DocumentationPage: React.FC = () => {
               </button>
             </div>
             
-            <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
-              {/* Quick Start */}
-              <div>
-                <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
-                  QUICK START
-                </h3>
-                <div className="space-y-2">
-                  {docSections.filter(s => s.featured).map((section) => (
-                    <Link
-                      key={section.id}
-                      to={section.path}
-                      className={`
-                        flex items-center px-3 py-2 text-sm rounded-lg transition-all duration-200 group
-                        ${currentSection.id === section.id 
-                          ? 'bg-gradient-to-r from-brand-gold-500/20 to-transparent text-brand-gold-300 border-r-2 border-brand-gold-500' 
-                          : 'hover:bg-gray-700/50'
-                        }
-                      `}
-                      style={{ color: currentSection.id === section.id ? 'var(--accent-solid)' : 'var(--fg-secondary)' }}
-                    >
-                      <section.icon className="h-4 w-4 mr-3 group-hover:text-brand-gold-400 transition-colors" />
-                      {section.title}
-                      <ChevronRight className="h-3 w-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Categories */}
+            <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
+              {/* All Documentation Sections */}
               {(['getting-started', 'core', 'advanced', 'reference'] as const).map(category => {
                 const categoryTitle = {
                   'getting-started': 'GETTING STARTED',
@@ -398,8 +371,8 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         
         <p className="text-xl leading-relaxed max-w-4xl mx-auto mb-8" style={{ color: 'var(--fg-secondary)' }}>
           Comprehensive technical documentation for the AI-powered semantic search platform. 
-          Explore our architecture, algorithms, APIs, and deployment guides that power enterprise-grade 
-          document understanding and retrieval.
+          Explore our architecture, algorithms, APIs, and deployment guides with 
+          <strong> enhanced navigation, interactive diagrams, and progressive disclosure</strong> for better understanding.
         </p>
         
         {/* Key Metrics */}
