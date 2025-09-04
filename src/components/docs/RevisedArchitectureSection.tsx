@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import { 
   Database, 
@@ -12,7 +12,6 @@ import {
 } from 'lucide-react'
 import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 import { 
-  TableOfContents, 
   DocumentationSection, 
   TabbedContent, 
   ExpandableSection 
@@ -22,52 +21,9 @@ import ExpandedArchitectureDiagram from './ExpandedArchitectureDiagram'
 
 const RevisedArchitectureSection: React.FC = () => {
   const isAnimated = useScrollAnimation()
-  const [currentSection, setCurrentSection] = useState('introduction')
-
-  // Define page sections for TOC
-  const sections = [
-    { id: 'introduction', title: 'Architecture Overview', level: 1, isActive: currentSection === 'introduction' },
-    { id: 'system-design', title: 'System Design', level: 1, isActive: currentSection === 'system-design' },
-    { id: 'data-flow', title: 'Data Flow', level: 1, isActive: currentSection === 'data-flow' },
-    { id: 'deployment-patterns', title: 'Deployment Patterns', level: 1, isActive: currentSection === 'deployment-patterns' },
-    { id: 'enterprise-principles', title: 'Enterprise Principles', level: 1, isActive: currentSection === 'enterprise-principles' }
-  ]
-
-  // Update current section based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const sectionIds = ['introduction', 'system-design', 'data-flow', 'deployment-patterns', 'enterprise-principles']
-      
-      for (const sectionId of sectionIds) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setCurrentSection(sectionId)
-            break
-          }
-        }
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleSectionChange = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-      {/* Table of Contents */}
-      <TableOfContents 
-        sections={sections}
-        onSectionChange={handleSectionChange}
-      />
 
       {/* Header */}
       <motion.div 

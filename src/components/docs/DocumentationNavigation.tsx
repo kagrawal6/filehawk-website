@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
   ChevronRight, 
@@ -26,19 +26,6 @@ export const TableOfContents: React.FC<DocumentationNavigationProps> = ({
   onSectionChange
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [scrollProgress, setScrollProgress] = useState(0)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = scrollTop / docHeight
-      setScrollProgress(Math.min(progress * 100, 100))
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -91,19 +78,6 @@ export const TableOfContents: React.FC<DocumentationNavigationProps> = ({
             </button>
           </div>
 
-          {/* Progress Bar */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between text-xs mb-2" style={{ color: 'var(--fg-muted)' }}>
-              <span>Reading Progress</span>
-              <span>{Math.round(scrollProgress)}%</span>
-            </div>
-            <div className="w-full bg-gray-700 rounded-full h-1.5">
-              <div 
-                className="bg-brand-gold-400 h-1.5 rounded-full transition-all duration-300"
-                style={{ width: `${scrollProgress}%` }}
-              />
-            </div>
-          </div>
 
           {/* Navigation Links */}
           <nav className="space-y-1">

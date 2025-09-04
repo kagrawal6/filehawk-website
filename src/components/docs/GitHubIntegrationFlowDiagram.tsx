@@ -317,12 +317,12 @@ const GitHubIntegrationFlowDiagram: React.FC = () => {
 
   const getStepColor = (type: string) => {
     const colors = {
-      user: { bg: '#FEE2E2', border: '#EF4444' },
-      oauth: { bg: '#F3E5F5', border: '#7B1FA2' },
-      api: { bg: '#DBEAFE', border: '#3B82F6' },
-      processing: { bg: '#E8F5E8', border: '#388E3C' },
-      storage: { bg: '#E0F2F1', border: '#00796B' },
-      security: { bg: '#FFF3E0', border: '#F57C00' }
+      user: { bg: '#ef4444', border: '#dc2626' },
+      oauth: { bg: '#8b5cf6', border: '#7c3aed' },
+      api: { bg: '#3b82f6', border: '#2563eb' },
+      processing: { bg: '#10b981', border: '#059669' },
+      storage: { bg: '#059669', border: '#047857' },
+      security: { bg: '#f59e0b', border: '#d97706' }
     }
     return colors[type as keyof typeof colors] || colors.processing
   }

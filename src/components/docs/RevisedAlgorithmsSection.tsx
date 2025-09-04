@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
   Brain, 
@@ -14,7 +14,6 @@ import {
 } from 'lucide-react'
 import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 import { 
-  TableOfContents, 
   DocumentationSection, 
   TabbedContent, 
   ExpandableSection 
@@ -26,46 +25,7 @@ import ConfidenceScoringDiagram from './ConfidenceScoringDiagram'
 
 const RevisedAlgorithmsSection: React.FC = () => {
   const isAnimated = useScrollAnimation()
-  const [currentSection, setCurrentSection] = useState('introduction')
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
-
-  // Define page sections for TOC
-  const sections = [
-    { id: 'introduction', title: 'Algorithm Overview', level: 1, isActive: currentSection === 'introduction' },
-    { id: 'dual-ai-models', title: 'Dual AI Models', level: 1, isActive: currentSection === 'dual-ai-models' },
-    { id: 'scoring-engine', title: 'Scoring Engine', level: 1, isActive: currentSection === 'scoring-engine' },
-    { id: 'chunking-strategies', title: 'Chunking Strategies', level: 1, isActive: currentSection === 'chunking-strategies' },
-    { id: 'mathematical-foundations', title: 'Mathematical Foundations', level: 1, isActive: currentSection === 'mathematical-foundations' },
-    { id: 'performance-optimization', title: 'Performance & Optimization', level: 1, isActive: currentSection === 'performance-optimization' }
-  ]
-
-  // Update current section based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      const sectionIds = ['introduction', 'dual-ai-models', 'scoring-engine', 'chunking-strategies', 'mathematical-foundations', 'performance-optimization']
-      
-      for (const sectionId of sectionIds) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setCurrentSection(sectionId)
-            break
-          }
-        }
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleSectionChange = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
-  }
 
   const copyToClipboard = async (text: string, id: string) => {
     try {
@@ -79,11 +39,6 @@ const RevisedAlgorithmsSection: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-      {/* Table of Contents */}
-      <TableOfContents 
-        sections={sections}
-        onSectionChange={handleSectionChange}
-      />
 
       {/* Header */}
       <motion.div 

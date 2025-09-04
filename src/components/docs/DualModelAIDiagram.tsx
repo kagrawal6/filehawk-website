@@ -279,11 +279,11 @@ const DualModelAIDiagram: React.FC = () => {
 
   const getNodeColor = (type: string) => {
     const colors = {
-      input: { bg: '#FEE2E2', border: '#EF4444' },
-      model: { bg: '#F3E5F5', border: '#7B1FA2' },
-      processing: { bg: '#E8F5E8', border: '#388E3C' },
-      output: { bg: '#DBEAFE', border: '#3B82F6' },
-      metric: { bg: '#FFF3E0', border: '#F57C00' }
+      input: { bg: '#ef4444', border: '#dc2626' },
+      model: { bg: '#8b5cf6', border: '#7c3aed' },
+      processing: { bg: '#10b981', border: '#059669' },
+      output: { bg: '#3b82f6', border: '#2563eb' },
+      metric: { bg: '#f59e0b', border: '#d97706' }
     }
     return colors[type as keyof typeof colors] || colors.processing
   }
@@ -365,7 +365,11 @@ const DualModelAIDiagram: React.FC = () => {
       <div className="grid md:grid-cols-2 gap-6">
         <motion.div 
           className="p-6 rounded-xl border"
-          style={{ backgroundColor: selectedModel === 'gist' ? '#F3E5F5' : 'var(--bg-elevated)', borderColor: selectedModel === 'gist' ? '#7B1FA2' : 'var(--border-subtle)' }}
+          style={{ 
+            backgroundColor: selectedModel === 'gist' ? 'var(--bg-elevated)' : 'var(--bg-elevated)', 
+            borderColor: selectedModel === 'gist' ? 'var(--purple-border)' : 'var(--border-subtle)',
+            boxShadow: selectedModel === 'gist' ? '0 0 0 1px rgb(168, 85, 247, 0.4)' : 'none'
+          }}
           layout
         >
           <div className="flex items-center mb-4">
@@ -385,7 +389,11 @@ const DualModelAIDiagram: React.FC = () => {
 
         <motion.div 
           className="p-6 rounded-xl border"
-          style={{ backgroundColor: selectedModel === 'pinpoint' ? '#DBEAFE' : 'var(--bg-elevated)', borderColor: selectedModel === 'pinpoint' ? '#3B82F6' : 'var(--border-subtle)' }}
+          style={{ 
+            backgroundColor: selectedModel === 'pinpoint' ? 'var(--bg-elevated)' : 'var(--bg-elevated)', 
+            borderColor: selectedModel === 'pinpoint' ? 'var(--blue-border)' : 'var(--border-subtle)',
+            boxShadow: selectedModel === 'pinpoint' ? '0 0 0 1px rgb(59, 130, 246, 0.4)' : 'none'
+          }}
           layout
         >
           <div className="flex items-center mb-4">

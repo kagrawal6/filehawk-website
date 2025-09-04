@@ -450,11 +450,11 @@ const DualChunkingDiagram: React.FC = () => {
 
   const getStepColor = (type: string) => {
     const colors = {
-      input: { bg: '#FEE2E2', border: '#EF4444' },
-      analysis: { bg: '#F3E5F5', border: '#7B1FA2' },
-      processing: { bg: '#E8F5E8', border: '#388E3C' },
-      decision: { bg: '#FFF3E0', border: '#F57C00' },
-      output: { bg: '#DBEAFE', border: '#3B82F6' }
+      input: { bg: '#ef4444', border: '#dc2626' },
+      analysis: { bg: '#8b5cf6', border: '#7c3aed' },
+      processing: { bg: '#10b981', border: '#059669' },
+      decision: { bg: '#f59e0b', border: '#d97706' },
+      output: { bg: '#3b82f6', border: '#2563eb' }
     }
     return colors[type as keyof typeof colors] || colors.processing
   }
@@ -824,8 +824,10 @@ const DualChunkingDiagram: React.FC = () => {
                           {step.type}
                         </span>
                         <span 
-                          className={`px-3 py-1 text-xs font-bold rounded-full uppercase ${
-                            selectedMode === 'gist' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+                          className={`px-3 py-1 text-xs font-bold rounded-full uppercase border-2 ${
+                            selectedMode === 'gist' 
+                              ? 'bg-purple-500/10 text-purple-400 border-purple-500/30' 
+                              : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
                           }`}
                         >
                           {selectedMode}

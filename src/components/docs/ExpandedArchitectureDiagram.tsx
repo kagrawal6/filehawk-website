@@ -415,12 +415,12 @@ const ExpandedArchitectureDiagram: React.FC = () => {
   ]
 
   const layerColors = {
-    frontend: { bg: '#FEE2E2', border: '#EF4444' },
-    api: { bg: '#DBEAFE', border: '#3B82F6' },
-    ai: { bg: '#F3E5F5', border: '#7B1FA2' },
-    storage: { bg: '#E0F2F1', border: '#00796B' },
-    processing: { bg: '#E8F5E8', border: '#388E3C' },
-    integration: { bg: '#FFF3E0', border: '#F57C00' }
+    frontend: { bg: '#ef4444', border: '#dc2626' },
+    api: { bg: '#3b82f6', border: '#2563eb' },
+    ai: { bg: '#8b5cf6', border: '#7c3aed' },
+    storage: { bg: '#059669', border: '#047857' },
+    processing: { bg: '#10b981', border: '#059669' },
+    integration: { bg: '#f59e0b', border: '#d97706' }
   }
 
   const toggleAnimation = () => {
@@ -831,11 +831,15 @@ const ExpandedArchitectureDiagram: React.FC = () => {
                           {component.layer}
                         </span>
                         <span 
-                          className={`px-3 py-1 text-xs font-bold rounded-full uppercase ${
-                            component.status === 'active' ? 'bg-green-100 text-green-800' :
-                            component.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
+                          className={`px-3 py-1 text-xs font-bold rounded-full uppercase border ${
+                            component.status === 'active' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                            component.status === 'processing' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                            'border-gray-500/30'
                           }`}
+                          style={{ 
+                            backgroundColor: component.status === 'active' ? undefined : component.status === 'processing' ? undefined : 'var(--bg-elevated)', 
+                            color: component.status === 'active' ? undefined : component.status === 'processing' ? undefined : 'var(--fg-primary)' 
+                          }}
                         >
                           {component.status}
                         </span>

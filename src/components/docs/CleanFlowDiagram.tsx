@@ -53,12 +53,12 @@ const CleanFlowDiagram: React.FC<CleanFlowDiagramProps> = ({
 
   const getNodeColor = (type: string) => {
     const colors = {
-      ai: { bg: '#8B5CF6', border: '#A78BFA', light: '#EDE9FE' },
-      database: { bg: '#10B981', border: '#34D399', light: '#D1FAE5' },
-      api: { bg: '#3B82F6', border: '#60A5FA', light: '#DBEAFE' },
-      frontend: { bg: '#EF4444', border: '#F87171', light: '#FEE2E2' },
-      integration: { bg: '#F59E0B', border: '#FBBF24', light: '#FEF3C7' },
-      process: { bg: '#6B7280', border: '#9CA3AF', light: '#F3F4F6' }
+      ai: { bg: '#8B5CF6', border: '#A78BFA', light: '#8b5cf6' },
+      database: { bg: '#10B981', border: '#34D399', light: '#10b981' },
+      api: { bg: '#3B82F6', border: '#60A5FA', light: '#3b82f6' },
+      frontend: { bg: '#EF4444', border: '#F87171', light: '#ef4444' },
+      integration: { bg: '#F59E0B', border: '#FBBF24', light: '#f59e0b' },
+      process: { bg: '#6B7280', border: '#9CA3AF', light: '#6b7280' }
     }
     return colors[type as keyof typeof colors] || colors.process
   }

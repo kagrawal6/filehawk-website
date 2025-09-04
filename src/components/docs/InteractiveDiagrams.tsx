@@ -345,9 +345,15 @@ export const AlgorithmFlowDiagram: React.FC<DiagramProps> = ({
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <div className="text-center">
-                <div className={`w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center text-sm font-bold ${
-                  activeStep === index ? 'bg-brand-gold-500 text-white' : 'bg-gray-300 text-gray-600'
-                }`}>
+                <div className={`w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center text-sm font-bold border-2 ${
+                  activeStep === index 
+                    ? 'bg-brand-gold-500 text-white border-brand-gold-500' 
+                    : 'border-gray-500/50'
+                }`}
+                style={{ 
+                  backgroundColor: activeStep === index ? undefined : 'var(--bg-elevated)', 
+                  color: activeStep === index ? undefined : 'var(--fg-primary)' 
+                }}>
                   {index + 1}
                 </div>
                 <h4 className="font-semibold text-sm mb-1" style={{ color: 'var(--fg-primary)' }}>

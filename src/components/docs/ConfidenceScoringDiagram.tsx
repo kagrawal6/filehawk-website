@@ -224,11 +224,11 @@ const ConfidenceScoringDiagram: React.FC = () => {
 
   const getComponentColor = (type: string) => {
     const colors = {
-      input: { bg: '#FEE2E2', border: '#EF4444' },
-      algorithm: { bg: '#F3E5F5', border: '#7B1FA2' },
-      boost: { bg: '#FFF3E0', border: '#F57C00' },
-      calibration: { bg: '#E0F2F1', border: '#00796B' },
-      output: { bg: '#DBEAFE', border: '#3B82F6' }
+      input: { bg: '#ef4444', border: '#dc2626' },
+      algorithm: { bg: '#8b5cf6', border: '#7c3aed' },
+      boost: { bg: '#f59e0b', border: '#d97706' },
+      calibration: { bg: '#059669', border: '#047857' },
+      output: { bg: '#3b82f6', border: '#2563eb' }
     }
     return colors[type as keyof typeof colors] || colors.algorithm
   }
@@ -677,7 +677,7 @@ const ConfidenceScoringDiagram: React.FC = () => {
                         >
                           {component.type}
                         </span>
-                        <span className="px-3 py-1 text-xs font-bold rounded-full bg-brand-gold-100 text-brand-gold-800">
+                        <span className="px-3 py-1 text-xs font-bold rounded-full bg-brand-gold-500/20 text-brand-gold-400 border border-brand-gold-500/30">
                           WEIGHT: {component.weight}
                         </span>
                       </div>
