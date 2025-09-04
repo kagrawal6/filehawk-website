@@ -291,9 +291,11 @@ const PinpointSearchDemo: React.FC = () => {
     .sort((a, b) => (a.rank || 0) - (b.rank || 0));
 
   return (
-    <div className="flex gap-6 h-full">
-      {/* Left Panel */}
-      <div className="w-80 p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+    <div className="space-y-8">
+      {/* Top Controls Row */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        {/* Left: Algorithm Info & Controls */}
+        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
         <div className="space-y-6">
           <div>
             <h3 className="text-lg font-semibold mb-2 text-amber-400">Pinpoint Search Algorithm</h3>
@@ -382,34 +384,24 @@ const PinpointSearchDemo: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Panel */}
-      <div className="flex-1 p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-        <h3 className="text-lg font-semibold mb-4 text-center">Direct Similarity Search Visualization</h3>
-        
-        <canvas
-          ref={canvasRef}
-          width={500}
-          height={400}
-          className="border border-gray-600 rounded bg-gray-900 mx-auto block"
-        />
-
-        <div className="mt-6 space-y-4">
-          <div className="text-center text-sm text-gray-400">
+        {/* Right: Status & Quick Info */}
+        <div>
+          <div className="text-center text-sm text-gray-400 mb-4">
             Pinpoint search directly compares query embedding with all small chunks
           </div>
           
-          <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-3 gap-3 text-sm mb-4">
             <div className="p-3 bg-gray-800 rounded text-center">
               <div className="font-semibold text-amber-400">Stage 1</div>
-              <div className="text-gray-300">Query Embedding</div>
+              <div className="text-gray-300 text-xs">Query Embedding</div>
             </div>
             <div className="p-3 bg-gray-800 rounded text-center">
               <div className="font-semibold text-amber-400">Stage 2</div>
-              <div className="text-gray-300">Direct Search</div>
+              <div className="text-gray-300 text-xs">Direct Search</div>
             </div>
             <div className="p-3 bg-gray-800 rounded text-center">
               <div className="font-semibold text-amber-400">Stage 3</div>
-              <div className="text-gray-300">Threshold Filter</div>
+              <div className="text-gray-300 text-xs">Threshold Filter</div>
             </div>
           </div>
 
@@ -424,6 +416,19 @@ const PinpointSearchDemo: React.FC = () => {
             </ol>
           </div>
         </div>
+      </div>
+
+      {/* Full-Width Visualization Section */}
+      <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <h3 className="text-xl font-semibold mb-6 text-center text-white">Direct Similarity Search Visualization</h3>
+        
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={500}
+          className="border border-gray-600 rounded bg-gray-900 mx-auto block w-full"
+          style={{ maxWidth: '800px', height: 'auto', minHeight: '500px' }}
+        />
       </div>
     </div>
   );

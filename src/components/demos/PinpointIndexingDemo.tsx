@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { 
   Play, 
-  Pause,
   RotateCcw,
   FileText,
   Database,
   Target,
   Layers,
-  ChevronRight,
   Info,
   Settings,
-  BarChart3,
   GitCompare
 } from 'lucide-react'
 
@@ -28,604 +25,522 @@ interface PrecisionChunk {
 
 interface PinpointIndexingDemoProps {
   className?: string
-  showComparison?: boolean
-  comparisonData?: {
-    gistChunks: number
-    gistAvgSize: number
-  }
 }
 
-const PinpointIndexingDemo: React.FC<PinpointIndexingDemoProps> = ({ 
-  className = '', 
-  showComparison = false,
-  comparisonData 
-}) => {
+const PinpointIndexingDemo: React.FC<PinpointIndexingDemoProps> = ({ className = '' }) => {
   const [inputText, setInputText] = useState('')
-  const [precisionLevel, setPrecisionLevel] = useState<'sentence' | 'line'>('sentence')
+  const [chunkSize, setChunkSize] = useState(3)
+  const [respectSentences, setRespectSentences] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [chunks, setChunks] = useState<PrecisionChunk[]>([])
-  const [boundaryMarkers, setBoundaryMarkers] = useState<Array<{line: number, type: string}>>([])
+  const [statistics, setStatistics] = useState<{[key: string]: number}>({})
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // Default sample text (same as Gist demo for comparison)
-  const defaultText = `# FileHawk: Advanced Semantic Search Documentation
+  // Default sample text with mixed content types
+  const defaultText = `# FileHawk Search Engine
 
-## Overview
-FileHawk represents a breakthrough in local file search technology, combining cutting-edge AI models with sophisticated indexing strategies to deliver unprecedented search accuracy and speed.
+## Quick Start Guide
 
-## Core Architecture
-The system implements a dual-mode search architecture that adapts to different use cases.
+FileHawk enables instant search across your entire codebase. Here's how to get started:
 
-### Pinpoint Mode Processing
-Pinpoint mode creates precise, small chunks optimized for exact matching. Each chunk contains approximately 3 lines of content with intelligent sentence boundary detection.
+### Installation
+1. Download FileHawk from our website
+2. Run the installer
+3. Launch the application
 
-The embedding process uses the all-MiniLM-L6-v2 model, specifically tuned for precision matching and exact phrase detection.
+The search algorithm uses semantic embeddings. Neural networks process your queries.
 
-Direct storage without centroid computation ensures maximum precision and minimal information loss.
+### Basic Usage
+Type your search query. Press Enter to search. Results appear instantly.
 
-### Technical Implementation Details
-The indexing pipeline focuses on precision:
-1. Text extraction and cleaning.
-2. Sentence boundary detection.
-3. Precise 3-line chunking.
-4. Individual vector generation.
-5. Direct storage in ChromaDB.
+## Advanced Features
 
-### Performance Characteristics
-Pinpoint mode indexing demonstrates O(n) complexity with superior precision for exact matching scenarios.
+### Pinpoint Mode
+- Ultra-fast search
+- 3-line chunks 
+- Direct matching
+- Perfect for specific queries
 
-The system maintains sub-millisecond search times for precise phrase matching across large document collections.
+### Gist Mode
+- Contextual search
+- 35-line chunks
+- Semantic understanding
+- Best for complex queries
 
-## Search Integration
-Pinpoint chunks enable direct similarity matching without the need for complex scoring algorithms, ensuring maximum speed and accuracy for exact queries.
+## Configuration
 
-## Quality Metrics
-Achieves 99.2% precision for exact phrase matching with minimal false positives, validated through comprehensive testing on technical documentation.`
+Set your preferences in the settings panel. Choose between search modes. Customize indexing options.
 
-  // Initialize with default text
-  useEffect(() => {
-    if (!inputText) {
-      setInputText(defaultText)
+## Troubleshooting
+
+If search seems slow, rebuild the index. Check your file permissions. Restart the application if needed.
+
+For technical support, visit our documentation website. Join our community forum for tips and tricks.`
+
+  // Color palette for chunks
+  const chunkColors = [
+    '#ef4444', '#f97316', '#eab308', '#22c55e', 
+    '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899',
+    '#f59e0b', '#10b981', '#6366f1', '#e11d48'
+  ]
+
+  const getStepDescription = () => {
+    switch (currentStep) {
+      case 0:
+        return 'Ready to process document'
+      case 1:
+        return 'Creating precise chunks...'
+      case 2:
+        return 'Analyzing sentence boundaries...'
+      case 3:
+        return 'Generating embeddings...'
+      case 4:
+        return 'Processing complete!'
+      default:
+        return 'Ready'
     }
-  }, [])
+  }
 
-  // Generate mock embedding vector (smaller, more focused than Gist)
-  const generatePrecisionEmbedding = (text: string): number[] => {
-    const dimension = 384
-    const embedding = new Array(dimension).fill(0)
+  // Detect sentence boundaries
+  const detectSentenceBoundary = (text: string): boolean => {
+    return /[.!?]$/.test(text.trim())
+  }
+
+  // Determine boundary type
+  const getBoundaryType = (text: string): string => {
+    if (text.trim().startsWith('#')) return 'heading'
+    if (text.trim().match(/^\d+\./)) return 'list'
+    if (detectSentenceBoundary(text)) return 'sentence'
+    if (text.trim().length === 0) return 'paragraph'
+    return 'fragment'
+  }
+
+  // Simulate embedding generation
+  const generateEmbedding = (text: string): number[] => {
+    const embedding = new Array(384).fill(0).map(() => Math.random() * 2 - 1)
     
-    // More focused embedding based on exact text content
-    let hash = 0
-    for (let i = 0; i < text.length; i++) {
-      const char = text.charCodeAt(i)
-      hash = ((hash << 3) - hash) + char
-      hash = hash & hash
-    }
-    
-    // Generate more precise, focused embedding
-    for (let i = 0; i < dimension; i++) {
-      const seed = hash + i * 7
-      embedding[i] = (Math.sin(seed * 2) * Math.cos(seed / 3)) * 0.8
-    }
+    // Add semantic bias based on content
+    const words = text.toLowerCase().split(/\s+/)
+    words.forEach(word => {
+      if (word.includes('search') || word.includes('query')) {
+        embedding[0] += 0.4
+        embedding[1] += 0.3
+      }
+      if (word.includes('chunk') || word.includes('pinpoint')) {
+        embedding[2] += 0.5
+        embedding[3] += 0.4
+      }
+      if (word.includes('fast') || word.includes('instant')) {
+        embedding[4] += 0.3
+        embedding[5] += 0.5
+      }
+    })
     
     return embedding
   }
 
-  // Detect sentence boundaries
-  const detectBoundaries = (lines: string[]): Array<{line: number, type: string}> => {
-    const boundaries: Array<{line: number, type: string}> = []
+  // Process text into precision chunks
+  const processText = async () => {
+    if (!inputText.trim()) return
     
-    lines.forEach((line, index) => {
-      if (line.trim().match(/[.!?;:]$/)) {
-        boundaries.push({ line: index + 1, type: 'sentence' })
-      }
-      if (line.trim() === '' && index > 0 && lines[index - 1].trim() !== '') {
-        boundaries.push({ line: index, type: 'paragraph' })
-      }
-      if (line.match(/^#+\s/)) {
-        boundaries.push({ line: index + 1, type: 'heading' })
-      }
-    })
+    setIsProcessing(true)
+    setCurrentStep(1)
+    setChunks([])
+    setStatistics({})
     
-    return boundaries
-  }
-
-  // Create precise chunks
-  const createPrecisionChunks = (text: string): PrecisionChunk[] => {
-    const lines = text.split('\n')
-    const nonEmptyLines = lines.filter(line => line.trim() !== '')
-    const boundaries = detectBoundaries(lines)
-    setBoundaryMarkers(boundaries)
-    
+    const lines = inputText.split('\n').filter(line => line.trim())
     const newChunks: PrecisionChunk[] = []
-    const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#8b5cf6', '#ec4899']
     
-    let chunkId = 0
-    let currentChunk: string[] = []
-    let currentStartLine = 1
+    // Create small, precise chunks
+    let chunkId = 1
+    let lineIndex = 0
     
-    for (let i = 0; i < nonEmptyLines.length; i++) {
-      const line = nonEmptyLines[i]
-      currentChunk.push(line)
+    while (lineIndex < lines.length) {
+      const endLine = Math.min(lineIndex + chunkSize, lines.length)
+      const chunkLines = lines.slice(lineIndex, endLine)
+      const chunkText = chunkLines.join('\n')
       
-      // Check for boundary conditions
-      const hasSentenceBoundary = line.trim().match(/[.!?;:]$/) !== null
-      const isAtLineLimit = currentChunk.length >= 3
-      const isLastLine = i === nonEmptyLines.length - 1
-      
-      let shouldCreateChunk = false
-      let boundaryType = 'line'
-      
-      if (precisionLevel === 'sentence' && hasSentenceBoundary) {
-        shouldCreateChunk = true
-        boundaryType = 'sentence'
-      } else if (isAtLineLimit || isLastLine) {
-        shouldCreateChunk = true
-        boundaryType = isLastLine ? 'end' : 'line'
-      }
-      
-      if (shouldCreateChunk && currentChunk.length > 0) {
-        const chunkText = currentChunk.join('\n')
+      if (chunkText.trim()) {
+        const lastLine = chunkLines[chunkLines.length - 1]
+        const hasBoundary = detectSentenceBoundary(lastLine)
+        const boundaryType = getBoundaryType(lastLine)
         
         newChunks.push({
           id: chunkId,
           text: chunkText,
-          startLine: currentStartLine,
-          endLine: i + 1,
-          embedding: generatePrecisionEmbedding(chunkText),
-          color: colors[chunkId % colors.length],
-          hasSentenceBoundary,
-          boundaryType
+          startLine: lineIndex + 1,
+          endLine: endLine,
+          embedding: [],
+          color: chunkColors[(chunkId - 1) % chunkColors.length],
+          hasSentenceBoundary: hasBoundary,
+          boundaryType: boundaryType
         })
-        
         chunkId++
-        currentChunk = []
-        currentStartLine = i + 2
       }
+      
+      lineIndex += chunkSize
     }
     
-    return newChunks
-  }
-
-  // Process document with animation
-  const processDocument = async () => {
-    if (!inputText.trim()) return
-    
-    setIsProcessing(true)
-    setCurrentStep(0)
-    setChunks([])
-    setBoundaryMarkers([])
-
-    // Step 1: Text preparation
-    setCurrentStep(1)
+    setChunks(newChunks)
     await new Promise(resolve => setTimeout(resolve, 600))
-
-    // Step 2: Boundary detection
+    
+    // Analyze sentence boundaries
     setCurrentStep(2)
     await new Promise(resolve => setTimeout(resolve, 800))
-
-    // Step 3: Precise chunking
-    setCurrentStep(3)
-    const newChunks = createPrecisionChunks(inputText)
     
-    // Animate chunks appearing faster (more numerous)
-    for (let i = 0; i < newChunks.length; i++) {
-      setChunks(prev => [...prev, newChunks[i]])
-      await new Promise(resolve => setTimeout(resolve, 200))
+    // Generate embeddings
+    setCurrentStep(3)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    const chunksWithEmbeddings = newChunks.map(chunk => ({
+      ...chunk,
+      embedding: generateEmbedding(chunk.text)
+    }))
+    
+    setChunks(chunksWithEmbeddings)
+    
+    // Calculate statistics
+    const stats = {
+      total: chunksWithEmbeddings.length,
+      withBoundaries: chunksWithEmbeddings.filter(c => c.hasSentenceBoundary).length,
+      headings: chunksWithEmbeddings.filter(c => c.boundaryType === 'heading').length,
+      sentences: chunksWithEmbeddings.filter(c => c.boundaryType === 'sentence').length,
+      lists: chunksWithEmbeddings.filter(c => c.boundaryType === 'list').length,
+      fragments: chunksWithEmbeddings.filter(c => c.boundaryType === 'fragment').length
     }
-
-    // Step 4: Individual embeddings
+    
+    setStatistics(stats)
     setCurrentStep(4)
-    await new Promise(resolve => setTimeout(resolve, 800))
-
-    // Step 5: Direct storage
-    setCurrentStep(5)
-    await new Promise(resolve => setTimeout(resolve, 600))
-
     setIsProcessing(false)
   }
 
-  // Reset demo
   const resetDemo = () => {
     setIsProcessing(false)
     setCurrentStep(0)
     setChunks([])
-    setBoundaryMarkers([])
+    setStatistics({})
+    setInputText('')
   }
 
-  // Draw precision visualization on canvas
+  // Canvas visualization
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || chunks.length === 0) return
+    if (!canvas) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Draw individual chunk vectors as precise dots
-    const cols = Math.ceil(Math.sqrt(chunks.length))
-    const rows = Math.ceil(chunks.length / cols)
-    const dotSize = Math.min(20, (canvas.width - 40) / cols / 2)
-    const spacing = (canvas.width - 40) / cols
+    if (chunks.length === 0) {
+      ctx.fillStyle = '#666666'
+      ctx.font = '14px Inter'
+      ctx.textAlign = 'center'
+      ctx.fillText('Process text to see precise chunks visualization', canvas.width / 2, canvas.height / 2)
+      return
+    }
+
+    // Draw chunks as small, precise blocks
+    const chunkWidth = 60
+    const chunkHeight = 25
+    const chunkSpacing = 5
+    const rowHeight = chunkHeight + chunkSpacing
+    const chunksPerRow = Math.floor((canvas.width - 40) / (chunkWidth + chunkSpacing))
     
+    let xOffset = 20
+    let yOffset = 20
+
     chunks.forEach((chunk, index) => {
-      const col = index % cols
-      const row = Math.floor(index / cols)
-      const x = 20 + col * spacing + spacing / 2
-      const y = 20 + row * (canvas.height - 40) / rows
+      const col = index % chunksPerRow
+      const row = Math.floor(index / chunksPerRow)
       
-      // Draw precision dot
-      ctx.beginPath()
-      ctx.arc(x, y, dotSize / 2, 0, 2 * Math.PI)
-      ctx.fillStyle = chunk.color
-      ctx.fill()
+      const x = xOffset + col * (chunkWidth + chunkSpacing)
+      const y = yOffset + row * rowHeight
+
+      // Chunk rectangle
+      ctx.fillStyle = chunk.color + '60'
+      ctx.fillRect(x, y, chunkWidth, chunkHeight)
       
-      // Boundary indicator
-      if (chunk.hasSentenceBoundary) {
-        ctx.beginPath()
-        ctx.arc(x, y, dotSize / 2 + 3, 0, 2 * Math.PI)
-        ctx.strokeStyle = '#ffffff'
+      // Border style based on boundary type
+      ctx.strokeStyle = chunk.color
+      if (chunk.boundaryType === 'heading') {
+        ctx.lineWidth = 3
+        ctx.setLineDash([])
+      } else if (chunk.hasSentenceBoundary) {
         ctx.lineWidth = 2
-        ctx.stroke()
+        ctx.setLineDash([])
+      } else {
+        ctx.lineWidth = 1
+        ctx.setLineDash([2, 2])
       }
       
-      // Label
+      ctx.strokeRect(x, y, chunkWidth, chunkHeight)
+      ctx.setLineDash([])
+
+      // Chunk ID
       ctx.fillStyle = '#ffffff'
-      ctx.font = '8px Inter'
+      ctx.font = 'bold 10px Inter'
       ctx.textAlign = 'center'
-      ctx.fillText(`${chunk.id + 1}`, x, y + dotSize + 10)
+      ctx.fillText(chunk.id.toString(), x + chunkWidth/2, y + chunkHeight/2 + 3)
+
+      // Boundary indicator
+      if (chunk.boundaryType === 'heading') {
+        ctx.fillStyle = '#fbbf24'
+        ctx.fillRect(x + chunkWidth - 8, y + 2, 6, 6)
+      } else if (chunk.hasSentenceBoundary) {
+        ctx.fillStyle = '#22c55e'
+        ctx.beginPath()
+        ctx.arc(x + chunkWidth - 5, y + 5, 3, 0, 2 * Math.PI)
+        ctx.fill()
+      }
     })
+
+    // Legend
+    const legendY = yOffset + Math.ceil(chunks.length / chunksPerRow) * rowHeight + 30
+    
+    ctx.fillStyle = '#ffffff'
+    ctx.font = '12px Inter'
+    ctx.textAlign = 'left'
+    ctx.fillText('Legend:', 20, legendY)
+    
+    // Heading indicator
+    ctx.fillStyle = '#fbbf24'
+    ctx.fillRect(80, legendY - 8, 6, 6)
+    ctx.fillStyle = '#cccccc'
+    ctx.fillText('Heading', 95, legendY)
+    
+    // Sentence boundary
+    ctx.fillStyle = '#22c55e'
+    ctx.beginPath()
+    ctx.arc(160, legendY - 3, 3, 0, 2 * Math.PI)
+    ctx.fill()
+    ctx.fillStyle = '#cccccc'
+    ctx.fillText('Sentence End', 175, legendY)
+    
+    // Fragment
+    ctx.strokeStyle = '#888888'
+    ctx.lineWidth = 1
+    ctx.setLineDash([2, 2])
+    ctx.strokeRect(280, legendY - 8, 12, 6)
+    ctx.setLineDash([])
+    ctx.fillStyle = '#cccccc'
+    ctx.fillText('Fragment', 300, legendY)
   }, [chunks])
 
-  const steps = [
-    'Ready for precision processing',
-    'Preparing text input',
-    'Detecting sentence boundaries',
-    'Creating precise chunks',
-    'Generating focused embeddings',
-    'Direct storage (no centroids)',
-    'Processing complete'
-  ]
+  useEffect(() => {
+    setInputText(defaultText)
+  }, [])
 
   return (
-    <div className={`grid lg:grid-cols-3 gap-8 ${className}`}>
-      {/* Left Panel - Algorithm Info */}
-      <div className="lg:col-span-1 space-y-6">
-        {/* Algorithm Card */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <div className="p-3 rounded-xl bg-red-500/20 text-red-400 mr-4">
-              <Target className="h-8 w-8" />
+    <div className={`space-y-6 ${className}`}>
+      {/* Compact Controls Row */}
+      <div className="grid lg:grid-cols-4 gap-4">
+        {/* Algorithm Info */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center mb-2">
+            <div className="p-2 rounded-lg bg-red-500/20 text-red-400 mr-3">
+              <Target className="h-4 w-4" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-white">Pinpoint Mode Indexing</h3>
-              <p className="text-sm text-gray-400">O(n) Complexity</p>
-            </div>
-          </div>
-          
-          <p className="text-gray-300 text-sm mb-4">
-            Creates precise 3-line chunks with sentence boundary detection for 
-            exact matching and superior precision in phrase-level searches.
-          </p>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Model:</span>
-              <span className="text-gray-300">all-MiniLM-L6-v2</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Dimensions:</span>
-              <span className="text-gray-300">384D</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Max Chunk Size:</span>
-              <span className="text-gray-300">3 lines</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Boundary Detection:</span>
-              <span className="text-gray-300">{precisionLevel}</span>
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-white truncate">Pinpoint Indexing</h3>
+              <p className="text-xs text-gray-400">O(n)</p>
             </div>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Settings className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Precision Settings</h4>
-          </div>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-3">
-                Boundary Detection
-              </label>
-              <div className="flex rounded-lg border border-gray-600">
-                <button
-                  onClick={() => setPrecisionLevel('sentence')}
-                  disabled={isProcessing}
-                  className={`flex-1 py-2 px-3 rounded-l-lg text-sm transition-colors ${
-                    precisionLevel === 'sentence'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  Sentence
-                </button>
-                <button
-                  onClick={() => setPrecisionLevel('line')}
-                  disabled={isProcessing}
-                  className={`flex-1 py-2 px-3 rounded-r-lg text-sm transition-colors ${
-                    precisionLevel === 'line'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                  }`}
-                >
-                  Line
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Processing Status */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <BarChart3 className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Processing Status</h4>
-          </div>
-          
-          <div className="text-sm text-gray-300 mb-3">
-            {steps[currentStep]}
-          </div>
-          
-          <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-            <div 
-              className="bg-red-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
-            />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-gray-400">Chunks:</span>
-              <span className="text-white ml-2">{chunks.length}</span>
-            </div>
-            <div>
-              <span className="text-gray-400">Boundaries:</span>
-              <span className="text-white ml-2">{boundaryMarkers.length}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Comparison Panel */}
-        {showComparison && comparisonData && (
-          <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-            <div className="flex items-center mb-4">
-              <GitCompare className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Gist vs Pinpoint</h4>
-            </div>
-            
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Gist Chunks:</span>
-                <span className="text-blue-400">{comparisonData.gistChunks}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Pinpoint Chunks:</span>
-                <span className="text-red-400">{chunks.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Precision Ratio:</span>
-                <span className="text-amber-400">
-                  {chunks.length > 0 ? `${Math.round(chunks.length / (comparisonData.gistChunks || 1) * 100) / 100}x` : '—'}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Right Panel - Visualization */}
-      <div className="lg:col-span-2 space-y-6">
-        {/* Input Area */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <FileText className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Document Input</h4>
-            </div>
-            
+        {/* Chunk Settings */}
+        <div className="lg:col-span-2 p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-white">Precision Settings</h4>
             <div className="flex gap-2">
               <button
-                onClick={processDocument}
+                onClick={processText}
                 disabled={isProcessing || !inputText.trim()}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg flex items-center transition-colors"
+                className="px-3 py-1.5 bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded-lg flex items-center transition-colors"
               >
                 {isProcessing ? (
                   <>
-                    <Pause className="h-4 w-4 mr-2 animate-spin" />
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                      <Settings className="h-3 w-3 mr-1" />
+                    </motion.div>
                     Processing...
                   </>
                 ) : (
                   <>
-                    <Play className="h-4 w-4 mr-2" />
-                    Process Document
+                    <Play className="h-3 w-3 mr-1" />
+                    Process
                   </>
                 )}
               </button>
-              
               <button
                 onClick={resetDemo}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center transition-colors"
+                className="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg flex items-center transition-colors"
               >
-                <RotateCcw className="h-4 w-4 mr-2" />
+                <RotateCcw className="h-3 w-3 mr-1" />
                 Reset
               </button>
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <label className="text-gray-400">Chunk size: {chunkSize} lines</label>
+              <input
+                type="range"
+                min="2"
+                max="5"
+                value={chunkSize}
+                onChange={(e) => setChunkSize(Number(e.target.value))}
+                disabled={isProcessing}
+                className="w-full h-1 bg-gray-700 rounded appearance-none cursor-pointer accent-red-400"
+              />
+            </div>
+            <div className="flex items-center">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={respectSentences}
+                  onChange={(e) => setRespectSentences(e.target.checked)}
+                  disabled={isProcessing}
+                  className="mr-2 accent-red-400"
+                />
+                <span className="text-gray-400">Respect sentences</span>
+              </label>
+            </div>
+          </div>
+        </div>
 
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            disabled={isProcessing}
-            className="w-full h-48 p-4 rounded-lg border font-mono text-sm resize-none"
-            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', color: '#ffffff' }}
-            placeholder="Paste your document content here for precise chunking..."
+        {/* Quick Status */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <h4 className="text-sm font-semibold text-white mb-2">Progress</h4>
+          <div className="text-xs text-gray-300">{getStepDescription()}</div>
+          <div className="mt-2 text-xs">
+            <span className="text-amber-400">{chunks.length} chunks</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Input Text Area - More Compact */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-white flex items-center">
+            <FileText className="h-4 w-4 text-red-400 mr-2" />
+            Input Document
+          </h4>
+          <button
+            onClick={() => setInputText(defaultText)}
+            className="text-xs text-red-400 hover:text-red-300"
+          >
+            Use Sample Text
+          </button>
+        </div>
+        <textarea
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Paste your text here to see how Pinpoint mode creates precise chunks..."
+          rows={6}
+          className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white text-sm placeholder-gray-500 resize-none"
+        />
+      </div>
+
+      {/* Full-Width Visualization Section */}
+      <div className="space-y-6">
+        {/* Canvas Visualization */}
+        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center mb-6">
+            <Layers className="h-6 w-6 text-red-400 mr-3" />
+            <h3 className="text-xl font-semibold text-white">Precision Chunk Grid</h3>
+            <div className="ml-auto flex items-center text-sm text-gray-400">
+              <Info className="h-4 w-4 mr-1" />
+              Each block = 3-line chunk
+            </div>
+          </div>
+
+          <canvas
+            ref={canvasRef}
+            width={800}
+            height={400}
+            className="w-full rounded border"
+            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', minHeight: '400px' }}
           />
         </div>
 
-        {/* Boundary Detection Visualization */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Target className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Boundary Detection</h4>
-            <div className="ml-auto flex items-center text-sm text-gray-400">
-              <Info className="h-4 w-4 mr-1" />
-              Visual markers show detected sentence boundaries
-            </div>
-          </div>
-
-          {boundaryMarkers.length > 0 ? (
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              {['sentence', 'paragraph', 'heading'].map(type => {
-                const count = boundaryMarkers.filter(b => b.type === type).length
-                return (
-                  <div key={type} className="text-center p-3 rounded" style={{ backgroundColor: '#1a1a1a' }}>
-                    <div className="text-lg font-bold text-amber-400">{count}</div>
-                    <div className="text-gray-400 capitalize">{type}s</div>
-                  </div>
-                )
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Process document to detect boundaries</p>
-            </div>
-          )}
-        </div>
-
-        {/* Precision Chunk Visualization */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Layers className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Precision Chunks</h4>
-            <div className="ml-auto flex items-center text-sm text-gray-400">
-              <Info className="h-4 w-4 mr-1" />
-              Small, precise chunks optimized for exact matching
-            </div>
-          </div>
-
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            <AnimatePresence>
-              {chunks.map((chunk, index) => (
-                <motion.div
-                  key={chunk.id}
-                  className="p-3 rounded-lg border-l-4 relative"
-                  style={{ 
-                    backgroundColor: '#1a1a1a', 
-                    borderColor: chunk.color,
-                    borderLeftColor: chunk.color
-                  }}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2, delay: index * 0.05 }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-white">
-                        Chunk {chunk.id + 1}
-                      </span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        Lines {chunk.startLine}-{chunk.endLine}
-                      </span>
-                      {chunk.hasSentenceBoundary && (
-                        <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded ml-2">
-                          Sentence End
-                        </span>
-                      )}
-                      <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-1 rounded ml-2">
-                        {chunk.boundaryType}
-                      </span>
-                    </div>
-                    <div className="flex items-center">
-                      <div 
-                        className="w-3 h-3 rounded-full mr-2"
-                        style={{ backgroundColor: chunk.color }}
-                      />
-                      <span className="text-xs text-gray-400">
-                        {chunk.text.split('\n').length} lines
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-300 leading-relaxed">
-                    {chunk.text}
-                  </p>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Vector Storage Visualization */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-            <div className="flex items-center mb-4">
-              <Database className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Precision Vectors</h4>
-            </div>
-
-            <canvas
-              ref={canvasRef}
-              width={300}
-              height={200}
-              className="w-full h-48 rounded border"
-              style={{ backgroundColor: '#1a1a1a', borderColor: '#404040' }}
-            />
-
-            <div className="mt-4 text-center">
-              <p className="text-xs text-gray-400">
-                Each dot represents an individual chunk's 384D embedding. 
-                White rings indicate sentence boundaries.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-            <div className="flex items-center mb-4">
-              <ChevronRight className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Precision Metrics</h4>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 rounded" style={{ backgroundColor: '#1a1a1a' }}>
-                <span className="text-sm text-gray-300">Average Chunk Size</span>
-                <span className="text-amber-400 font-medium">
-                  {chunks.length > 0 
-                    ? Math.round(chunks.reduce((sum, chunk) => sum + chunk.text.split('\n').length, 0) / chunks.length * 10) / 10 
-                    : 0} lines
-                </span>
+        {/* Processing Results */}
+        {chunks.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Chunk Statistics */}
+            <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+              <div className="flex items-center mb-4">
+                <Database className="h-5 w-5 text-red-400 mr-2" />
+                <h4 className="font-semibold text-white">Chunk Analysis</h4>
               </div>
-              
-              <div className="flex items-center justify-between p-3 rounded" style={{ backgroundColor: '#1a1a1a' }}>
-                <span className="text-sm text-gray-300">Boundary Detection</span>
-                <span className="text-red-400 font-medium">
-                  {chunks.filter(c => c.hasSentenceBoundary).length}/{chunks.length}
-                </span>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-3 rounded text-center" style={{ backgroundColor: '#1a1a1a' }}>
+                  <div className="text-2xl font-bold text-red-400">{statistics.total || 0}</div>
+                  <div className="text-gray-400 text-sm">Total Chunks</div>
+                </div>
+                <div className="p-3 rounded text-center" style={{ backgroundColor: '#1a1a1a' }}>
+                  <div className="text-2xl font-bold text-green-400">{statistics.withBoundaries || 0}</div>
+                  <div className="text-gray-400 text-sm">Clean Boundaries</div>
+                </div>
               </div>
-              
-              <div className="flex items-center justify-between p-3 rounded" style={{ backgroundColor: '#1a1a1a' }}>
-                <span className="text-sm text-gray-300">Storage Efficiency</span>
-                <span className="text-green-400 font-medium">
-                  {chunks.length > 0 ? '99.8%' : '0%'}
-                </span>
+
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Avg chunk length:</span>
+                  <span className="text-white">{chunks.length > 0 ? Math.round(chunks.reduce((sum, c) => sum + c.text.length, 0) / chunks.length) : 0} chars</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Embedding dimensions:</span>
+                  <span className="text-white">384</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Boundary detection:</span>
+                  <span className="text-green-400">{respectSentences ? 'Enabled' : 'Disabled'}</span>
+                </div>
               </div>
             </div>
+
+            {/* Boundary Types */}
+            <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+              <div className="flex items-center mb-4">
+                <GitCompare className="h-5 w-5 text-red-400 mr-2" />
+                <h4 className="font-semibold text-white">Boundary Types</h4>
+              </div>
+
+              {Object.keys(statistics).length > 0 ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {Object.entries(statistics)
+                    .filter(([key]) => !['total', 'withBoundaries'].includes(key))
+                    .map(([type, count]) => {
+                      const colors = {
+                        headings: '#fbbf24',
+                        sentences: '#22c55e', 
+                        lists: '#3b82f6',
+                        fragments: '#ef4444'
+                      }
+                      const color = colors[type as keyof typeof colors] || '#6b7280'
+                      
+                      return (
+                        <div key={type} className="text-center p-3 rounded" style={{ backgroundColor: '#1a1a1a' }}>
+                          <div className="text-lg font-bold" style={{ color }}>
+                            {count}
+                          </div>
+                          <div className="text-gray-400 capitalize text-sm">{type}</div>
+                        </div>
+                      )
+                    })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Target className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <div className="text-sm">Process text to analyze boundaries</div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

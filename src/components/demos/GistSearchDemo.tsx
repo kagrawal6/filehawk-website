@@ -8,7 +8,6 @@ import {
   TrendingUp,
   Info,
   Settings,
-  BarChart3,
   Zap
 } from 'lucide-react'
 
@@ -305,177 +304,126 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
     }
   }, [candidateFiles, queryEmbedding])
 
-  const searchStages = [
-    'Ready to search',
-    'Stage 1: Centroid filtering',
-    'Stage 2: Detailed scoring', 
-    'Search complete'
-  ]
 
   const weightSum = Object.values(scoringWeights).reduce((sum, val) => sum + val, 0)
 
+  const getSearchStatus = () => {
+    switch (searchStage) {
+      case 0:
+        return "Ready to search";
+      case 1:
+        return "Filtering candidates...";
+      case 2:
+        return "Calculating holistic scores...";
+      case 3:
+        return "Search complete";
+      default:
+        return "Ready";
+    }
+  }
+
   return (
-    <div className={`grid lg:grid-cols-3 gap-8 ${className}`}>
-      {/* Left Panel - Algorithm Info */}
-      <div className="lg:col-span-1 space-y-6">
-        {/* Algorithm Card */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <div className="p-3 rounded-xl bg-green-500/20 text-green-400 mr-4">
-              <Search className="h-8 w-8" />
+    <div className={`space-y-6 ${className}`}>
+      {/* Compact Controls Row */}
+      <div className="grid lg:grid-cols-4 gap-4">
+        {/* Algorithm Info */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center mb-2">
+            <div className="p-2 rounded-lg bg-green-500/20 text-green-400 mr-3">
+              <Search className="h-4 w-4" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-white">Gist Search Algorithm</h3>
-              <p className="text-sm text-gray-400">O(log n + k) Complexity</p>
-            </div>
-          </div>
-          
-          <p className="text-gray-300 text-sm mb-4">
-            Two-stage retrieval system with centroid filtering and holistic scoring 
-            for comprehensive semantic relevance ranking.
-          </p>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Stage 1:</span>
-              <span className="text-gray-300">Centroid similarity</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Candidates:</span>
-              <span className="text-gray-300">200 files max</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Stage 2:</span>
-              <span className="text-gray-300">Holistic scoring</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Components:</span>
-              <span className="text-gray-300">4 weighted factors</span>
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-white truncate">Gist Search</h3>
+              <p className="text-xs text-gray-400">O(log n + k)</p>
             </div>
           </div>
         </div>
 
-        {/* Scoring Weights */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Settings className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Scoring Weights</h4>
-          </div>
-          
-          <div className="space-y-4">
-            {Object.entries(scoringWeights).map(([key, value]) => (
-              <div key={key}>
-                <div className="flex justify-between text-sm mb-2">
-                  <label className="text-gray-400">
-                    {key.replace('_', ' ')}:
-                  </label>
-                  <span className="text-white">{value.toFixed(2)}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={value}
-                  onChange={(e) => updateWeight(key as keyof ScoringWeights, Number(e.target.value))}
-                  disabled={isSearching}
-                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
-            ))}
-            
-            <div className="pt-2 border-t border-gray-600">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-400">Total:</span>
-                <span className={`font-medium ${Math.abs(weightSum - 1) < 0.001 ? 'text-green-400' : 'text-yellow-400'}`}>
-                  {weightSum.toFixed(2)}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Search Status */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <BarChart3 className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Search Progress</h4>
-          </div>
-          
-          <div className="text-sm text-gray-300 mb-3">
-            {searchStages[searchStage]}
-          </div>
-          
-          <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-            <div 
-              className="bg-green-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${(searchStage / (searchStages.length - 1)) * 100}%` }}
-            />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-gray-400">Candidates:</span>
-              <span className="text-white ml-2">{candidateFiles.length}</span>
-            </div>
-            <div>
-              <span className="text-gray-400">Results:</span>
-              <span className="text-white ml-2">{finalResults.length}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Panel - Visualization */}
-      <div className="lg:col-span-2 space-y-6">
-        {/* Search Demo Controls */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <Search className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Demo Query</h4>
-            </div>
-            
+        {/* Demo Query */}
+        <div className="lg:col-span-2 p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-white">Demo Query</h4>
             <div className="flex gap-2">
               <button
                 onClick={performSearch}
                 disabled={isSearching}
-                className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg flex items-center transition-colors"
+                className="px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded-lg flex items-center transition-colors"
               >
                 {isSearching ? (
                   <>
-                    <Zap className="h-4 w-4 mr-2 animate-pulse" />
-                    Searching...
+                    <Zap className="h-3 w-3 mr-1 animate-pulse" />
+                    Running...
                   </>
                 ) : (
                   <>
-                    <Play className="h-4 w-4 mr-2" />
+                    <Play className="h-3 w-3 mr-1" />
                     Run Demo
                   </>
                 )}
               </button>
-              
               <button
                 onClick={resetSearch}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center transition-colors"
+                className="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg flex items-center transition-colors"
               >
-                <RotateCcw className="h-4 w-4 mr-2" />
+                <RotateCcw className="h-3 w-3 mr-1" />
                 Reset
               </button>
             </div>
           </div>
-
-          <div className="p-3 rounded-lg border bg-gray-800" style={{ borderColor: '#404040' }}>
-            <div className="text-sm text-gray-400 mb-1">Search Query:</div>
-            <div className="font-mono text-amber-400 text-lg">"{query}"</div>
+          <div className="p-2 rounded bg-gray-800" style={{ borderColor: '#404040' }}>
+            <div className="font-mono text-amber-400 text-sm">"{query}"</div>
           </div>
         </div>
 
+        {/* Quick Status */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <h4 className="text-sm font-semibold text-white mb-2">Progress</h4>
+          <div className="text-xs text-gray-300">{getSearchStatus()}</div>
+          <div className="mt-2 flex justify-between text-xs">
+            <span className="text-gray-400">Stage: {searchStage}/2</span>
+            <span className="text-amber-400">{finalResults.length} results</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Scoring Weights - More Compact */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-white flex items-center">
+            <Settings className="h-4 w-4 text-amber-400 mr-2" />
+            Scoring Weights
+          </h4>
+          <span className="text-xs text-gray-400">Total: {weightSum.toFixed(2)}</span>
+        </div>
+        <div className="grid grid-cols-4 gap-4">
+          {Object.entries(scoringWeights).map(([key, value]) => (
+            <div key={key} className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <label className="text-gray-400">{key.replace('_', ' ')}:</label>
+                <span className="text-white font-mono">{value.toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={value}
+                onChange={(e) => updateWeight(key as keyof ScoringWeights, Number(e.target.value))}
+                disabled={isSearching}
+                className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-amber-400"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Full-Width Visualization Section */}
+      <div className="space-y-6">
         {/* Vector Space Visualization */}
         <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Database className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Vector Space (Stage 1: Centroid Filtering)</h4>
+          <div className="flex items-center mb-6">
+            <Database className="h-6 w-6 text-amber-400 mr-3" />
+            <h3 className="text-xl font-semibold text-white">Vector Space Visualization</h3>
             <div className="ml-auto flex items-center text-sm text-gray-400">
               <Info className="h-4 w-4 mr-1" />
               Green dots = selected candidates
@@ -484,10 +432,10 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
 
           <canvas
             ref={canvasRef}
-            width={400}
-            height={200}
-            className="w-full h-48 rounded border"
-            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040' }}
+            width={800}
+            height={400}
+            className="w-full rounded border"
+            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', minHeight: '400px' }}
           />
         </div>
 
@@ -499,23 +447,21 @@ const GistSearchDemo: React.FC<GistSearchDemoProps> = ({ className = '' }) => {
               <h4 className="font-semibold text-white">Stage 1: Candidate Files</h4>
             </div>
 
-            <div className="space-y-3">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {candidateFiles.map((file) => (
                 <div
                   key={file.id}
-                  className="p-4 rounded-lg border flex items-center justify-between"
+                  className="p-4 rounded-lg border"
                   style={{ backgroundColor: '#1a1a1a', borderColor: '#404040' }}
                 >
-                  <div>
-                    <div className="font-medium text-white">{file.name}</div>
-                    <div className="text-sm text-gray-400">{file.path}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-green-400">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="font-medium text-white text-sm">{file.name}</div>
+                    <div className="text-lg font-bold text-green-400 ml-2">
                       {Math.round((file.centroidSimilarity || 0) * 100)}%
                     </div>
-                    <div className="text-xs text-gray-400">Centroid Match</div>
                   </div>
+                  <div className="text-xs text-gray-400">{file.path}</div>
+                  <div className="text-xs text-gray-400 mt-1">Centroid Match</div>
                 </div>
               ))}
             </div>

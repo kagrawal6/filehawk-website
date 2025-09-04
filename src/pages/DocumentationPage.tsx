@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  ChevronLeft,
   ExternalLink,
   Download
 } from 'lucide-react'
@@ -61,6 +62,7 @@ const docSections: DocSection[] = [
 
 const DocumentationPage: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const location = useLocation()
 
   // Get current section from URL
@@ -103,8 +105,9 @@ const DocumentationPage: React.FC = () => {
       <div className="flex flex-1">
         {/* Sidebar */}
         <aside className={`
-          fixed inset-y-0 left-0 z-40 w-80 transform transition-transform duration-300 ease-in-out
-          lg:translate-x-0 lg:static lg:inset-0
+          fixed inset-y-0 left-0 z-40 transform transition-all duration-300 ease-in-out
+          lg:translate-x-0 lg:static lg:inset-0 lg:sticky lg:top-0 lg:h-screen
+          ${sidebarCollapsed ? 'w-16' : 'w-80'}
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}>
           <div className="flex h-full flex-col overflow-y-auto" style={{ backgroundColor: 'var(--bg-elevated)', borderRight: '1px solid var(--border-subtle)' }}>
@@ -112,31 +115,50 @@ const DocumentationPage: React.FC = () => {
             <div className="flex items-center justify-between h-16 px-4 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
               <div className="flex items-center space-x-3">
                 <Book className="h-6 w-6 text-brand-gold-400" />
-                <h2 className="text-lg font-semibold" style={{ color: 'var(--fg-primary)' }}>
-                  Documentation
-                </h2>
+                {!sidebarCollapsed && (
+                  <h2 className="text-lg font-semibold" style={{ color: 'var(--fg-primary)' }}>
+                    Documentation
+                  </h2>
+                )}
               </div>
-              <button
-                onClick={() => setSidebarOpen(false)}
-                className="lg:hidden p-2 rounded-md hover:bg-gray-700 transition-colors"
-              >
-                <X className="h-5 w-5" style={{ color: 'var(--fg-secondary)' }} />
-              </button>
+              <div className="flex items-center space-x-2">
+                {/* Collapse Button (Desktop Only) */}
+                <button
+                  onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                  className="hidden lg:block p-2 rounded-md hover:bg-gray-700 transition-colors"
+                  title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+                >
+                  {sidebarCollapsed ? (
+                    <ChevronRight className="h-4 w-4 text-brand-gold-400" />
+                  ) : (
+                    <ChevronLeft className="h-4 w-4 text-brand-gold-400" />
+                  )}
+                </button>
+                {/* Mobile Close Button */}
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="lg:hidden p-2 rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  <X className="h-5 w-5" style={{ color: 'var(--fg-secondary)' }} />
+                </button>
+              </div>
             </div>
             
             <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto">
               {/* Documentation Sections */}
               <div>
-                <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
-                  TECHNICAL DOCUMENTATION
-                </h3>
+                {!sidebarCollapsed && (
+                  <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
+                    TECHNICAL DOCUMENTATION
+                  </h3>
+                )}
                 <div className="space-y-2">
                   {docSections.map((section) => (
                     <Link
                       key={section.id}
                       to={section.path}
                       className={`
-                        flex items-center px-3 py-3 text-sm rounded-lg transition-all duration-200 group
+                        flex items-center ${sidebarCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'} text-sm rounded-lg transition-all duration-200 group relative
                         ${currentSection.id === section.id 
                           ? 'bg-gradient-to-r from-brand-gold-500/20 to-transparent text-brand-gold-300 border-r-2 border-brand-gold-500' 
                           : 'hover:bg-gray-700/50'
@@ -144,14 +166,21 @@ const DocumentationPage: React.FC = () => {
                       `}
                       style={{ color: currentSection.id === section.id ? 'var(--accent-solid)' : 'var(--fg-secondary)' }}
                     >
-                      <section.icon className="h-5 w-5 mr-3 group-hover:text-brand-gold-400 transition-colors" />
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium mb-1">{section.title}</div>
-                        <div className="text-xs opacity-75 leading-relaxed">
-                          {section.description}
+                      <section.icon className={`h-5 w-5 group-hover:text-brand-gold-400 transition-colors ${sidebarCollapsed ? '' : 'mr-3'}`} />
+                      
+                      {sidebarCollapsed ? (
+                        /* Tooltip for collapsed state */
+                        <div className="absolute left-full ml-3 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-600">
+                          <div className="font-medium">{section.title}</div>
                         </div>
-                      </div>
-                      <ChevronRight className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                      ) : (
+                        <>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium">{section.title}</div>
+                          </div>
+                          <ChevronRight className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                        </>
+                      )}
                     </Link>
                   ))}
                 </div>
@@ -159,28 +188,44 @@ const DocumentationPage: React.FC = () => {
 
               {/* External Links */}
               <div>
-                <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
-                  RESOURCES
-                </h3>
+                {!sidebarCollapsed && (
+                  <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
+                    RESOURCES
+                  </h3>
+                )}
                 <div className="space-y-2">
                   <a
                     href="https://github.com/kagrawal6/filehawk-website"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center px-3 py-2 text-sm rounded-lg transition-colors hover:bg-gray-700/50 group"
+                    className={`flex items-center ${sidebarCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'} text-sm rounded-lg transition-colors hover:bg-gray-700/50 group relative`}
                     style={{ color: 'var(--fg-secondary)' }}
                   >
-                    <GitBranch className="h-4 w-4 mr-3 group-hover:text-brand-gold-400 transition-colors" />
-                    GitHub Repository
-                    <ExternalLink className="h-3 w-3 ml-auto" />
+                    <GitBranch className={`h-4 w-4 group-hover:text-brand-gold-400 transition-colors ${sidebarCollapsed ? '' : 'mr-3'}`} />
+                    {sidebarCollapsed ? (
+                      <div className="absolute left-full ml-3 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-600">
+                        GitHub Repository
+                      </div>
+                    ) : (
+                      <>
+                        GitHub Repository
+                        <ExternalLink className="h-3 w-3 ml-auto" />
+                      </>
+                    )}
                   </a>
                   <a
                     href="#download"
-                    className="flex items-center px-3 py-2 text-sm rounded-lg transition-colors hover:bg-gray-700/50 group"
+                    className={`flex items-center ${sidebarCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'} text-sm rounded-lg transition-colors hover:bg-gray-700/50 group relative`}
                     style={{ color: 'var(--fg-secondary)' }}
                   >
-                    <Download className="h-4 w-4 mr-3 group-hover:text-brand-gold-400 transition-colors" />
-                    Download FileHawk
+                    <Download className={`h-4 w-4 group-hover:text-brand-gold-400 transition-colors ${sidebarCollapsed ? '' : 'mr-3'}`} />
+                    {sidebarCollapsed ? (
+                      <div className="absolute left-full ml-3 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg border border-gray-600">
+                        Download FileHawk
+                      </div>
+                    ) : (
+                      'Download FileHawk'
+                    )}
                   </a>
                 </div>
               </div>

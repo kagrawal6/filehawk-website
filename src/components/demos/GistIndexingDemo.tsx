@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { 
   Play, 
-  Pause,
   RotateCcw,
   FileText,
   Database,
@@ -10,8 +9,7 @@ import {
   Layers,
   ChevronRight,
   Info,
-  Settings,
-  BarChart3
+  Settings
 } from 'lucide-react'
 
 interface Chunk {
@@ -48,302 +46,320 @@ FileHawk represents a breakthrough in local file search technology, combining cu
 ## Core Architecture
 The system implements a dual-mode search architecture that adapts to different use cases:
 
-### Gist Mode Processing
-Gist mode creates larger contextual chunks that preserve semantic relationships between ideas. Each chunk contains approximately 35 lines of content with strategic overlaps to maintain context continuity.
+### Gist Mode
+- Large contextual chunks (35 lines)
+- Comprehensive semantic understanding
+- Perfect for detailed content analysis
+- Optimized for relevance over speed
 
-The embedding process transforms these chunks into high-dimensional vector representations using the MSMarco-MiniLM-L6-cos-v5 model, specifically optimized for semantic understanding.
+### Pinpoint Mode  
+- Small precise chunks (3 lines)
+- Fast direct matching
+- Ideal for quick searches
+- Optimized for speed over context
 
-File-level centroids are computed as the mean of all chunk embeddings, providing a comprehensive representation of the document's overall content and themes.
+## Technical Implementation
+FileHawk leverages state-of-the-art embedding models including all-MiniLM-L6-v2 for semantic understanding and implements sophisticated chunking strategies with configurable overlap to maintain contextual coherence across chunk boundaries.
 
-### Technical Implementation Details
-The indexing pipeline processes documents through several stages:
-1. Text extraction and cleaning
-2. Intelligent chunking with overlap management
-3. Vector embedding generation
-4. Centroid computation
-5. Term frequency analysis
-6. Storage in ChromaDB vector database
+The indexing process involves several stages:
+1. Text preprocessing and normalization
+2. Intelligent chunking with overlap
+3. Embedding generation using transformer models
+4. Centroid calculation for file-level representation
+5. Index optimization for fast retrieval`
 
-### Performance Characteristics
-Gist mode indexing demonstrates O(n) complexity with respect to document length, ensuring consistent performance across varying file sizes.
+  // Color palette for chunks
+  const chunkColors = [
+    '#ef4444', '#f97316', '#eab308', '#22c55e', 
+    '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899'
+  ]
 
-The system maintains sub-second processing times for documents up to 50MB, with automatic optimization for larger files through intelligent batching strategies.
-
-## Search Algorithm Integration
-Gist chunks integrate seamlessly with the two-stage search algorithm, enabling both rapid candidate selection through centroid filtering and detailed relevance scoring through chunk-level analysis.
-
-## Quality Assurance
-Comprehensive testing ensures 95.7% semantic accuracy across diverse document types and query patterns, validated through extensive benchmarking on enterprise datasets.`
-
-  // Initialize with default text
-  useEffect(() => {
-    if (!inputText) {
-      setInputText(defaultText)
+  const getStepDescription = () => {
+    switch (currentStep) {
+      case 0:
+        return 'Ready to process document'
+      case 1:
+        return 'Creating contextual chunks...'
+      case 2:
+        return 'Generating embeddings...'
+      case 3:
+        return 'Computing file centroid...'
+      case 4:
+        return 'Processing complete!'
+      default:
+        return 'Ready'
     }
-  }, [])
+  }
 
-  // Generate mock embedding vector
-  const generateMockEmbedding = (text: string): number[] => {
-    const dimension = 384
-    const embedding = new Array(dimension).fill(0)
+  // Simulate embedding generation
+  const generateEmbedding = (text: string): number[] => {
+    const embedding = new Array(384).fill(0).map(() => Math.random() * 2 - 1)
     
-    // Simple hash-based approach for consistent "embeddings"
-    let hash = 0
-    for (let i = 0; i < text.length; i++) {
-      const char = text.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
-      hash = hash & hash // Convert to 32-bit integer
-    }
-    
-    // Generate embedding based on hash
-    for (let i = 0; i < dimension; i++) {
-      const seed = hash + i
-      embedding[i] = (Math.sin(seed) + Math.cos(seed * 1.5)) * 0.5
-    }
+    // Add some semantic bias based on content
+    const words = text.toLowerCase().split(/\s+/)
+    words.forEach(word => {
+      if (word.includes('filehawk') || word.includes('search')) {
+        embedding[0] += 0.3
+        embedding[1] += 0.2
+      }
+      if (word.includes('embedding') || word.includes('semantic')) {
+        embedding[2] += 0.4
+        embedding[3] += 0.3
+      }
+      if (word.includes('chunk') || word.includes('index')) {
+        embedding[4] += 0.3
+        embedding[5] += 0.4
+      }
+    })
     
     return embedding
   }
 
-  // Extract top terms using simple frequency analysis
+  // Calculate centroid from embeddings
+  const calculateCentroid = (embeddings: number[][]): number[] => {
+    if (embeddings.length === 0) return []
+    
+    const dimensions = embeddings[0].length
+    const centroid = new Array(dimensions).fill(0)
+    
+    embeddings.forEach(embedding => {
+      embedding.forEach((value, index) => {
+        centroid[index] += value
+      })
+    })
+    
+    return centroid.map(value => value / embeddings.length)
+  }
+
+  // Extract top terms (simplified)
   const extractTopTerms = (text: string): string[] => {
     const words = text.toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
+      .replace(/[^\w\s]/g, '')
       .split(/\s+/)
       .filter(word => word.length > 3)
-
-    const frequency: { [key: string]: number } = {}
+    
+    const wordCount: { [key: string]: number } = {}
     words.forEach(word => {
-      frequency[word] = (frequency[word] || 0) + 1
+      wordCount[word] = (wordCount[word] || 0) + 1
     })
-
-    return Object.entries(frequency)
+    
+    return Object.entries(wordCount)
       .sort(([,a], [,b]) => b - a)
-      .slice(0, 10)
+      .slice(0, 8)
       .map(([word]) => word)
   }
 
-  // Create chunks with overlap
-  const createChunks = (text: string): Chunk[] => {
-    const lines = text.split('\n').filter(line => line.trim() !== '')
+  // Process text into chunks
+  const processText = async () => {
+    if (!inputText.trim()) return
+    
+    setIsProcessing(true)
+    setCurrentStep(1)
+    setChunks([])
+    setFileCentroid([])
+    setTopTerms([])
+    
+    const lines = inputText.split('\n')
     const newChunks: Chunk[] = []
     
-    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4']
+    // Create overlapping chunks
+    let chunkId = 1
+    let lineIndex = 0
     
-    let chunkId = 0
-    for (let i = 0; i < lines.length; i += (chunkSize - overlap)) {
-      const endIndex = Math.min(i + chunkSize, lines.length)
-      const chunkLines = lines.slice(i, endIndex)
-      const chunkText = chunkLines.join('\n')
+    while (lineIndex < lines.length) {
+      const endLine = Math.min(lineIndex + chunkSize, lines.length)
+      const chunkText = lines.slice(lineIndex, endLine).join('\n')
       
       if (chunkText.trim()) {
         newChunks.push({
           id: chunkId,
           text: chunkText,
-          startLine: i + 1,
-          endLine: endIndex,
-          embedding: generateMockEmbedding(chunkText),
-          color: colors[chunkId % colors.length],
-          isOverlap: i > 0
+          startLine: lineIndex + 1,
+          endLine: endLine,
+          embedding: [],
+          color: chunkColors[(chunkId - 1) % chunkColors.length],
+          isOverlap: lineIndex > 0 && overlap > 0
         })
         chunkId++
       }
       
-      if (endIndex >= lines.length) break
+      lineIndex += Math.max(1, chunkSize - overlap)
     }
     
-    return newChunks
-  }
-
-  // Calculate file centroid
-  const calculateCentroid = (chunks: Chunk[]): number[] => {
-    if (chunks.length === 0) return []
-    
-    const dimension = chunks[0].embedding.length
-    const centroid = new Array(dimension).fill(0)
-    
-    chunks.forEach(chunk => {
-      chunk.embedding.forEach((value, index) => {
-        centroid[index] += value
-      })
-    })
-    
-    return centroid.map(value => value / chunks.length)
-  }
-
-  // Process document with animation
-  const processDocument = async () => {
-    if (!inputText.trim()) return
-    
-    setIsProcessing(true)
-    setCurrentStep(0)
-    setChunks([])
-    setFileCentroid([])
-    setTopTerms([])
-
-    // Step 1: Text preparation
-    setCurrentStep(1)
+    setChunks(newChunks)
     await new Promise(resolve => setTimeout(resolve, 800))
-
-    // Step 2: Chunking
+    
+    // Generate embeddings
     setCurrentStep(2)
-    const newChunks = createChunks(inputText)
-    
-    // Animate chunks appearing
-    for (let i = 0; i < newChunks.length; i++) {
-      setChunks(prev => [...prev, newChunks[i]])
-      await new Promise(resolve => setTimeout(resolve, 400))
-    }
-
-    // Step 3: Embedding generation
-    setCurrentStep(3)
     await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // Step 4: Centroid calculation
-    setCurrentStep(4)
-    const centroid = calculateCentroid(newChunks)
-    setFileCentroid(centroid)
+    
+    const chunksWithEmbeddings = newChunks.map(chunk => ({
+      ...chunk,
+      embedding: generateEmbedding(chunk.text)
+    }))
+    
+    setChunks(chunksWithEmbeddings)
     await new Promise(resolve => setTimeout(resolve, 800))
-
-    // Step 5: Term extraction
-    setCurrentStep(5)
+    
+    // Calculate file centroid
+    setCurrentStep(3)
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    const embeddings = chunksWithEmbeddings.map(chunk => chunk.embedding)
+    const centroid = calculateCentroid(embeddings)
+    setFileCentroid(centroid)
+    
+    // Extract terms
     const terms = extractTopTerms(inputText)
     setTopTerms(terms)
-    await new Promise(resolve => setTimeout(resolve, 600))
-
+    
+    setCurrentStep(4)
     setIsProcessing(false)
   }
 
-  // Reset demo
   const resetDemo = () => {
     setIsProcessing(false)
     setCurrentStep(0)
     setChunks([])
     setFileCentroid([])
     setTopTerms([])
+    setInputText('')
   }
 
-  // Draw vector visualization on canvas
+  // Canvas visualization
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas || chunks.length === 0) return
+    if (!canvas) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Draw embedding vectors as bars
-    const barWidth = canvas.width / chunks.length
-    const maxHeight = canvas.height - 40
+    if (chunks.length === 0) {
+      ctx.fillStyle = '#666666'
+      ctx.font = '14px Inter'
+      ctx.textAlign = 'center'
+      ctx.fillText('Process text to see chunks visualization', canvas.width / 2, canvas.height / 2)
+      return
+    }
+
+    // Draw chunks as rectangles
+    const chunkHeight = 30
+    const chunkSpacing = 35
+    let yOffset = 20
 
     chunks.forEach((chunk, index) => {
-      const x = index * barWidth
-      const avgValue = chunk.embedding.reduce((sum, val) => sum + Math.abs(val), 0) / chunk.embedding.length
-      const height = (avgValue * maxHeight) / 2
+      const x = 20
+      const y = yOffset + index * chunkSpacing
+      const width = canvas.width - 40
+      const height = chunkHeight
+
+      // Chunk rectangle
+      ctx.fillStyle = chunk.color + '40' // Add transparency
+      ctx.fillRect(x, y, width, height)
       
-      ctx.fillStyle = chunk.color
-      ctx.fillRect(x + 2, canvas.height - height - 20, barWidth - 4, height)
-      
-      // Label
+      ctx.strokeStyle = chunk.color
+      ctx.lineWidth = chunk.isOverlap ? 2 : 1
+      ctx.setLineDash(chunk.isOverlap ? [5, 5] : [])
+      ctx.strokeRect(x, y, width, height)
+      ctx.setLineDash([])
+
+      // Chunk label
       ctx.fillStyle = '#ffffff'
-      ctx.font = '10px Inter'
-      ctx.textAlign = 'center'
-      ctx.fillText(`C${chunk.id + 1}`, x + barWidth/2, canvas.height - 5)
+      ctx.font = '11px Inter'
+      ctx.textAlign = 'left'
+      ctx.fillText(`Chunk ${chunk.id} (Lines ${chunk.startLine}-${chunk.endLine})`, x + 8, y + 16)
+      
+      // Preview text
+      ctx.fillStyle = '#cccccc'
+      ctx.font = '9px Inter'
+      const previewText = chunk.text.substring(0, 60) + '...'
+      ctx.fillText(previewText, x + 8, y + 26)
     })
 
-    // Draw centroid as a separate bar
+    // Draw centroid representation
     if (fileCentroid.length > 0) {
-      const avgCentroid = fileCentroid.reduce((sum, val) => sum + Math.abs(val), 0) / fileCentroid.length
-      const centroidHeight = (avgCentroid * maxHeight) / 2
-      
+      const centroidY = yOffset + chunks.length * chunkSpacing + 20
       ctx.fillStyle = '#d4a574'
-      ctx.fillRect(canvas.width - 60, canvas.height - centroidHeight - 20, 50, centroidHeight)
+      ctx.fillRect(20, centroidY, canvas.width - 40, 25)
       
-      ctx.fillStyle = '#ffffff'
-      ctx.font = '10px Inter'
+      ctx.fillStyle = '#000000'
+      ctx.font = 'bold 12px Inter'
       ctx.textAlign = 'center'
-      ctx.fillText('Centroid', canvas.width - 35, canvas.height - 5)
+      ctx.fillText('File Centroid (Average of all chunks)', canvas.width / 2, centroidY + 16)
     }
   }, [chunks, fileCentroid])
 
-  const steps = [
-    'Ready to process',
-    'Preparing text input',
-    'Creating chunks with overlap',
-    'Generating embeddings',
-    'Computing file centroid',
-    'Extracting top terms',
-    'Processing complete'
-  ]
+  useEffect(() => {
+    setInputText(defaultText)
+  }, [])
 
   return (
-    <div className={`grid lg:grid-cols-3 gap-8 ${className}`}>
-      {/* Left Panel - Algorithm Info */}
-      <div className="lg:col-span-1 space-y-6">
-        {/* Algorithm Card */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <div className="p-3 rounded-xl bg-blue-500/20 text-blue-400 mr-4">
-              <Brain className="h-8 w-8" />
+    <div className={`space-y-6 ${className}`}>
+      {/* Compact Controls Row */}
+      <div className="grid lg:grid-cols-4 gap-4">
+        {/* Algorithm Info */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center mb-2">
+            <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400 mr-3">
+              <Brain className="h-4 w-4" />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-white">Gist Mode Indexing</h3>
-              <p className="text-sm text-gray-400">O(n) Complexity</p>
-            </div>
-          </div>
-          
-          <p className="text-gray-300 text-sm mb-4">
-            Creates 35-line contextual chunks with overlaps to preserve semantic relationships 
-            and generate comprehensive file representations.
-          </p>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Model:</span>
-              <span className="text-gray-300">MSMarco-MiniLM-L6</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Dimensions:</span>
-              <span className="text-gray-300">384D</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Chunk Size:</span>
-              <span className="text-gray-300">{chunkSize} lines</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Overlap:</span>
-              <span className="text-gray-300">{overlap} lines</span>
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-white truncate">Gist Indexing</h3>
+              <p className="text-xs text-gray-400">O(n)</p>
             </div>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Settings className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Parameters</h4>
+        {/* Chunk Settings */}
+        <div className="lg:col-span-2 p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-white">Chunking Settings</h4>
+            <div className="flex gap-2">
+              <button
+                onClick={processText}
+                disabled={isProcessing || !inputText.trim()}
+                className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded-lg flex items-center transition-colors"
+              >
+                {isProcessing ? (
+                  <>
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                      <Settings className="h-3 w-3 mr-1" />
+                    </motion.div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-3 w-3 mr-1" />
+                    Process
+                  </>
+                )}
+              </button>
+              <button
+                onClick={resetDemo}
+                className="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg flex items-center transition-colors"
+              >
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Reset
+              </button>
+            </div>
           </div>
-          
-          <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Chunk Size: {chunkSize} lines
-              </label>
+              <label className="text-gray-400">Chunk size: {chunkSize} lines</label>
               <input
                 type="range"
-                min="20"
+                min="10"
                 max="50"
                 value={chunkSize}
                 onChange={(e) => setChunkSize(Number(e.target.value))}
                 disabled={isProcessing}
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                className="w-full h-1 bg-gray-700 rounded appearance-none cursor-pointer accent-blue-400"
               />
             </div>
-            
             <div>
-              <label className="block text-sm text-gray-400 mb-2">
-                Overlap: {overlap} lines
-              </label>
+              <label className="text-gray-400">Overlap: {overlap} lines</label>
               <input
                 type="range"
                 min="0"
@@ -351,207 +367,136 @@ Comprehensive testing ensures 95.7% semantic accuracy across diverse document ty
                 value={overlap}
                 onChange={(e) => setOverlap(Number(e.target.value))}
                 disabled={isProcessing}
-                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                className="w-full h-1 bg-gray-700 rounded appearance-none cursor-pointer accent-blue-400"
               />
             </div>
           </div>
         </div>
 
-        {/* Processing Status */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <BarChart3 className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Status</h4>
-          </div>
-          
-          <div className="text-sm text-gray-300 mb-3">
-            {steps[currentStep]}
-          </div>
-          
-          <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-            <div 
-              className="bg-amber-500 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
-            />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-gray-400">Chunks:</span>
-              <span className="text-white ml-2">{chunks.length}</span>
-            </div>
-            <div>
-              <span className="text-gray-400">Terms:</span>
-              <span className="text-white ml-2">{topTerms.length}</span>
-            </div>
+        {/* Quick Status */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <h4 className="text-sm font-semibold text-white mb-2">Progress</h4>
+          <div className="text-xs text-gray-300">{getStepDescription()}</div>
+          <div className="mt-2 text-xs">
+            <span className="text-amber-400">{chunks.length} chunks</span>
           </div>
         </div>
       </div>
 
-      {/* Right Panel - Visualization */}
-      <div className="lg:col-span-2 space-y-6">
-        {/* Input Area */}
+      {/* Input Text Area - More Compact */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-white flex items-center">
+            <FileText className="h-4 w-4 text-blue-400 mr-2" />
+            Input Document
+          </h4>
+          <button
+            onClick={() => setInputText(defaultText)}
+            className="text-xs text-blue-400 hover:text-blue-300"
+          >
+            Use Sample Text
+          </button>
+        </div>
+        <textarea
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          placeholder="Paste your text here to see how Gist mode creates contextual chunks..."
+          rows={6}
+          className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white text-sm placeholder-gray-500 resize-none"
+        />
+      </div>
+
+      {/* Full-Width Visualization Section */}
+      <div className="space-y-6">
+        {/* Canvas Visualization */}
         <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <FileText className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Document Input</h4>
-            </div>
-            
-            <div className="flex gap-2">
-              <button
-                onClick={processDocument}
-                disabled={isProcessing || !inputText.trim()}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black rounded-lg flex items-center transition-colors"
-              >
-                {isProcessing ? (
-                  <>
-                    <Pause className="h-4 w-4 mr-2 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-4 w-4 mr-2" />
-                    Process Document
-                  </>
-                )}
-              </button>
-              
-              <button
-                onClick={resetDemo}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg flex items-center transition-colors"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </button>
+          <div className="flex items-center mb-6">
+            <Layers className="h-6 w-6 text-blue-400 mr-3" />
+            <h3 className="text-xl font-semibold text-white">Chunk Structure Visualization</h3>
+            <div className="ml-auto flex items-center text-sm text-gray-400">
+              <Info className="h-4 w-4 mr-1" />
+              Dashed lines = overlapping chunks
             </div>
           </div>
 
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            disabled={isProcessing}
-            className="w-full h-48 p-4 rounded-lg border font-mono text-sm resize-none"
-            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', color: '#ffffff' }}
-            placeholder="Paste your document content here..."
+          <canvas
+            ref={canvasRef}
+            width={800}
+            height={400}
+            className="w-full rounded border"
+            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', minHeight: '400px' }}
           />
         </div>
 
-        {/* Chunking Visualization */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-4">
-            <Layers className="h-5 w-5 text-amber-400 mr-2" />
-            <h4 className="font-semibold text-white">Chunk Visualization</h4>
-            <div className="ml-auto flex items-center text-sm text-gray-400">
-              <Info className="h-4 w-4 mr-1" />
-              Colored blocks show chunk boundaries and overlaps
-            </div>
-          </div>
+        {/* Processing Results */}
+        {chunks.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Chunk Statistics */}
+            <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+              <div className="flex items-center mb-4">
+                <Database className="h-5 w-5 text-blue-400 mr-2" />
+                <h4 className="font-semibold text-white">Chunk Statistics</h4>
+              </div>
 
-          <div className="space-y-3 max-h-64 overflow-y-auto">
-            <AnimatePresence>
-              {chunks.map((chunk, index) => (
-                <motion.div
-                  key={chunk.id}
-                  className="p-4 rounded-lg border-l-4 relative"
-                  style={{ 
-                    backgroundColor: '#1a1a1a', 
-                    borderColor: chunk.color,
-                    borderLeftColor: chunk.color
-                  }}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
-                      <span className="text-sm font-medium text-white">
-                        Chunk {chunk.id + 1}
-                      </span>
-                      <span className="text-xs text-gray-400 ml-2">
-                        Lines {chunk.startLine}-{chunk.endLine}
-                      </span>
-                      {chunk.isOverlap && (
-                        <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1 rounded ml-2">
-                          Overlap
-                        </span>
-                      )}
-                    </div>
-                    <div 
-                      className="w-4 h-4 rounded-full"
-                      style={{ backgroundColor: chunk.color }}
-                    />
-                  </div>
-                  <p className="text-sm text-gray-300 line-clamp-2">
-                    {chunk.text.substring(0, 120)}...
-                  </p>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        </div>
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="p-3 rounded text-center" style={{ backgroundColor: '#1a1a1a' }}>
+                  <div className="text-2xl font-bold text-blue-400">{chunks.length}</div>
+                  <div className="text-gray-400 text-sm">Total Chunks</div>
+                </div>
+                <div className="p-3 rounded text-center" style={{ backgroundColor: '#1a1a1a' }}>
+                  <div className="text-2xl font-bold text-blue-400">{chunks.filter(c => c.isOverlap).length}</div>
+                  <div className="text-gray-400 text-sm">With Overlap</div>
+                </div>
+              </div>
 
-        {/* Vector Visualization */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-            <div className="flex items-center mb-4">
-              <Database className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Vector Embeddings</h4>
-            </div>
-
-            <canvas
-              ref={canvasRef}
-              width={300}
-              height={200}
-              className="w-full h-48 rounded border"
-              style={{ backgroundColor: '#1a1a1a', borderColor: '#404040' }}
-            />
-
-            <div className="mt-4 text-center">
-              <p className="text-xs text-gray-400">
-                Each bar represents the magnitude of a chunk's 384-dimensional embedding vector
-              </p>
-            </div>
-          </div>
-
-          <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-            <div className="flex items-center mb-4">
-              <ChevronRight className="h-5 w-5 text-amber-400 mr-2" />
-              <h4 className="font-semibold text-white">Top Terms (TF-IDF)</h4>
-            </div>
-
-            {topTerms.length > 0 ? (
               <div className="space-y-2">
-                {topTerms.map((term, index) => (
-                  <motion.div
-                    key={term}
-                    className="flex items-center justify-between p-2 rounded"
-                    style={{ backgroundColor: '#1a1a1a' }}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <span className="text-sm text-gray-300">{term}</span>
-                    <div className="flex items-center">
-                      <div 
-                        className="h-2 bg-amber-500 rounded mr-2"
-                        style={{ width: `${Math.max(20, 100 - index * 8)}px` }}
-                      />
-                      <span className="text-xs text-gray-400">
-                        {(Math.max(0.1, 1 - index * 0.08)).toFixed(2)}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Avg chunk length:</span>
+                  <span className="text-white">{Math.round(chunks.reduce((sum, c) => sum + c.text.length, 0) / chunks.length)} chars</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Embedding dimensions:</span>
+                  <span className="text-white">384</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-400">Centroid computed:</span>
+                  <span className="text-green-400">{fileCentroid.length > 0 ? 'Yes' : 'No'}</span>
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Process document to see top terms</p>
+            </div>
+
+            {/* Top Terms */}
+            <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+              <div className="flex items-center mb-4">
+                <ChevronRight className="h-5 w-5 text-blue-400 mr-2" />
+                <h4 className="font-semibold text-white">Key Terms</h4>
               </div>
-            )}
+
+              {topTerms.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {topTerms.map((term, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 rounded-full text-sm font-medium"
+                      style={{ 
+                        backgroundColor: chunkColors[index % chunkColors.length] + '20',
+                        color: chunkColors[index % chunkColors.length],
+                        border: `1px solid ${chunkColors[index % chunkColors.length]}40`
+                      }}
+                    >
+                      {term}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <div className="text-sm">Process text to extract key terms</div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
