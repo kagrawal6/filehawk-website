@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Zap, Shield, Brain, Database, ChevronRight, ArrowRight, BookOpen } from 'lucide-react'
+import { Zap, Shield, Brain, Database, ChevronRight, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 interface CapabilityCardProps {
