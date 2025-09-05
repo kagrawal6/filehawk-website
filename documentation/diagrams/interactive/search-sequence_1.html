@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>search-sequence.md – diagram 1/1</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    background: rgba(0,0,0,.03);
+    z-index: 10;
+  }
+  .toolbar input[type="range"] {
+    width: 250px;
+  }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 52px);
+    overflow: auto;
+    padding: 16px;
+    cursor: grab;
+  }
+  .stage {
+    transform-origin: 0 0;
+    display: inline-block;
+  }
+  /* make SVG selectable and crisp */
+  svg {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+  .hint {
+    opacity: .7;
+    font-size: 12px;
+    margin-left: auto;
+  }
+  button {
+    cursor: pointer;
+  }
+  .panning {
+    cursor: grabbing !important;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>search-sequence.md – diagram 1/1</strong>
+    <label style="margin-left:1rem;">Zoom
+      <input id="zoom" type="range" min="0.25" max="4" step="0.05" value="1.2">
+    </label>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <button id="reset">Reset</button>
+    <span class="hint">Tip: Ctrl/Cmd + mouse wheel zooms · Drag to pan</span>
+  </div>
+  <div class="stage-wrap" id="wrap">
+    <div class="stage" id="stage">
+      <pre class="mermaid">
+sequenceDiagram
+    participant User
+    participant React_UI as React UI
+    participant Electron_Main as Electron Main
+    participant Flask_API as Flask API
+    participant AI_Models as AI Models
+    participant ChromaDB
+    participant Ranking_Engine as Ranking Engine
+
+    %% User initiates search
+    User-&gt;&gt;React_UI: Enter search query
+    React_UI-&gt;&gt;React_UI: Validate input
+    React_UI-&gt;&gt;React_UI: Select search mode (Gist/Pinpoint)
+    
+    %% Send request through Electron
+    React_UI-&gt;&gt;Electron_Main: IPC: search request
+    Electron_Main-&gt;&gt;Electron_Main: Validate request
+    Electron_Main-&gt;&gt;Flask_API: HTTP POST /api/search
+    
+    %% Backend processing
+    Flask_API-&gt;&gt;Flask_API: Parse request parameters
+    Flask_API-&gt;&gt;Flask_API: Validate query and mode
+    
+    alt Gist Mode
+        Flask_API-&gt;&gt;AI_Models: Generate embedding (MSMarco)
+        AI_Models--&gt;&gt;Flask_API: Return query vector
+        Flask_API-&gt;&gt;ChromaDB: Query gist collection
+        ChromaDB--&gt;&gt;Flask_API: Return similarity results
+        Flask_API-&gt;&gt;Ranking_Engine: Apply gist ranking algorithm
+        Ranking_Engine--&gt;&gt;Flask_API: Return ranked results
+    else Pinpoint Mode
+        Flask_API-&gt;&gt;AI_Models: Generate embedding (AllMiniLM)
+        AI_Models--&gt;&gt;Flask_API: Return query vector
+        Flask_API-&gt;&gt;ChromaDB: Query pinpoint collection
+        ChromaDB--&gt;&gt;Flask_API: Return similarity results
+        Flask_API-&gt;&gt;Flask_API: Apply pinpoint confidence scoring
+    end
+    
+    %% Confidence calculation and boosting
+    Flask_API-&gt;&gt;Flask_API: Calculate base confidence scores
+    Flask_API-&gt;&gt;Flask_API: Apply filename matching boost
+    Flask_API-&gt;&gt;Flask_API: Apply exact term matching boost
+    Flask_API-&gt;&gt;Flask_API: Normalize final scores
+    
+    %% Return results
+    Flask_API--&gt;&gt;Electron_Main: HTTP Response with results
+    Electron_Main--&gt;&gt;React_UI: IPC: search response
+    React_UI-&gt;&gt;React_UI: Process and format results
+    React_UI-&gt;&gt;React_UI: Update search results UI
+    React_UI--&gt;&gt;User: Display ranked results
+    
+    %% User interaction with results
+    User-&gt;&gt;React_UI: Click on result
+    React_UI-&gt;&gt;Electron_Main: IPC: open file request
+    Electron_Main-&gt;&gt;Electron_Main: Open file with system default
+    Electron_Main--&gt;&gt;React_UI: IPC: file opened confirmation
+    React_UI--&gt;&gt;User: Visual feedback
+      </pre>
+    </div>
+  </div>
+
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    const userConfig = {
+      startOnLoad: true,
+      theme: "default",
+      themeVariables: {
+        fontSize: "20px",
+        lineHeight: "24px"
+      }
+    };
+    mermaid.initialize(userConfig);
+
+    const zoomEl = document.getElementById('zoom');
+    const stage = document.getElementById('stage');
+    const wrap = document.getElementById('wrap');
+    const btnIn = document.getElementById('zoomIn');
+    const btnOut = document.getElementById('zoomOut');
+    const btnReset = document.getElementById('reset');
+
+    let svgEl = null;
+    let baseWidth = 0, baseHeight = 0;
+
+    function applyZoom(z) {
+      const scale = typeof z === 'string' ? parseFloat(z) : z;
+      if (svgEl) {
+        svgEl.style.transformOrigin = '0 0';
+        svgEl.style.transform = `scale(${scale})`;
+        if (baseWidth && baseHeight) {
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+        }
+      } else {
+        // Fallback if SVG not yet found: scale the stage
+        stage.style.transformOrigin = '0 0';
+        stage.style.transform = `scale(${scale})`;
+      }
+      zoomEl.value = scale.toFixed(2);
+    }
+
+    zoomEl.addEventListener('input', () => applyZoom(zoomEl.value));
+
+    btnIn.addEventListener('click', () => {
+      const z = Math.min(4, (parseFloat(zoomEl.value) + 0.1));
+      applyZoom(z);
+    });
+    btnOut.addEventListener('click', () => {
+      const z = Math.max(0.25, (parseFloat(zoomEl.value) - 0.1));
+      applyZoom(z);
+    });
+    btnReset.addEventListener('click', () => applyZoom(1.2));
+
+    // Ctrl/Cmd + wheel zoom
+    wrap.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const z = Math.min(4, Math.max(0.25, parseFloat(zoomEl.value) + delta));
+      applyZoom(z);
+    }, {passive:false});
+
+    // Auto-fit width on load (approx)
+    window.addEventListener('load', () => {
+      // Give Mermaid a moment to render
+      setTimeout(() => {
+        try {
+          svgEl = stage.querySelector('svg');
+          if (!svgEl) return;
+          const bbox = svgEl.getBBox();
+          baseWidth = Math.max(1, bbox.width);
+          baseHeight = Math.max(1, bbox.height);
+          const target = wrap.clientWidth - 32; // padding margin
+          let z = target / baseWidth;
+          z = Math.max(0.25, Math.min(2.5, z));
+          applyZoom(z);
+        } catch (e) {}
+      }, 250);
+    });
+
+    // Drag to pan
+    let isPanning = false;
+    let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left-click only
+      isPanning = true;
+      wrap.classList.add('panning');
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      startScrollLeft = wrap.scrollLeft;
+      startScrollTop = wrap.scrollTop;
+    });
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - wrap.offsetLeft;
+      const y = e.pageY - wrap.offsetTop;
+      const dx = x - startX;
+      const dy = y - startY;
+      wrap.scrollLeft = startScrollLeft - dx;
+      wrap.scrollTop = startScrollTop - dy;
+    });
+  </script>
+</body>
+</html>

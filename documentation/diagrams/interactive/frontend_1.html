@@ -1,0 +1,271 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>frontend.md – diagram 1/1</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    background: rgba(0,0,0,.03);
+    z-index: 10;
+  }
+  .toolbar input[type="range"] {
+    width: 250px;
+  }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 52px);
+    overflow: auto;
+    padding: 16px;
+    cursor: grab;
+  }
+  .stage {
+    transform-origin: 0 0;
+    display: inline-block;
+  }
+  /* make SVG selectable and crisp */
+  svg {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+  .hint {
+    opacity: .7;
+    font-size: 12px;
+    margin-left: auto;
+  }
+  button {
+    cursor: pointer;
+  }
+  .panning {
+    cursor: grabbing !important;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>frontend.md – diagram 1/1</strong>
+    <label style="margin-left:1rem;">Zoom
+      <input id="zoom" type="range" min="0.25" max="4" step="0.05" value="1.2">
+    </label>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <button id="reset">Reset</button>
+    <span class="hint">Tip: Ctrl/Cmd + mouse wheel zooms · Drag to pan</span>
+  </div>
+  <div class="stage-wrap" id="wrap">
+    <div class="stage" id="stage">
+      <pre class="mermaid">
+graph TB
+    %% External Services
+    subgraph "External"
+        API[Local Flask API&lt;br/&gt;localhost:5000]
+        FILES[File System&lt;br/&gt;User Documents]
+        GITHUB[GitHub OAuth&lt;br/&gt;Browser Flow]
+    end
+
+    %% Electron Main Process
+    subgraph "Electron Main"
+        MAIN[main.ts&lt;br/&gt;App Lifecycle]
+        WINDOWS[Window Manager&lt;br/&gt;UI Windows]
+        
+        subgraph "IPC Handlers"
+            IPC_API[API Requests&lt;br/&gt;HTTP Proxy]
+            IPC_FOLDERS[Folder Selection&lt;br/&gt;Native Dialogs]
+            IPC_FILES[File Operations&lt;br/&gt;Open Files]
+        end
+        
+        PRELOAD[preload.ts&lt;br/&gt;Security Bridge]
+    end
+
+    %% React Application
+    subgraph "React App (Renderer)"
+        subgraph "Core Components"
+            APP[App.tsx&lt;br/&gt;Root Component]
+            HOME[HomePage.tsx&lt;br/&gt;Search Interface]
+            SETTINGS[SettingsPage.tsx&lt;br/&gt;Configuration]
+        end
+        
+        subgraph "Search UI"
+            SEARCH_BAR[SearchBar.tsx&lt;br/&gt;Query Input]
+            RESULTS[SearchResults.tsx&lt;br/&gt;Result Display]
+            FILE_RESULT[FileResult.tsx&lt;br/&gt;Result Items]
+            MODE_SELECT[Mode Selector&lt;br/&gt;Gist/Pinpoint]
+        end
+        
+        subgraph "Navigation"
+            SIDEBAR[Sidebar.tsx&lt;br/&gt;Menu Navigation]
+            HEADER[BrandHeader.tsx&lt;br/&gt;App Header]
+        end
+        
+        subgraph "Utilities"
+            API_CLIENT[api.ts&lt;br/&gt;HTTP Client]
+            STATE[React State&lt;br/&gt;Component State]
+        end
+    end
+
+    %% Connections
+    API --&gt; IPC_API
+    FILES --&gt; IPC_FOLDERS
+    GITHUB --&gt; SETTINGS
+    
+    MAIN --&gt; WINDOWS
+    MAIN --&gt; PRELOAD
+    WINDOWS --&gt; APP
+    PRELOAD --&gt; API_CLIENT
+    
+    APP --&gt; HOME
+    APP --&gt; SETTINGS
+    APP --&gt; SIDEBAR
+    APP --&gt; HEADER
+    
+    HOME --&gt; SEARCH_BAR
+    HOME --&gt; RESULTS
+    RESULTS --&gt; FILE_RESULT
+    SEARCH_BAR --&gt; MODE_SELECT
+    
+    SEARCH_BAR --&gt; API_CLIENT
+    API_CLIENT --&gt; IPC_API
+    SETTINGS --&gt; STATE
+
+    %% Styling
+    classDef external fill:#FFF3E0,stroke:#F57C00,color:#000
+    classDef electron fill:#9C27B0,stroke:#4A148C,color:#fff
+    classDef react fill:#61DAFB,stroke:#21A0C4,color:#000
+    classDef ui fill:#4CAF50,stroke:#2E7D32,color:#fff
+    classDef utils fill:#FF9800,stroke:#E65100,color:#fff
+
+    class API,FILES,GITHUB external
+    class MAIN,WINDOWS,IPC_API,IPC_FOLDERS,IPC_FILES,PRELOAD electron
+    class APP,HOME,SETTINGS react
+    class SEARCH_BAR,RESULTS,FILE_RESULT,MODE_SELECT,SIDEBAR,HEADER ui
+    class API_CLIENT,STATE utils
+      </pre>
+    </div>
+  </div>
+
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    const userConfig = {
+      startOnLoad: true,
+      theme: "default",
+      themeVariables: {
+        fontSize: "20px",
+        lineHeight: "24px"
+      }
+    };
+    mermaid.initialize(userConfig);
+
+    const zoomEl = document.getElementById('zoom');
+    const stage = document.getElementById('stage');
+    const wrap = document.getElementById('wrap');
+    const btnIn = document.getElementById('zoomIn');
+    const btnOut = document.getElementById('zoomOut');
+    const btnReset = document.getElementById('reset');
+
+    let svgEl = null;
+    let baseWidth = 0, baseHeight = 0;
+
+    function applyZoom(z) {
+      const scale = typeof z === 'string' ? parseFloat(z) : z;
+      if (svgEl) {
+        svgEl.style.transformOrigin = '0 0';
+        svgEl.style.transform = `scale(${scale})`;
+        if (baseWidth && baseHeight) {
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+        }
+      } else {
+        // Fallback if SVG not yet found: scale the stage
+        stage.style.transformOrigin = '0 0';
+        stage.style.transform = `scale(${scale})`;
+      }
+      zoomEl.value = scale.toFixed(2);
+    }
+
+    zoomEl.addEventListener('input', () => applyZoom(zoomEl.value));
+
+    btnIn.addEventListener('click', () => {
+      const z = Math.min(4, (parseFloat(zoomEl.value) + 0.1));
+      applyZoom(z);
+    });
+    btnOut.addEventListener('click', () => {
+      const z = Math.max(0.25, (parseFloat(zoomEl.value) - 0.1));
+      applyZoom(z);
+    });
+    btnReset.addEventListener('click', () => applyZoom(1.2));
+
+    // Ctrl/Cmd + wheel zoom
+    wrap.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const z = Math.min(4, Math.max(0.25, parseFloat(zoomEl.value) + delta));
+      applyZoom(z);
+    }, {passive:false});
+
+    // Auto-fit width on load (approx)
+    window.addEventListener('load', () => {
+      // Give Mermaid a moment to render
+      setTimeout(() => {
+        try {
+          svgEl = stage.querySelector('svg');
+          if (!svgEl) return;
+          const bbox = svgEl.getBBox();
+          baseWidth = Math.max(1, bbox.width);
+          baseHeight = Math.max(1, bbox.height);
+          const target = wrap.clientWidth - 32; // padding margin
+          let z = target / baseWidth;
+          z = Math.max(0.25, Math.min(2.5, z));
+          applyZoom(z);
+        } catch (e) {}
+      }, 250);
+    });
+
+    // Drag to pan
+    let isPanning = false;
+    let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left-click only
+      isPanning = true;
+      wrap.classList.add('panning');
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      startScrollLeft = wrap.scrollLeft;
+      startScrollTop = wrap.scrollTop;
+    });
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - wrap.offsetLeft;
+      const y = e.pageY - wrap.offsetTop;
+      const dx = x - startX;
+      const dy = y - startY;
+      wrap.scrollLeft = startScrollLeft - dx;
+      wrap.scrollTop = startScrollTop - dy;
+    });
+  </script>
+</body>
+</html>

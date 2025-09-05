@@ -1,0 +1,309 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>github-integration.md – diagram 1/1</title>
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    background: #ffffff;
+    color: #111111;
+  }
+  .toolbar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .5rem .75rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    background: rgba(0,0,0,.03);
+    z-index: 10;
+  }
+  .toolbar input[type="range"] {
+    width: 250px;
+  }
+  .stage-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 52px);
+    overflow: auto;
+    padding: 16px;
+    cursor: grab;
+  }
+  .stage {
+    transform-origin: 0 0;
+    display: inline-block;
+  }
+  /* make SVG selectable and crisp */
+  svg {
+    shape-rendering: geometricPrecision;
+    text-rendering: optimizeLegibility;
+  }
+  .hint {
+    opacity: .7;
+    font-size: 12px;
+    margin-left: auto;
+  }
+  button {
+    cursor: pointer;
+  }
+  .panning {
+    cursor: grabbing !important;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>github-integration.md – diagram 1/1</strong>
+    <label style="margin-left:1rem;">Zoom
+      <input id="zoom" type="range" min="0.25" max="4" step="0.05" value="1.2">
+    </label>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <button id="reset">Reset</button>
+    <span class="hint">Tip: Ctrl/Cmd + mouse wheel zooms · Drag to pan</span>
+  </div>
+  <div class="stage-wrap" id="wrap">
+    <div class="stage" id="stage">
+      <pre class="mermaid">
+flowchart TD
+    %% User Initiation
+    USER_START[👤 User Clicks&lt;br/&gt;"Connect GitHub"]
+    
+    %% OAuth Device Flow
+    DEVICE_AUTH[GitHub Device Auth&lt;br/&gt;POST /login/device/code]
+    DEVICE_RESPONSE[Device Code Response&lt;br/&gt;user_code, device_code, verification_uri]
+    SHOW_CODE[Display User Code&lt;br/&gt;Show verification URL]
+    
+    %% User Authorization
+    USER_BROWSER[🌐 User Opens Browser&lt;br/&gt;github.com/device]
+    USER_ENTERS_CODE[User Enters Code&lt;br/&gt;Authorize Application]
+    USER_CONFIRMS[User Confirms&lt;br/&gt;Grant Repository Access]
+    
+    %% Token Exchange
+    POLL_TOKEN[Poll for Token&lt;br/&gt;POST /login/oauth/access_token]
+    TOKEN_RECEIVED[Access Token&lt;br/&gt;Received]
+    STORE_TOKEN[Store Token Securely&lt;br/&gt;System Keyring]
+    
+    %% Repository Discovery
+    FETCH_REPOS[Fetch Repositories&lt;br/&gt;GET /user/repos]
+    FILTER_REPOS[Filter &amp; Sort&lt;br/&gt;By Activity &amp; Access]
+    DISPLAY_REPOS[📋 Display Repository List&lt;br/&gt;Name, Description, Updated]
+    
+    %% Repository Selection
+    USER_SELECTS[User Selects Repository&lt;br/&gt;Choose Branch &amp; Settings]
+    CLONE_REPO[Clone Repository&lt;br/&gt;Git Clone to Local]
+    BRANCH_CHECKOUT[Checkout Branch&lt;br/&gt;Switch to Selected Branch]
+    
+    %% Repository Indexing
+    INDEX_START[Start Repository Indexing&lt;br/&gt;Background Process]
+    
+    subgraph "Repository Processing"
+        SCAN_FILES[Scan Repository Files&lt;br/&gt;Apply Exclusion Rules]
+        EXTRACT_TEXT[Extract Text Content&lt;br/&gt;Code, Docs, README]
+        CHUNK_CONTENT[Chunk Repository Content&lt;br/&gt;Gist + Pinpoint Modes]
+        GENERATE_EMBEDDINGS[Generate AI Embeddings&lt;br/&gt;MSMarco + AllMiniLM]
+        STORE_VECTORS[Store in ChromaDB&lt;br/&gt;Separate Collections]
+    end
+    
+    %% Manifest Management
+    CREATE_MANIFEST[Create Branch Manifest&lt;br/&gt;Track Indexed Files]
+    STORE_MANIFEST[Store Manifest&lt;br/&gt;Persistent State]
+    
+    %% Real-time Sync Setup
+    SETUP_MONITORING[Setup File Monitoring&lt;br/&gt;Watch Repository Directory]
+    SCHEDULE_SYNC[Schedule Periodic Sync&lt;br/&gt;Check for Updates]
+    
+    %% Ongoing Synchronization
+    DETECT_CHANGES[Detect Repository Changes&lt;br/&gt;Git Pull &amp; Compare]
+    UPDATE_INDEX[Update Search Index&lt;br/&gt;Incremental Changes]
+    NOTIFY_USER[Notify User&lt;br/&gt;Sync Complete]
+    
+    %% Error Handling
+    AUTH_ERROR{Authentication&lt;br/&gt;Error?}
+    CLONE_ERROR{Clone&lt;br/&gt;Error?}
+    INDEX_ERROR{Indexing&lt;br/&gt;Error?}
+    
+    ERROR_DISPLAY[❌ Display Error&lt;br/&gt;User-Friendly Message]
+    RETRY_OPTION[🔄 Offer Retry&lt;br/&gt;Retry Button]
+    
+    %% Flow Connections
+    USER_START --&gt; DEVICE_AUTH
+    DEVICE_AUTH --&gt; DEVICE_RESPONSE
+    DEVICE_RESPONSE --&gt; SHOW_CODE
+    SHOW_CODE --&gt; USER_BROWSER
+    USER_BROWSER --&gt; USER_ENTERS_CODE
+    USER_ENTERS_CODE --&gt; USER_CONFIRMS
+    
+    USER_CONFIRMS --&gt; POLL_TOKEN
+    POLL_TOKEN --&gt; AUTH_ERROR
+    AUTH_ERROR --&gt;|No| TOKEN_RECEIVED
+    AUTH_ERROR --&gt;|Yes| ERROR_DISPLAY
+    ERROR_DISPLAY --&gt; RETRY_OPTION
+    RETRY_OPTION --&gt; DEVICE_AUTH
+    
+    TOKEN_RECEIVED --&gt; STORE_TOKEN
+    STORE_TOKEN --&gt; FETCH_REPOS
+    FETCH_REPOS --&gt; FILTER_REPOS
+    FILTER_REPOS --&gt; DISPLAY_REPOS
+    
+    DISPLAY_REPOS --&gt; USER_SELECTS
+    USER_SELECTS --&gt; CLONE_REPO
+    CLONE_REPO --&gt; CLONE_ERROR
+    CLONE_ERROR --&gt;|No| BRANCH_CHECKOUT
+    CLONE_ERROR --&gt;|Yes| ERROR_DISPLAY
+    
+    BRANCH_CHECKOUT --&gt; INDEX_START
+    INDEX_START --&gt; SCAN_FILES
+    SCAN_FILES --&gt; EXTRACT_TEXT
+    EXTRACT_TEXT --&gt; CHUNK_CONTENT
+    CHUNK_CONTENT --&gt; GENERATE_EMBEDDINGS
+    GENERATE_EMBEDDINGS --&gt; STORE_VECTORS
+    STORE_VECTORS --&gt; INDEX_ERROR
+    
+    INDEX_ERROR --&gt;|No| CREATE_MANIFEST
+    INDEX_ERROR --&gt;|Yes| ERROR_DISPLAY
+    
+    CREATE_MANIFEST --&gt; STORE_MANIFEST
+    STORE_MANIFEST --&gt; SETUP_MONITORING
+    SETUP_MONITORING --&gt; SCHEDULE_SYNC
+    
+    SCHEDULE_SYNC --&gt; DETECT_CHANGES
+    DETECT_CHANGES --&gt; UPDATE_INDEX
+    UPDATE_INDEX --&gt; NOTIFY_USER
+    NOTIFY_USER --&gt; DETECT_CHANGES
+
+    %% Styling
+    classDef user fill:#E3F2FD,stroke:#1976D2,color:#000
+    classDef oauth fill:#F3E5F5,stroke:#7B1FA2,color:#000
+    classDef repo fill:#E8F5E8,stroke:#388E3C,color:#000
+    classDef processing fill:#FFF3E0,stroke:#F57C00,color:#000
+    classDef sync fill:#FCE4EC,stroke:#C2185B,color:#000
+    classDef error fill:#FFEBEE,stroke:#D32F2F,color:#000
+    classDef success fill:#F1F8E9,stroke:#689F38,color:#000
+
+    class USER_START,USER_BROWSER,USER_ENTERS_CODE,USER_CONFIRMS,USER_SELECTS user
+    class DEVICE_AUTH,DEVICE_RESPONSE,SHOW_CODE,POLL_TOKEN,TOKEN_RECEIVED,STORE_TOKEN oauth
+    class FETCH_REPOS,FILTER_REPOS,DISPLAY_REPOS,CLONE_REPO,BRANCH_CHECKOUT repo
+    class INDEX_START,SCAN_FILES,EXTRACT_TEXT,CHUNK_CONTENT,GENERATE_EMBEDDINGS,STORE_VECTORS processing
+    class CREATE_MANIFEST,STORE_MANIFEST,SETUP_MONITORING,SCHEDULE_SYNC,DETECT_CHANGES,UPDATE_INDEX,NOTIFY_USER sync
+    class AUTH_ERROR,CLONE_ERROR,INDEX_ERROR,ERROR_DISPLAY,RETRY_OPTION error
+      </pre>
+    </div>
+  </div>
+
+  <!-- Mermaid CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    const userConfig = {
+      startOnLoad: true,
+      theme: "default",
+      themeVariables: {
+        fontSize: "20px",
+        lineHeight: "24px"
+      }
+    };
+    mermaid.initialize(userConfig);
+
+    const zoomEl = document.getElementById('zoom');
+    const stage = document.getElementById('stage');
+    const wrap = document.getElementById('wrap');
+    const btnIn = document.getElementById('zoomIn');
+    const btnOut = document.getElementById('zoomOut');
+    const btnReset = document.getElementById('reset');
+
+    let svgEl = null;
+    let baseWidth = 0, baseHeight = 0;
+
+    function applyZoom(z) {
+      const scale = typeof z === 'string' ? parseFloat(z) : z;
+      if (svgEl) {
+        svgEl.style.transformOrigin = '0 0';
+        svgEl.style.transform = `scale(${scale})`;
+        if (baseWidth && baseHeight) {
+          stage.style.width = Math.ceil(baseWidth * scale) + 'px';
+          stage.style.height = Math.ceil(baseHeight * scale) + 'px';
+        }
+      } else {
+        // Fallback if SVG not yet found: scale the stage
+        stage.style.transformOrigin = '0 0';
+        stage.style.transform = `scale(${scale})`;
+      }
+      zoomEl.value = scale.toFixed(2);
+    }
+
+    zoomEl.addEventListener('input', () => applyZoom(zoomEl.value));
+
+    btnIn.addEventListener('click', () => {
+      const z = Math.min(4, (parseFloat(zoomEl.value) + 0.1));
+      applyZoom(z);
+    });
+    btnOut.addEventListener('click', () => {
+      const z = Math.max(0.25, (parseFloat(zoomEl.value) - 0.1));
+      applyZoom(z);
+    });
+    btnReset.addEventListener('click', () => applyZoom(1.2));
+
+    // Ctrl/Cmd + wheel zoom
+    wrap.addEventListener('wheel', (e) => {
+      if (!(e.ctrlKey || e.metaKey)) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const z = Math.min(4, Math.max(0.25, parseFloat(zoomEl.value) + delta));
+      applyZoom(z);
+    }, {passive:false});
+
+    // Auto-fit width on load (approx)
+    window.addEventListener('load', () => {
+      // Give Mermaid a moment to render
+      setTimeout(() => {
+        try {
+          svgEl = stage.querySelector('svg');
+          if (!svgEl) return;
+          const bbox = svgEl.getBBox();
+          baseWidth = Math.max(1, bbox.width);
+          baseHeight = Math.max(1, bbox.height);
+          const target = wrap.clientWidth - 32; // padding margin
+          let z = target / baseWidth;
+          z = Math.max(0.25, Math.min(2.5, z));
+          applyZoom(z);
+        } catch (e) {}
+      }, 250);
+    });
+
+    // Drag to pan
+    let isPanning = false;
+    let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return; // left-click only
+      isPanning = true;
+      wrap.classList.add('panning');
+      startX = e.pageX - wrap.offsetLeft;
+      startY = e.pageY - wrap.offsetTop;
+      startScrollLeft = wrap.scrollLeft;
+      startScrollTop = wrap.scrollTop;
+    });
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mouseleave', () => {
+      isPanning = false;
+      wrap.classList.remove('panning');
+    });
+    wrap.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - wrap.offsetLeft;
+      const y = e.pageY - wrap.offsetTop;
+      const dx = x - startX;
+      const dy = y - startY;
+      wrap.scrollLeft = startScrollLeft - dx;
+      wrap.scrollTop = startScrollTop - dy;
+    });
+  </script>
+</body>
+</html>
