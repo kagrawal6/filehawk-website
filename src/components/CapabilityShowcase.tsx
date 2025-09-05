@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Zap, Shield, Brain, Database, ChevronRight } from 'lucide-react'
+import { Zap, Shield, Brain, Database, ChevronRight, ArrowRight, BookOpen } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 interface CapabilityCardProps {
   capability: any
@@ -143,12 +144,30 @@ const CapabilityShowcase: React.FC = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight mb-4">
-            <span style={{ color: 'var(--fg-primary)' }}>Built for</span>{' '}
+            <span style={{ color: 'var(--fg-primary)' }}>Built For</span>{' '}
             <span className="bg-gradient-to-r from-brand-gold-400 to-brand-gold-600 bg-clip-text text-transparent">
-              performance
+              Performance
             </span>
           </h2>
-          <p className="mt-6 max-w-3xl mx-auto text-xl leading-relaxed" style={{ color: 'var(--fg-secondary)' }}>
+          
+          {/* Documentation CTA - Smaller Version */}
+          <div className="mt-4 mb-6">
+            <Link 
+              to="/documentation/features"
+              className="inline-flex items-center px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-300 hover:scale-105 group"
+              style={{ 
+                borderColor: 'var(--border-subtle)', 
+                color: 'var(--fg-primary)',
+                backgroundColor: 'transparent'
+              }}
+            >
+              <Zap className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+              Features & Capabilities
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+          
+          <p className="max-w-3xl mx-auto text-xl leading-relaxed" style={{ color: 'var(--fg-secondary)' }}>
             Designed from the ground up for speed, privacy, and scale
           </p>
         </div>
@@ -162,6 +181,7 @@ const CapabilityShowcase: React.FC = () => {
             />
           ))}
         </div>
+
       </div>
     </section>
   )

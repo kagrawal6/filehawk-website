@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { FolderOpen, Brain, Search, FileText, ChevronRight } from 'lucide-react'
+import { FolderOpen, Brain, Search, FileText, ChevronRight, ArrowRight, Database } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const HowItWorks: React.FC = () => {
   
@@ -151,14 +152,46 @@ const HowItWorks: React.FC = () => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight mb-4">
             <span style={{ color: 'var(--fg-primary)' }}>How</span>{' '}
             <span className="bg-gradient-to-r from-brand-gold-400 to-brand-gold-600 bg-clip-text text-transparent">
               FileHawk
             </span>
             {' '}<span style={{ color: 'var(--fg-primary)' }}>Works</span>
           </h2>
-          <p className="mt-6 max-w-3xl mx-auto text-xl leading-relaxed" style={{ color: 'var(--fg-secondary)' }}>
+          
+          {/* Documentation CTAs - Smaller Version */}
+          <div className="mt-4 mb-6 flex flex-wrap justify-center gap-3">
+            <Link 
+              to="/documentation/algorithms"
+              className="inline-flex items-center px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-300 hover:scale-105 group"
+              style={{ 
+                borderColor: 'var(--border-subtle)', 
+                color: 'var(--fg-primary)',
+                backgroundColor: 'transparent'
+              }}
+            >
+              <Brain className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+              AI Algorithms & Math
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            
+            <Link 
+              to="/documentation/architecture"
+              className="inline-flex items-center px-4 py-2 rounded-lg border-2 font-medium text-sm transition-all duration-300 hover:scale-105 group"
+              style={{ 
+                borderColor: 'var(--border-subtle)', 
+                color: 'var(--fg-primary)',
+                backgroundColor: 'transparent'
+              }}
+            >
+              <Database className="mr-2 h-4 w-4 group-hover:scale-110 transition-transform" />
+              System Architecture
+              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+          
+          <p className="max-w-3xl mx-auto text-xl leading-relaxed" style={{ color: 'var(--fg-secondary)' }}>
             From indexing to results in four simple steps. No cloud, no compromise on privacy.
           </p>
         </div>
