@@ -297,30 +297,42 @@ The indexing process involves several stages:
 
   return (
     <div className={`space-y-6 ${className}`}>
+      {/* Algorithm Steps - First */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <h4 className="font-medium text-blue-400 mb-2">Algorithm Steps:</h4>
+        <ol className="list-decimal list-inside text-sm space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+          <li>Split document into lines and preprocess text</li>
+          <li>Create 35-line chunks with 5-line overlap</li>
+          <li>Generate embeddings for each chunk using MiniLM-L6-v2</li>
+          <li>Calculate file centroid as mean of all embeddings</li>
+          <li>Store chunks with metadata and positional info</li>
+        </ol>
+      </div>
+
       {/* Compact Controls Row */}
       <div className="grid lg:grid-cols-4 gap-4">
         {/* Algorithm Info */}
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
           <div className="flex items-center mb-2">
             <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400 mr-3">
               <Brain className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-sm font-bold text-white truncate">Gist Indexing</h3>
-              <p className="text-xs text-gray-400">O(n)</p>
+              <h3 className="text-sm font-bold text-primary truncate">Gist Indexing</h3>
+              <p className="text-xs text-muted">O(n)</p>
             </div>
           </div>
         </div>
 
         {/* Chunk Settings */}
-        <div className="lg:col-span-2 p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <div className="lg:col-span-2 p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-white">Chunking Settings</h4>
+            <h4 className="text-sm font-semibold text-primary">Chunking Settings</h4>
             <div className="flex gap-2">
               <button
                 onClick={processText}
                 disabled={isProcessing || !inputText.trim()}
-                className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white text-xs rounded-lg flex items-center transition-colors"
+                className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 disabled:bg-elevated disabled:cursor-not-allowed text-primary text-xs rounded-lg flex items-center transition-colors"
               >
                 {isProcessing ? (
                   <>
@@ -338,7 +350,7 @@ The indexing process involves several stages:
               </button>
               <button
                 onClick={resetDemo}
-                className="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-xs rounded-lg flex items-center transition-colors"
+                className="px-3 py-1.5 bg-elevated hover:bg-elevated text-primary text-xs rounded-lg flex items-center transition-colors"
               >
                 <RotateCcw className="h-3 w-3 mr-1" />
                 Reset
@@ -347,7 +359,7 @@ The indexing process involves several stages:
           </div>
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="text-gray-400">Chunk size: {chunkSize} lines</label>
+              <label className="text-muted">Chunk size: {chunkSize} lines</label>
               <input
                 type="range"
                 min="10"
@@ -355,11 +367,11 @@ The indexing process involves several stages:
                 value={chunkSize}
                 onChange={(e) => setChunkSize(Number(e.target.value))}
                 disabled={isProcessing}
-                className="w-full h-1 bg-gray-700 rounded appearance-none cursor-pointer accent-blue-400"
+                className="w-full h-1 bg-elevated rounded appearance-none cursor-pointer accent-blue-400"
               />
             </div>
             <div>
-              <label className="text-gray-400">Overlap: {overlap} lines</label>
+              <label className="text-muted">Overlap: {overlap} lines</label>
               <input
                 type="range"
                 min="0"
@@ -367,26 +379,46 @@ The indexing process involves several stages:
                 value={overlap}
                 onChange={(e) => setOverlap(Number(e.target.value))}
                 disabled={isProcessing}
-                className="w-full h-1 bg-gray-700 rounded appearance-none cursor-pointer accent-blue-400"
+                className="w-full h-1 bg-elevated rounded appearance-none cursor-pointer accent-blue-400"
               />
             </div>
           </div>
         </div>
 
         {/* Quick Status */}
-        <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <h4 className="text-sm font-semibold text-white mb-2">Progress</h4>
-          <div className="text-xs text-gray-300">{getStepDescription()}</div>
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-sm font-semibold text-primary mb-2">Progress</h4>
+          <div className="text-xs text-secondary">{getStepDescription()}</div>
           <div className="mt-2 text-xs">
             <span className="text-amber-400">{chunks.length} chunks</span>
           </div>
         </div>
       </div>
 
+      {/* Chunk Structure Visualization - Right after controls */}
+      <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <div className="flex items-center mb-6">
+          <Layers className="h-6 w-6 text-blue-400 mr-3" />
+          <h3 className="text-xl font-semibold text-primary">Chunk Structure Visualization</h3>
+          <div className="ml-auto flex items-center text-sm text-muted">
+            <Info className="h-4 w-4 mr-1" />
+            Dashed lines = overlapping chunks
+          </div>
+        </div>
+
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={400}
+          className="w-full rounded border"
+          style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)', minHeight: '400px' }}
+        />
+      </div>
+
       {/* Input Text Area - More Compact */}
-      <div className="p-4 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-semibold text-white flex items-center">
+          <h4 className="text-sm font-semibold text-primary flex items-center">
             <FileText className="h-4 w-4 text-blue-400 mr-2" />
             Input Document
           </h4>
@@ -402,102 +434,79 @@ The indexing process involves several stages:
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Paste your text here to see how Gist mode creates contextual chunks..."
           rows={6}
-          className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-white text-sm placeholder-gray-500 resize-none"
+          className="w-full p-3 bg-muted border border-subtle rounded text-primary text-sm placeholder-gray-500 resize-none"
         />
       </div>
 
-      {/* Full-Width Visualization Section */}
-      <div className="space-y-6">
-        {/* Canvas Visualization */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-          <div className="flex items-center mb-6">
-            <Layers className="h-6 w-6 text-blue-400 mr-3" />
-            <h3 className="text-xl font-semibold text-white">Chunk Structure Visualization</h3>
-            <div className="ml-auto flex items-center text-sm text-gray-400">
-              <Info className="h-4 w-4 mr-1" />
-              Dashed lines = overlapping chunks
+      {/* Processing Results */}
+      {chunks.length > 0 && (
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Chunk Statistics */}
+          <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <div className="flex items-center mb-4">
+              <Database className="h-5 w-5 text-blue-400 mr-2" />
+              <h4 className="font-semibold text-primary">Chunk Statistics</h4>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="p-3 rounded text-center" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <div className="text-2xl font-bold text-blue-400">{chunks.length}</div>
+                <div className="text-muted text-sm">Total Chunks</div>
+              </div>
+              <div className="p-3 rounded text-center" style={{ backgroundColor: 'var(--bg-muted)' }}>
+                <div className="text-2xl font-bold text-blue-400">{chunks.filter(c => c.isOverlap).length}</div>
+                <div className="text-muted text-sm">With Overlap</div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Avg chunk length:</span>
+                <span className="text-primary">{Math.round(chunks.reduce((sum, c) => sum + c.text.length, 0) / chunks.length)} chars</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Embedding dimensions:</span>
+                <span className="text-primary">384</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted">Centroid computed:</span>
+                <span className="text-green-400">{fileCentroid.length > 0 ? 'Yes' : 'No'}</span>
+              </div>
             </div>
           </div>
 
-          <canvas
-            ref={canvasRef}
-            width={800}
-            height={400}
-            className="w-full rounded border"
-            style={{ backgroundColor: '#1a1a1a', borderColor: '#404040', minHeight: '400px' }}
-          />
+          {/* Top Terms */}
+          <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+            <div className="flex items-center mb-4">
+              <ChevronRight className="h-5 w-5 text-blue-400 mr-2" />
+              <h4 className="font-semibold text-primary">Key Terms</h4>
+            </div>
+
+            {topTerms.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {topTerms.map((term, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 rounded-full text-sm font-medium"
+                    style={{ 
+                      backgroundColor: chunkColors[index % chunkColors.length] + '20',
+                      color: chunkColors[index % chunkColors.length],
+                      border: `1px solid ${chunkColors[index % chunkColors.length]}40`
+                    }}
+                  >
+                    {term}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted">
+                <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <div className="text-sm">Process text to extract key terms</div>
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Processing Results */}
-        {chunks.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Chunk Statistics */}
-            <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-              <div className="flex items-center mb-4">
-                <Database className="h-5 w-5 text-blue-400 mr-2" />
-                <h4 className="font-semibold text-white">Chunk Statistics</h4>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="p-3 rounded text-center" style={{ backgroundColor: '#1a1a1a' }}>
-                  <div className="text-2xl font-bold text-blue-400">{chunks.length}</div>
-                  <div className="text-gray-400 text-sm">Total Chunks</div>
-                </div>
-                <div className="p-3 rounded text-center" style={{ backgroundColor: '#1a1a1a' }}>
-                  <div className="text-2xl font-bold text-blue-400">{chunks.filter(c => c.isOverlap).length}</div>
-                  <div className="text-gray-400 text-sm">With Overlap</div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Avg chunk length:</span>
-                  <span className="text-white">{Math.round(chunks.reduce((sum, c) => sum + c.text.length, 0) / chunks.length)} chars</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Embedding dimensions:</span>
-                  <span className="text-white">384</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Centroid computed:</span>
-                  <span className="text-green-400">{fileCentroid.length > 0 ? 'Yes' : 'No'}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Top Terms */}
-            <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-              <div className="flex items-center mb-4">
-                <ChevronRight className="h-5 w-5 text-blue-400 mr-2" />
-                <h4 className="font-semibold text-white">Key Terms</h4>
-              </div>
-
-              {topTerms.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {topTerms.map((term, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 rounded-full text-sm font-medium"
-                      style={{ 
-                        backgroundColor: chunkColors[index % chunkColors.length] + '20',
-                        color: chunkColors[index % chunkColors.length],
-                        border: `1px solid ${chunkColors[index % chunkColors.length]}40`
-                      }}
-                    >
-                      {term}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <div className="text-sm">Process text to extract key terms</div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   )
 }

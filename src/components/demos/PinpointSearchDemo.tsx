@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, RotateCcw } from 'lucide-react';
+import { 
+  Search, 
+  Play,
+  RotateCcw,
+  Database,
+  TrendingUp,
+  Info,
+  Settings,
+  Zap
+} from 'lucide-react';
 
 interface SearchChunk {
   id: string;
@@ -70,20 +79,39 @@ const PinpointSearchDemo: React.FC = () => {
   const [queryEmbedding] = useState({ x: 250, y: 50 });
 
   const calculateSimilarity = (chunkContent: string): number => {
-    // Realistic predefined similarities for "neural network training algorithms"
-    const similarities: { [key: string]: number } = {
-      'Neural network training with backpropagation': 0.94,
-      'Training algorithms for deep learning': 0.89,
-      'Network architecture design patterns': 0.72,
-      'Deep neural network training loops': 0.91,
-      'Training optimization algorithms': 0.87,
-      'Data preprocessing utilities': 0.23,
-      'Dataset loading helper functions': 0.18,
-      'Project documentation and setup': 0.12,
-      'Installation and configuration guide': 0.08
+    // Enhanced confidence scoring simulation for "neural network training algorithms"
+    const baseScores: { [key: string]: number } = {
+      'Neural network training with backpropagation': 0.85,
+      'Training algorithms for deep learning': 0.80,
+      'Network architecture design patterns': 0.65,
+      'Deep neural network training loops': 0.82,
+      'Training optimization algorithms': 0.78,
+      'Data preprocessing utilities': 0.15,
+      'Dataset loading helper functions': 0.12,
+      'Project documentation and setup': 0.08,
+      'Installation and configuration guide': 0.05
     };
     
-    return similarities[chunkContent] || 0.15;
+    let baseScore = baseScores[chunkContent] || 0.10;
+    
+    // Simulate enhanced confidence layers
+    const queryTerms = ['neural', 'network', 'training', 'algorithms'];
+    const contentLower = chunkContent.toLowerCase();
+    
+    // Layer 1: Exact phrase matching boost (up to 50%)
+    const exactMatches = queryTerms.filter(term => contentLower.includes(term)).length;
+    const exactBoost = 1 + (exactMatches / queryTerms.length) * 0.5;
+    
+    // Layer 2: Position boost (15% for early mentions)
+    const positionBoost = contentLower.indexOf('neural') < 20 ? 1.15 : 1.0;
+    
+    // Layer 3: Chunk size boost (10% for precise matches in small chunks)
+    const sizeBoost = chunkContent.length < 100 && exactMatches > 2 ? 1.10 : 1.0;
+    
+    // Apply enhanced confidence calculation
+    const enhancedScore = Math.min(0.98, baseScore * exactBoost * positionBoost * sizeBoost);
+    
+    return enhancedScore;
   };
 
   const drawCanvas = () => {
@@ -272,15 +300,15 @@ const PinpointSearchDemo: React.FC = () => {
   const getStepDescription = () => {
     switch (currentStep) {
       case 0:
-        return "Ready to search. Click play to start the Pinpoint search algorithm.";
+        return "Ready to search. Click play to start the Enhanced Pinpoint search.";
       case 1:
-        return `Searching through all chunks sequentially. Searched: ${searchedCount}/9 chunks`;
+        return `Computing multi-layer confidence scores. Searched: ${searchedCount}/9 chunks`;
       case 2:
-        return "Calculating best similarity score for each file";
+        return "Applying exact phrase, position, and size bonuses";
       case 3:
-        return "Ranking files by their best chunk similarity";
+        return "Aggregating chunks per file with coverage bonuses";
       case 4:
-        return `Search complete. Found ${matchedCount} matching chunks across ${searchFiles.filter(f => f.rank).length} files`;
+        return `Enhanced ranking complete. Found ${matchedCount} high-confidence matches across ${searchFiles.filter(f => f.rank).length} files`;
       default:
         return "";
     }
@@ -291,145 +319,156 @@ const PinpointSearchDemo: React.FC = () => {
     .sort((a, b) => (a.rank || 0) - (b.rank || 0));
 
   return (
-    <div className="space-y-8">
-      {/* Top Controls Row */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Left: Algorithm Info & Controls */}
-        <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-semibold mb-2 text-amber-400">Pinpoint Search Algorithm</h3>
-            <div className="text-sm text-gray-400 space-y-1">
-              <div>Complexity: <span className="text-amber-400 font-mono">O(log n)</span></div>
-              <div>Model: <span className="text-blue-400">all-MiniLM-L6-v2</span></div>
-              <div>Strategy: <span className="text-green-400">Direct similarity matching</span></div>
+    <div className={`space-y-6`}>
+      {/* Algorithm Steps - First */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <h4 className="font-medium text-amber-400 mb-2">Enhanced Pinpoint Search Algorithm:</h4>
+        <ol className="list-decimal list-inside text-sm space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+          <li>Generate query embedding using all-MiniLM-L6-v2 transformer</li>
+          <li>Search through all small chunks (3-line precision chunks)</li>
+          <li>Calculate semantic distance and apply pinpoint-optimized thresholds</li>
+          <li>Compute multi-layered confidence: semantic × exact phrase × filename × position × size</li>
+          <li>Aggregate chunks per file with coverage and distribution bonuses</li>
+          <li>Rank files using enhanced confidence, exact match count, and filename relevance</li>
+        </ol>
+      </div>
+
+      {/* Compact Controls Row */}
+      <div className="grid lg:grid-cols-4 gap-4">
+        {/* Algorithm Info */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+          <div className="flex items-center mb-2">
+            <div className="p-2 rounded-lg bg-blue-500/20 text-blue-400 mr-3">
+              <Search className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-sm font-bold text-primary truncate">Enhanced Pinpoint</h3>
+              <p className="text-xs text-muted">Multi-layer confidence</p>
             </div>
           </div>
+        </div>
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Demo Query</label>
-              <div className="p-3 bg-gray-800 border border-gray-600 rounded">
-                <div className="font-mono text-amber-400">"{searchQuery}"</div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Similarity Threshold: {similarityThreshold.toFixed(2)}
-              </label>
-              <input
-                type="range"
-                min="0.5"
-                max="1"
-                step="0.05"
-                value={similarityThreshold}
-                onChange={(e) => setSimilarityThreshold(parseFloat(e.target.value))}
-                className="w-full accent-amber-400"
+        {/* Demo Query */}
+        <div className="lg:col-span-2 p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-semibold text-primary">Demo Query</h4>
+            <div className="flex gap-2">
+              <button
+                onClick={runSearch}
                 disabled={isRunning}
-              />
+                className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 disabled:bg-elevated disabled:cursor-not-allowed text-primary text-xs rounded-lg flex items-center transition-colors"
+              >
+                {isRunning ? (
+                  <>
+                    <Zap className="h-3 w-3 mr-1 animate-pulse" />
+                    Running...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-3 w-3 mr-1" />
+                    Run Demo
+                  </>
+                )}
+              </button>
+              <button
+                onClick={resetDemo}
+                className="px-3 py-1.5 bg-elevated hover:bg-elevated text-primary text-xs rounded-lg flex items-center transition-colors"
+              >
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Reset
+              </button>
             </div>
           </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={runSearch}
-              disabled={isRunning}
-              className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded transition-colors"
-            >
-              <Play className="w-4 h-4" />
-              {isRunning ? 'Running...' : 'Start Search'}
-            </button>
-            <button
-              onClick={resetDemo}
-              disabled={isRunning}
-              className="p-2 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 rounded transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
+          <div className="p-2 rounded bg-muted" style={{ borderColor: 'var(--border-subtle)' }}>
+            <div className="font-mono text-amber-400 text-sm">"{searchQuery}"</div>
           </div>
+        </div>
 
-          <div className="p-4 bg-gray-800 rounded border-l-4 border-amber-400">
-            <div className="text-sm font-medium mb-2">Current Step</div>
-            <div className="text-sm text-gray-300">{getStepDescription()}</div>
-          </div>
-
-          {currentStep === 4 && rankedFiles.length > 0 && (
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium text-amber-400">File Rankings</h4>
-              {rankedFiles.map((file) => (
-                <div key={file.name} className="p-3 bg-gray-800 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-mono">{file.name}</span>
-                    <span className="text-xs bg-amber-600 px-2 py-1 rounded">#{file.rank}</span>
-                  </div>
-                  <div className="text-xs text-gray-400 mt-1">
-                    Best similarity: {file.bestSimilarity.toFixed(3)}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="p-3 bg-gray-800 rounded">
-              <div className="text-amber-400 font-mono text-lg">{searchedCount}/9</div>
-              <div className="text-gray-400">Chunks Searched</div>
-            </div>
-            <div className="p-3 bg-gray-800 rounded">
-              <div className="text-green-400 font-mono text-lg">{matchedCount}</div>
-              <div className="text-gray-400">Above Threshold</div>
-            </div>
+        {/* Quick Status */}
+        <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+          <h4 className="text-sm font-semibold text-primary mb-2">Progress</h4>
+          <div className="text-xs text-secondary">{getStepDescription()}</div>
+          <div className="mt-2 flex justify-between text-xs">
+            <span className="text-muted">{searchedCount}/9 chunks</span>
+            <span className="text-amber-400">{matchedCount} matches</span>
           </div>
         </div>
       </div>
 
-        {/* Right: Status & Quick Info */}
-        <div>
-          <div className="text-center text-sm text-gray-400 mb-4">
-            Pinpoint search directly compares query embedding with all small chunks
-          </div>
-          
-          <div className="grid grid-cols-3 gap-3 text-sm mb-4">
-            <div className="p-3 bg-gray-800 rounded text-center">
-              <div className="font-semibold text-amber-400">Stage 1</div>
-              <div className="text-gray-300 text-xs">Query Embedding</div>
-            </div>
-            <div className="p-3 bg-gray-800 rounded text-center">
-              <div className="font-semibold text-amber-400">Stage 2</div>
-              <div className="text-gray-300 text-xs">Direct Search</div>
-            </div>
-            <div className="p-3 bg-gray-800 rounded text-center">
-              <div className="font-semibold text-amber-400">Stage 3</div>
-              <div className="text-gray-300 text-xs">Threshold Filter</div>
-            </div>
-          </div>
-
-          <div className="p-4 bg-gray-800 rounded">
-            <h4 className="font-medium text-amber-400 mb-2">Algorithm Steps:</h4>
-            <ol className="list-decimal list-inside text-sm text-gray-300 space-y-1">
-              <li>Generate query embedding using all-MiniLM-L6-v2</li>
-              <li>Search through all small chunks (3-line max)</li>
-              <li>Calculate cosine similarity for each chunk</li>
-              <li>Filter chunks above similarity threshold</li>
-              <li>Rank files by their best matching chunk</li>
-            </ol>
+      {/* Enhanced Confidence Search Visualization - Right after controls */}
+      <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <div className="flex items-center mb-6">
+          <Database className="h-6 w-6 text-amber-400 mr-3" />
+          <h3 className="text-xl font-semibold text-primary">Enhanced Confidence Search Visualization</h3>
+          <div className="ml-auto flex items-center text-sm text-muted">
+            <Info className="h-4 w-4 mr-1" />
+            Brightness = confidence layers
           </div>
         </div>
-      </div>
 
-      {/* Full-Width Visualization Section */}
-      <div className="p-6 rounded-xl border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-        <h3 className="text-xl font-semibold mb-6 text-center text-white">Direct Similarity Search Visualization</h3>
-        
         <canvas
           ref={canvasRef}
           width={800}
           height={500}
-          className="border border-gray-600 rounded bg-gray-900 mx-auto block w-full"
-          style={{ maxWidth: '800px', height: 'auto', minHeight: '500px' }}
+          className="w-full rounded border"
+          style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)', minHeight: '500px' }}
         />
       </div>
+
+      {/* Similarity Threshold - More Compact */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-semibold text-primary flex items-center">
+            <Settings className="h-4 w-4 text-amber-400 mr-2" />
+            Similarity Threshold
+          </h4>
+          <span className="text-xs text-muted">{similarityThreshold.toFixed(2)}</span>
+        </div>
+        <input
+          type="range"
+          min="0.5"
+          max="1"
+          step="0.05"
+          value={similarityThreshold}
+          onChange={(e) => setSimilarityThreshold(parseFloat(e.target.value))}
+          disabled={isRunning}
+          className="w-full h-1 bg-elevated rounded-lg appearance-none cursor-pointer accent-amber-400"
+        />
+      </div>
+
+      {/* File Rankings */}
+      {currentStep === 4 && rankedFiles.length > 0 && (
+        <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+          <div className="flex items-center mb-4">
+            <TrendingUp className="h-5 w-5 text-amber-400 mr-2" />
+            <h4 className="font-semibold text-primary">Ranked Results</h4>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {rankedFiles.map((file) => (
+              <div
+                key={file.name}
+                className="p-4 rounded-lg border"
+                style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="font-medium text-primary text-sm">{file.name}</div>
+                  <div className="text-lg font-bold text-blue-400 ml-2">
+                    #{file.rank}
+                  </div>
+                </div>
+                <div className="text-xs text-muted">Enhanced confidence: {file.bestSimilarity.toFixed(3)}</div>
+                <div className="text-xs text-muted mt-1">
+                  {file.chunks.filter(c => (c.similarity || 0) >= similarityThreshold).length} high-confidence chunks
+                </div>
+                <div className="text-xs text-amber-400 mt-2">
+                  Multi-layer scoring applied ✨
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

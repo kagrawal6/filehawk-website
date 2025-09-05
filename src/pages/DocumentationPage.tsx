@@ -11,7 +11,8 @@ import {
   ChevronRight,
   ChevronLeft,
   ExternalLink,
-  Download
+  Download,
+  Layers
 } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -25,6 +26,7 @@ import StickyTableOfContents from '../components/ui/StickyTableOfContents'
 // Import new documentation section components
 import FeatureCapabilitiesSection from '../components/docs/FeatureCapabilitiesSection'
 import AIAlgorithmsSection from '../components/docs/AIAlgorithmsSection'
+import SystemArchitectureSection from '../components/docs/SystemArchitectureSection'
 
 interface DocSection {
   id: string
@@ -55,6 +57,16 @@ const docSections: DocSection[] = [
     icon: Brain,
     path: '/documentation/algorithms',
     component: AIAlgorithmsSection,
+    featured: true,
+    category: 'core'
+  },
+  {
+    id: 'architecture',
+    title: 'System Architecture',
+    description: 'Comprehensive system architecture with data flow visualization, technology stack, and integration details',
+    icon: Layers,
+    path: '/documentation/architecture',
+    component: SystemArchitectureSection,
     featured: true,
     category: 'core'
   }

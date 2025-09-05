@@ -239,6 +239,18 @@ const SyncingDashboard: React.FC<SyncingDashboardProps> = ({ className = '' }) =
 
   return (
     <div className={`space-y-6 ${className}`}>
+      {/* Algorithm Steps - First */}
+      <div className="p-4 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <h4 className="font-medium text-indigo-400 mb-2">Algorithm Steps:</h4>
+        <ol className="list-decimal list-inside text-sm space-y-1" style={{ color: 'var(--fg-secondary)' }}>
+          <li>Monitor file system events (create, modify, delete, move)</li>
+          <li>Debounce rapid changes with 500ms intelligent delay</li>
+          <li>Queue events by processing mode (Gist/Pinpoint)</li>
+          <li>Extract and chunk modified content incrementally</li>
+          <li>Update vector index with batched operations</li>
+        </ol>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -312,31 +324,42 @@ const SyncingDashboard: React.FC<SyncingDashboardProps> = ({ className = '' }) =
         </div>
       </div>
 
-      {/* Metrics Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {[
-          { label: 'Total Events', value: metrics.totalEvents, icon: Activity, color: 'text-brand-gold-400' },
-          { label: 'Avg Processing', value: `${metrics.avgProcessingTime}ms`, icon: Clock, color: 'text-blue-400' },
-          { label: 'Completed', value: metrics.throughput, icon: CheckCircle, color: 'text-green-400' },
-          { label: 'Error Rate', value: `${metrics.errorRate}%`, icon: AlertCircle, color: 'text-red-400' }
-        ].map((metric, index) => (
-          <motion.div
-            key={metric.label}
-            className="p-6 rounded-xl border text-center"
-            style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-          >
-            <metric.icon className={`h-8 w-8 mx-auto mb-3 ${metric.color}`} />
-            <div className={`text-2xl font-bold mb-1 ${metric.color}`}>
-              {metric.value}
-            </div>
-            <div className="text-sm" style={{ color: 'var(--fg-muted)' }}>
-              {metric.label}
-            </div>
-          </motion.div>
-        ))}
+      {/* Metrics Overview - Main Visualization */}
+      <div className="p-6 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
+        <div className="flex items-center mb-6">
+          <Activity className="h-6 w-6 text-indigo-400 mr-3" />
+          <h3 className="text-xl font-semibold text-primary">Real-Time Processing Metrics</h3>
+          <div className="ml-auto flex items-center text-sm text-muted">
+            <Info className="h-4 w-4 mr-1" />
+            Live system performance
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { label: 'Total Events', value: metrics.totalEvents, icon: Activity, color: 'text-brand-gold-400' },
+            { label: 'Avg Processing', value: `${metrics.avgProcessingTime}ms`, icon: Clock, color: 'text-blue-400' },
+            { label: 'Completed', value: metrics.throughput, icon: CheckCircle, color: 'text-green-400' },
+            { label: 'Error Rate', value: `${metrics.errorRate}%`, icon: AlertCircle, color: 'text-red-400' }
+          ].map((metric, index) => (
+            <motion.div
+              key={metric.label}
+              className="p-6 rounded-xl border text-center"
+              style={{ backgroundColor: 'var(--bg-muted)', borderColor: 'var(--border-subtle)' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              <metric.icon className={`h-8 w-8 mx-auto mb-3 ${metric.color}`} />
+              <div className={`text-2xl font-bold mb-1 ${metric.color}`}>
+                {metric.value}
+              </div>
+              <div className="text-sm" style={{ color: 'var(--fg-muted)' }}>
+                {metric.label}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Control Panel */}

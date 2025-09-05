@@ -104,6 +104,33 @@ html {
   background-color: #8c1d18 !important;
 }
 
+/* Text color utilities using CSS variables for theme-aware colors */
+.text-primary {
+  color: var(--fg-primary) !important;
+}
+
+.text-secondary {
+  color: var(--fg-secondary) !important;
+}
+
+.text-muted {
+  color: var(--fg-muted) !important;
+}
+
+/* Background color utilities using CSS variables for theme-aware colors */
+.bg-elevated {
+  background-color: var(--bg-elevated) !important;
+}
+
+.bg-muted {
+  background-color: var(--bg-muted) !important;
+}
+
+/* Border color utilities */
+.border-subtle {
+  border-color: var(--border-subtle) !important;
+}
+
 [data-theme="light"] .bg-brand-gold-500\/10,
 [data-theme="light"] .bg-brand-gold-500\/20 {
   background-color: rgba(140, 29, 24, 0.12) !important;
