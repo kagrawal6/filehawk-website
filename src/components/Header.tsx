@@ -21,7 +21,7 @@ const Header: React.FC = () => {
 
   const navigation = [
     { name: 'Documentation', href: '/documentation', type: 'route' },
-    { name: 'GitHub', href: 'https://github.com/kagrawal6/filehawk-website', target: '_blank', type: 'external' },
+    { name: 'GitHub', href: 'https://github.com/Aducj1910/FileHawk', target: '_blank', type: 'external' },
   ]
 
   return (

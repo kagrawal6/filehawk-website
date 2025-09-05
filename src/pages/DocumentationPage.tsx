@@ -80,7 +80,7 @@ const DocumentationPage: React.FC = () => {
   // Get current section from URL
   const getCurrentSection = () => {
     const path = location.pathname
-    return docSections.find(s => s.path === path) || docSections[0]
+    return docSections.find(s => s.path === path) || null
   }
 
   const currentSection = getCurrentSection()
@@ -88,7 +88,7 @@ const DocumentationPage: React.FC = () => {
 
   // Generate breadcrumbs
   const getBreadcrumbs = () => {
-    if (isHomePage) {
+    if (isHomePage || !currentSection) {
       return [{ label: 'Documentation', path: '/documentation' }]
     }
     
@@ -125,14 +125,17 @@ const DocumentationPage: React.FC = () => {
           <div className="flex h-full flex-col overflow-y-auto" style={{ backgroundColor: 'var(--bg-elevated)', borderRight: '1px solid var(--border-subtle)' }}>
             {/* Sidebar Header */}
             <div className="flex items-center justify-between h-16 px-4 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
-              <div className="flex items-center space-x-3">
+              <Link 
+                to="/documentation"
+                className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer"
+              >
                 <Book className="h-6 w-6 text-brand-gold-400" />
                 {!sidebarCollapsed && (
                   <h2 className="text-lg font-semibold" style={{ color: 'var(--fg-primary)' }}>
                     Documentation
                   </h2>
                 )}
-              </div>
+              </Link>
               <div className="flex items-center space-x-2">
                 {/* Collapse Button (Desktop Only) */}
                 <button
@@ -159,11 +162,6 @@ const DocumentationPage: React.FC = () => {
             <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto">
               {/* Documentation Sections */}
               <div>
-                {!sidebarCollapsed && (
-                  <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--fg-muted)' }}>
-                    TECHNICAL DOCUMENTATION
-                  </h3>
-                )}
                 <div className="space-y-2">
                   {docSections.map((section) => (
                     <Link
@@ -171,12 +169,12 @@ const DocumentationPage: React.FC = () => {
                       to={section.path}
                       className={`
                         flex items-center ${sidebarCollapsed ? 'px-2 py-3 justify-center' : 'px-3 py-3'} text-sm rounded-lg transition-all duration-200 group relative
-                        ${currentSection.id === section.id 
+                        ${currentSection && currentSection.id === section.id 
                           ? 'bg-gradient-to-r from-brand-gold-500/20 to-transparent text-brand-gold-300 border-r-2 border-brand-gold-500' 
                           : 'hover:bg-gray-700/50'
                         }
                       `}
-                      style={{ color: currentSection.id === section.id ? 'var(--accent-solid)' : 'var(--fg-secondary)' }}
+                      style={{ color: currentSection && currentSection.id === section.id ? 'var(--accent-solid)' : 'var(--fg-secondary)' }}
                     >
                       <section.icon className={`h-5 w-5 group-hover:text-brand-gold-400 transition-colors ${sidebarCollapsed ? '' : 'mr-3'}`} />
                       
@@ -207,7 +205,7 @@ const DocumentationPage: React.FC = () => {
                 )}
                 <div className="space-y-2">
                   <a
-                    href="https://github.com/kagrawal6/filehawk-website"
+                    href="https://github.com/Aducj1910/FileHawk"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`flex items-center ${sidebarCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'} text-sm rounded-lg transition-colors hover:bg-gray-700/50 group relative`}
@@ -257,7 +255,7 @@ const DocumentationPage: React.FC = () => {
               <Menu className="h-5 w-5" style={{ color: 'var(--fg-secondary)' }} />
             </button>
             <h1 className="ml-3 text-lg font-semibold truncate" style={{ color: 'var(--fg-primary)' }}>
-              {isHomePage ? 'Documentation' : currentSection.title}
+              {isHomePage || !currentSection ? 'Documentation' : currentSection.title}
             </h1>
           </div>
 
@@ -329,15 +327,7 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="inline-flex items-center px-4 py-2 rounded-full border mb-6" 
-          style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
-          <Book className="h-5 w-5 mr-2 text-brand-gold-400" />
-          <span className="text-sm font-medium" style={{ color: 'var(--fg-secondary)' }}>
-            Complete Technical Documentation
-          </span>
-        </div>
-        
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-6">
+        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-6 mt-8">
           <span style={{ color: 'var(--fg-primary)' }}>FileHawk</span>{' '}
           <span className="bg-gradient-to-r from-brand-gold-400 to-brand-gold-600 bg-clip-text text-transparent">
             Documentation
@@ -433,56 +423,6 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         </div>
       </motion.div>
 
-      {/* All Documentation */}
-      <motion.div 
-        className="mb-16"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-      >
-        <h2 className="text-3xl font-bold text-center mb-4" style={{ color: 'var(--fg-primary)' }}>
-          📚 Complete Documentation
-        </h2>
-        <p className="text-center mb-12 max-w-3xl mx-auto" style={{ color: 'var(--fg-secondary)' }}>
-          Comprehensive reference documentation covering every aspect of the FileHawk platform, 
-          from installation to advanced configuration and development.
-        </p>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sections.filter(s => !s.featured).map((section, index) => (
-            <motion.div
-              key={section.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-              transition={{ duration: 0.8, delay: 1.0 + index * 0.05 }}
-            >
-              <Link 
-                to={section.path}
-                className="block p-6 rounded-xl border transition-all duration-300 hover:border-brand-gold-500/40 hover:shadow-lg hover:-translate-y-1 group h-full"
-                style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="p-3 rounded-lg bg-gray-700 text-gray-300 group-hover:bg-brand-gold-500/20 group-hover:text-brand-gold-400 transition-colors">
-                    <section.icon className="h-6 w-6" />
-                  </div>
-                  <div className="ml-4 flex-1">
-                    <h3 className="font-semibold group-hover:text-brand-gold-300 transition-colors mb-1" style={{ color: 'var(--fg-primary)' }}>
-                      {section.title}
-                    </h3>
-                    <span className="text-xs font-medium text-brand-gold-400 opacity-75">
-                      {section.category.replace('-', ' ').toUpperCase()}
-                    </span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" style={{ color: 'var(--fg-secondary)' }} />
-                </div>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--fg-secondary)' }}>
-                  {section.description}
-                </p>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
 
       {/* Call to Action */}
       <motion.div 
@@ -508,7 +448,7 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
               Download FileHawk
             </a>
             <a 
-              href="https://github.com/kagrawal6/filehawk-website"
+              href="https://github.com/Aducj1910/FileHawk"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-4 border border-brand-gold-500 text-brand-gold-400 font-semibold rounded-lg hover:bg-brand-gold-500/10 transition-all duration-300 flex items-center justify-center"

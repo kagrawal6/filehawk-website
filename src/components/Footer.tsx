@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
   const links = {
     essential: [
       { name: 'Documentation', href: '/documentation' },
-      { name: 'GitHub Repository', href: 'https://github.com/your-org/filehawk' },
+      { name: 'GitHub Repository', href: 'https://github.com/Aducj1910/FileHawk' },
       { name: 'Changelog', href: '/documentation/changelog' },
       { name: 'System Requirements', href: '/documentation/installation' }
     ],
@@ -20,7 +20,7 @@ const Footer: React.FC = () => {
   }
 
   const socialLinks = [
-    { name: 'GitHub', icon: Github, href: 'https://github.com/your-org/filehawk' },
+    { name: 'GitHub', icon: Github, href: 'https://github.com/Aducj1910/FileHawk' },
     { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/filehawk' },
     { name: 'Email', icon: Mail, href: 'mailto:hello@filehawk.dev' }
   ]
