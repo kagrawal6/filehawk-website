@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { 
   Brain,
   Code,
@@ -523,13 +524,13 @@ const AIAlgorithmsSection: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="#download"
+            <Link 
+              to="/documentation/download"
               className="px-8 py-4 bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-brand-gold-500/25 transition-all duration-300 flex items-center justify-center"
             >
               <PlayCircle className="mr-2 h-5 w-5" />
               Download FileHawk
-            </a>
+            </Link>
             <a 
               href="/documentation/features"
               className="px-8 py-4 border border-brand-gold-500 text-brand-gold-400 font-semibold rounded-lg hover:bg-brand-gold-500/10 transition-all duration-300 flex items-center justify-center"

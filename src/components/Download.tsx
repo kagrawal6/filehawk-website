@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Download as DownloadIcon, Apple, Monitor, Smartphone } from 'lucide-react'
+import { Download as DownloadIcon, Apple, Monitor, Github } from 'lucide-react'
 import GoldButton from './ui/GoldButton'
 import { useHawk } from './ui/HawkProvider'
+import { Link } from 'react-router-dom'
 
 const Download: React.FC = () => {
   const { setMood } = useHawk()
@@ -10,59 +11,77 @@ const Download: React.FC = () => {
     {
       platform: 'Windows',
       icon: Monitor,
-      version: 'v1.0.0',
-      size: '45 MB',
       format: '.exe',
-      description: 'Windows 10, 11 (64-bit)',
-      primary: true,
-      downloadUrl: '#'
+      description: 'Coming Soon',
+      primary: false,
+      downloadUrl: '#',
+      disabled: true
     },
     {
       platform: 'macOS',
       icon: Apple,
-      version: 'v1.0.0',
-      size: '52 MB',
       format: '.dmg',
-      description: 'macOS 11.0+ (Intel & Apple Silicon)',
+      description: 'Coming Soon',
+      primary: false,
+      downloadUrl: '#',
+      disabled: true
+    },
+    {
+      platform: 'GitHub Release',
+      icon: Github,
+      format: 'All Platforms',
+      description: 'Windows, macOS & Linux',
       primary: true,
-      downloadUrl: '#'
+      downloadUrl: '/documentation/download',
+      disabled: false
     }
   ]
 
-  const handleDownload = (platform: string) => {
+  const handleDownload = (download: typeof downloads[0]) => {
+    if (download.disabled) return
+    
     setMood('happy')
-    // Here you would trigger the actual download
-    console.log(`Downloading for ${platform}`)
+    
+    if (download.downloadUrl.startsWith('/')) {
+      // Internal link - will be handled by Link component
+      return
+    }
+    
+    // External link or actual download
+    console.log(`Downloading for ${download.platform}`)
   }
 
   // Download Card Component with consistent hover behavior
   const DownloadCard: React.FC<{ download: typeof downloads[0] }> = ({ download }) => {
     const [isHovered, setIsHovered] = useState(false)
     const Icon = download.icon
+    const isDisabled = download.disabled
 
-    return (
+    const cardContent = (
       <div
-        className="group relative h-full"
-        onMouseEnter={() => setIsHovered(true)}
+        className={`group relative h-full ${!isDisabled ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+        onMouseEnter={() => !isDisabled && setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className={`relative h-full p-8 rounded-xl transition-all duration-300 cursor-pointer ${
-          isHovered ? 'z-20' : ''
+        <div className={`relative h-full p-8 rounded-xl transition-all duration-300 ${
+          isDisabled ? 'opacity-50' : ''
+        } ${
+          isHovered && !isDisabled ? 'z-20' : ''
         }`}
         style={{
-          backgroundColor: 'var(--bg-elevated)',
-          border: '1px solid var(--border-subtle)',
-          boxShadow: isHovered ? '0 0 0 2px var(--accent-solid)' : 'none'
+          backgroundColor: isDisabled ? 'var(--bg-muted)' : 'var(--bg-elevated)',
+          border: `1px solid ${isDisabled ? 'var(--border-muted)' : 'var(--border-subtle)'}`,
+          boxShadow: isHovered && !isDisabled ? '0 0 0 2px var(--accent-solid)' : 'none'
         }}>
           <div className="flex flex-col items-center space-y-6">
             {/* Platform Icon */}
             <div 
               className={`p-4 rounded-xl transition-all duration-300 ${
-                isHovered ? 'scale-110' : ''
+                isHovered && !isDisabled ? 'scale-110' : ''
               }`}
               style={{
-                backgroundColor: 'var(--accent-soft)',
-                color: 'var(--accent-solid)'
+                backgroundColor: isDisabled ? 'var(--bg-app)' : 'var(--accent-soft)',
+                color: isDisabled ? 'var(--fg-muted)' : 'var(--accent-solid)'
               }}
             >
               <Icon className="h-8 w-8" />
@@ -71,42 +90,60 @@ const Download: React.FC = () => {
             {/* Platform Info */}
             <div className="space-y-2 text-center">
               <h3 className={`text-xl font-semibold transition-all duration-300 origin-center ${
-                isHovered ? 'scale-105' : ''
-              }`} style={{ color: 'var(--fg-primary)' }}>
+                isHovered && !isDisabled ? 'scale-105' : ''
+              }`} style={{ color: isDisabled ? 'var(--fg-muted)' : 'var(--fg-primary)' }}>
                 {download.platform}
               </h3>
               <p className={`text-sm transition-all duration-300 origin-center ${
-                isHovered ? 'scale-105' : ''
-              }`} style={{ color: 'var(--fg-secondary)' }}>
+                isHovered && !isDisabled ? 'scale-105' : ''
+              }`} style={{ color: isDisabled ? 'var(--fg-muted)' : 'var(--fg-secondary)' }}>
                 {download.description}
               </p>
               <div className={`flex items-center justify-center space-x-2 text-xs transition-all duration-300 origin-center ${
-                isHovered ? 'scale-105' : ''
+                isHovered && !isDisabled ? 'scale-105' : ''
               }`} style={{ color: 'var(--fg-muted)' }}>
-                <span>{download.version}</span>
-                <span>•</span>
-                <span>{download.size}</span>
-                <span>•</span>
                 <span>{download.format}</span>
               </div>
             </div>
 
             {/* Download Button */}
-            <GoldButton
-              variant="solid"
-              size="md"
-              onClick={() => handleDownload(download.platform)}
-              className={`w-full transition-all duration-300 origin-center ${
-                isHovered ? 'scale-105' : ''
-              }`}
-            >
-              <DownloadIcon className="h-4 w-4 mr-2" />
-              Download
-            </GoldButton>
+            {download.downloadUrl.startsWith('/') && !isDisabled ? (
+              <Link 
+                to={download.downloadUrl}
+                className="w-full"
+                onClick={() => handleDownload(download)}
+              >
+                <GoldButton
+                  variant="solid"
+                  size="md"
+                  className={`w-full transition-all duration-300 origin-center ${
+                    isHovered ? 'scale-105' : ''
+                  }`}
+                >
+                  <DownloadIcon className="h-4 w-4 mr-2" />
+                  Download
+                </GoldButton>
+              </Link>
+            ) : (
+              <GoldButton
+                variant={isDisabled ? "ghost" : "solid"}
+                size="md"
+                onClick={() => handleDownload(download)}
+                disabled={isDisabled}
+                className={`w-full transition-all duration-300 origin-center ${
+                  isHovered && !isDisabled ? 'scale-105' : ''
+                } ${isDisabled ? 'cursor-not-allowed opacity-50' : ''}`}
+              >
+                <DownloadIcon className="h-4 w-4 mr-2" />
+                {isDisabled ? 'Coming Soon' : 'Download'}
+              </GoldButton>
+            )}
           </div>
         </div>
       </div>
     )
+
+    return cardContent
   }
 
   return (
@@ -129,7 +166,7 @@ const Download: React.FC = () => {
         </div>
 
         {/* Download Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 max-w-6xl mx-auto">
           {downloads.map((download, index) => (
             <DownloadCard key={index} download={download} />
           ))}
@@ -140,14 +177,13 @@ const Download: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 text-sm" style={{ color: 'var(--fg-secondary)' }}>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span>Latest Release: v1.0.0</span>
+              <span>Latest Release: v1.0</span>
             </div>
             <div className="flex items-center space-x-2">
               <DownloadIcon className="h-4 w-4" />
-              <span>Released: December 2024</span>
+              <span>Released: September 2025</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Smartphone className="h-4 w-4" />
               <span>System Requirements: 8GB RAM, 500MB Storage</span>
             </div>
           </div>

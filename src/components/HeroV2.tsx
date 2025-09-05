@@ -90,7 +90,7 @@ const HeroV2: React.FC = () => {
               <GoldButton
                 variant="solid"
                 size="lg"
-                href="#download"
+                href="/documentation/download"
                 className="group shadow-2xl shadow-brand-gold-500/25 hover:shadow-brand-gold-500/40 transition-all duration-300"
                 onClick={() => setMood('search')}
               >

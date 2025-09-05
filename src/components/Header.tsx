@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import HawkIcon from './ui/HawkIcon'
 import GoldButton from './ui/GoldButton'
@@ -9,15 +9,30 @@ import ThemeToggle from './ui/ThemeToggle'
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 1)
     }
 
+    // Check initial scroll position
+    handleScroll()
+
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Check scroll position when route changes
+  useEffect(() => {
+    const checkScrollPosition = () => {
+      setIsScrolled(window.scrollY > 1)
+    }
+    
+    // Small delay to ensure the page has rendered
+    const timeoutId = setTimeout(checkScrollPosition, 100)
+    return () => clearTimeout(timeoutId)
+  }, [location.pathname])
 
   const navigation = [
     { name: 'Documentation', href: '/documentation', type: 'route' },
@@ -88,7 +103,7 @@ const Header: React.FC = () => {
             <GoldButton
               variant="solid"
               size="lg"
-              href="#download"
+              href="/documentation/download"
               className="shadow-md"
             >
               Download

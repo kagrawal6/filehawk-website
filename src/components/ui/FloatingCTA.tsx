@@ -47,7 +47,7 @@ const FloatingCTA: React.FC = () => {
         <GoldButton
           variant="solid"
           size="lg"
-          href="#download"
+          href="/documentation/download"
           className="shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
         >
           <Download className="mr-2 h-5 w-5" />

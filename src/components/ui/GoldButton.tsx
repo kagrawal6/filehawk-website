@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 interface GoldButtonProps {
   variant?: 'solid' | 'ghost' | 'chip'
@@ -44,17 +45,32 @@ const GoldButton: React.FC<GoldButtonProps> = ({
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabledClasses} ${className}`
 
   if (href) {
-    return (
-      <a
-        href={href}
-        target={target}
-        className={classes}
-        title={title}
-        onClick={onClick}
-      >
-        {children}
-      </a>
-    )
+    // Check if it's an internal route (starts with /) vs external link
+    if (href.startsWith('/')) {
+      return (
+        <Link
+          to={href}
+          className={classes}
+          title={title}
+          onClick={onClick}
+        >
+          {children}
+        </Link>
+      )
+    } else {
+      // External link - use regular anchor tag
+      return (
+        <a
+          href={href}
+          target={target}
+          className={classes}
+          title={title}
+          onClick={onClick}
+        >
+          {children}
+        </a>
+      )
+    }
   }
 
   return (

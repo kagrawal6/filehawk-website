@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { 
   Zap, 
   Brain, 
@@ -505,13 +506,13 @@ const FeatureCapabilitiesSection: React.FC = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="#download"
+            <Link 
+              to="/documentation/download"
               className="px-8 py-4 bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-brand-gold-500/25 transition-all duration-300 flex items-center justify-center"
             >
               <Eye className="mr-2 h-5 w-5" />
               Try FileHawk
-            </a>
+            </Link>
             <a 
               href="/documentation/algorithms"
               className="px-8 py-4 border border-brand-gold-500 text-brand-gold-400 font-semibold rounded-lg hover:bg-brand-gold-500/10 transition-all duration-300 flex items-center justify-center"

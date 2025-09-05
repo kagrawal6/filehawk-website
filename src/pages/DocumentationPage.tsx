@@ -26,6 +26,7 @@ import StickyTableOfContents from '../components/ui/StickyTableOfContents'
 // Import new documentation section components
 import FeatureCapabilitiesSection from '../components/docs/FeatureCapabilitiesSection'
 import AIAlgorithmsSection from '../components/docs/AIAlgorithmsSection'
+import DownloadSection from '../components/docs/DownloadSection'
 import SystemArchitectureSection from '../components/docs/SystemArchitectureSection'
 
 interface DocSection {
@@ -40,6 +41,16 @@ interface DocSection {
 }
 
 const docSections: DocSection[] = [
+  {
+    id: 'download',
+    title: 'Download & Install',
+    description: 'Step-by-step installation guide for Windows, macOS, and Linux with GitHub release instructions',
+    icon: Download,
+    path: '/documentation/download',
+    component: DownloadSection,
+    featured: true,
+    category: 'getting-started'
+  },
   {
     id: 'features',
     title: 'Features & Capabilities',
@@ -223,8 +234,8 @@ const DocumentationPage: React.FC = () => {
                       </>
                     )}
                   </a>
-                  <a
-                    href="#download"
+                  <Link
+                    to="/documentation/download"
                     className={`flex items-center ${sidebarCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2'} text-sm rounded-lg transition-colors hover:bg-gray-700/50 group relative`}
                     style={{ color: 'var(--fg-secondary)' }}
                   >
@@ -236,7 +247,7 @@ const DocumentationPage: React.FC = () => {
                     ) : (
                       'Download FileHawk'
                     )}
-                  </a>
+                  </Link>
                 </div>
               </div>
             </nav>
@@ -336,8 +347,9 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         
         <p className="text-xl leading-relaxed max-w-4xl mx-auto mb-8" style={{ color: 'var(--fg-secondary)' }}>
           Comprehensive technical documentation for FileHawk's AI-powered semantic search platform. 
-          Explore our <strong>Features & Capabilities</strong> for business insights and <strong>AI Algorithms & Math</strong> for deep technical understanding with 
-          <strong> interactive visualizations, algorithm playgrounds, and mathematical demonstrations</strong>.
+          Start with <strong>Download & Install</strong> to get FileHawk running, explore <strong>Features & Capabilities</strong> for business insights, 
+          and dive into <strong>AI Algorithms & Math</strong> for deep technical understanding with 
+          <strong> interactive visualizations and algorithm playgrounds</strong>.
         </p>
         
         {/* Key Metrics */}
@@ -440,13 +452,13 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              href="#download"
+            <Link 
+              to="/documentation/download"
               className="px-8 py-4 bg-gradient-to-r from-brand-gold-500 to-brand-gold-600 text-black font-semibold rounded-lg hover:shadow-lg hover:shadow-brand-gold-500/25 transition-all duration-300 flex items-center justify-center"
             >
               <Download className="mr-2 h-5 w-5" />
               Download FileHawk
-            </a>
+            </Link>
             <a 
               href="https://github.com/Aducj1910/FileHawk"
               target="_blank"
