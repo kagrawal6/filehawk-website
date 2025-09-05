@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Search, ArrowRight, Play, Zap, Shield, FileText, Brain } from 'lucide-react'
+import { Search, ArrowRight, Play, Zap, Shield, FileText, Brain, BookOpen } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import GoldButton from './ui/GoldButton'
 import { useHawk } from './ui/HawkProvider'
 
@@ -79,6 +80,19 @@ const HeroV2: React.FC = () => {
               </span>
             </h1>
 
+            {/* Watch Demo Button - Left Aligned */}
+            <div className="flex justify-start mb-6">
+              <button className="group flex items-center justify-center px-6 py-3 rounded-xl border-2 font-semibold transition-all duration-300 hover:scale-105"
+                      style={{ 
+                        borderColor: 'var(--border-subtle)', 
+                        color: 'var(--fg-primary)',
+                        backgroundColor: 'transparent'
+                      }}>
+                <Play className="mr-3 h-4 w-4 group-hover:scale-110 transition-transform" />
+                Watch Demo
+              </button>
+            </div>
+
             {/* Subheadline */}
             <p className="text-xl leading-relaxed mb-12 max-w-2xl" style={{ color: 'var(--fg-secondary)' }}>
               Search your files by describing what you're looking for. 
@@ -99,15 +113,18 @@ const HeroV2: React.FC = () => {
                 <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </GoldButton>
               
-              <button className="group flex items-center justify-center px-8 py-4 rounded-xl border-2 font-semibold transition-all duration-300 hover:scale-105"
-                      style={{ 
-                        borderColor: 'var(--border-subtle)', 
-                        color: 'var(--fg-primary)',
-                        backgroundColor: 'transparent'
-                      }}>
-                <Play className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
-                Watch Demo
-              </button>
+              <Link 
+                to="/documentation"
+                className="group flex items-center justify-center px-8 py-4 rounded-xl border-2 font-semibold transition-all duration-300 hover:scale-105"
+                style={{ 
+                  borderColor: 'var(--border-subtle)', 
+                  color: 'var(--fg-primary)',
+                  backgroundColor: 'transparent'
+                }}
+              >
+                <BookOpen className="mr-3 h-5 w-5 group-hover:scale-110 transition-transform" />
+                Check Documentation
+              </Link>
             </div>
 
             {/* Trust Indicators */}
