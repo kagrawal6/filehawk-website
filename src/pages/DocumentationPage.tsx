@@ -373,35 +373,6 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
           and dive into <strong>AI Algorithms & Math</strong> for deep technical understanding with 
           <strong> interactive visualizations and algorithm playgrounds</strong>.
         </p>
-        
-        {/* Key Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto mb-12">
-          {[
-            { metric: "95.7%", label: "Semantic Accuracy", description: "Natural language understanding" },
-            { metric: "<50ms", label: "Search Latency", description: "Sub-second response times" },
-            { metric: "25+", label: "API Endpoints", description: "Complete REST interface" },
-            { metric: "1M+", label: "Files Supported", description: "Enterprise-scale collections" }
-          ].map((stat, index) => (
-            <motion.div 
-              key={stat.metric}
-              className="text-center p-4 rounded-xl border"
-              style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-              transition={{ duration: 0.8, delay: 0.2 + index * 0.1 }}
-            >
-              <div className="text-2xl font-bold text-brand-gold-400 mb-1">
-                {stat.metric}
-              </div>
-              <div className="font-semibold mb-1" style={{ color: 'var(--fg-primary)' }}>
-                {stat.label}
-              </div>
-              <div className="text-xs" style={{ color: 'var(--fg-muted)' }}>
-                {stat.description}
-              </div>
-            </motion.div>
-          ))}
-        </div>
       </motion.div>
 
       {/* Documentation Overview */}
