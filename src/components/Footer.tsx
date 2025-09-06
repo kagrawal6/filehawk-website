@@ -1,5 +1,5 @@
 import React from 'react'
-import { Github, Twitter, Mail } from 'lucide-react'
+import { Github, Mail } from 'lucide-react'
 import HawkIcon from './ui/HawkIcon'
 import { useHawk } from './ui/HawkProvider'
 
@@ -10,8 +10,7 @@ const Footer: React.FC = () => {
     essential: [
       { name: 'Documentation', href: '/documentation' },
       { name: 'GitHub Repository', href: 'https://github.com/Aducj1910/FileHawk' },
-      { name: 'Changelog', href: '/documentation/changelog' },
-      { name: 'System Requirements', href: '/documentation/installation' }
+      { name: 'Future Changes', href: '/documentation/future-changes' }
     ],
     team: [
       { name: 'Adish Jain', href: 'https://www.linkedin.com/in/adishcjain/' },
@@ -21,7 +20,6 @@ const Footer: React.FC = () => {
 
   const socialLinks = [
     { name: 'GitHub', icon: Github, href: 'https://github.com/Aducj1910/FileHawk' },
-    { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/filehawk' },
     { name: 'Email', icon: Mail, href: 'mailto:hello@filehawk.dev' }
   ]
 

@@ -12,7 +12,9 @@ import {
   ChevronLeft,
   ExternalLink,
   Download,
-  Layers
+  Layers,
+  Sparkles,
+  FolderOpen
 } from 'lucide-react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
@@ -28,6 +30,8 @@ import FeatureCapabilitiesSection from '../components/docs/FeatureCapabilitiesSe
 import AIAlgorithmsSection from '../components/docs/AIAlgorithmsSection'
 import DownloadSection from '../components/docs/DownloadSection'
 import SystemArchitectureSection from '../components/docs/SystemArchitectureSection'
+import FutureChangesSection from '../components/docs/FutureChangesSection'
+import ApplicationPagesSection from '../components/docs/ApplicationPagesSection'
 
 interface DocSection {
   id: string
@@ -37,7 +41,7 @@ interface DocSection {
   path: string
   component: React.ComponentType
   featured?: boolean
-  category: 'getting-started' | 'core' | 'advanced' | 'reference'
+  category: 'getting-started' | 'core' | 'advanced' | 'reference' | 'future'
 }
 
 const docSections: DocSection[] = [
@@ -80,6 +84,24 @@ const docSections: DocSection[] = [
     component: SystemArchitectureSection,
     featured: true,
     category: 'core'
+  },
+  {
+    id: 'application-pages',
+    title: 'Application Pages',
+    description: 'Complete overview of FileHawk\'s user interface pages, features, and navigation elements',
+    icon: FolderOpen,
+    path: '/documentation/application-pages',
+    component: ApplicationPagesSection,
+    category: 'reference'
+  },
+  {
+    id: 'future-changes',
+    title: 'Future Changes',
+    description: 'Planned enhancements and upcoming features including standalone distributions, CLI tools, email integration, and performance optimizations',
+    icon: Sparkles,
+    path: '/documentation/future-changes',
+    component: FutureChangesSection,
+    category: 'future'
   }
 ]
 
@@ -382,7 +404,7 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         </div>
       </motion.div>
 
-      {/* Featured Documentation */}
+      {/* Documentation Overview */}
       <motion.div 
         className="mb-20"
         initial={{ opacity: 0, y: 20 }}
@@ -390,43 +412,40 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         transition={{ duration: 0.8, delay: 0.4 }}
       >
         <h2 className="text-3xl font-bold text-center mb-4" style={{ color: 'var(--fg-primary)' }}>
-          Quick Start Guide
+          Documentation Overview
         </h2>
         <p className="text-center mb-12 max-w-3xl mx-auto" style={{ color: 'var(--fg-secondary)' }}>
-          Get up and running with FileHawk's core features. These essential guides cover everything 
-          from system architecture to advanced AI algorithms.
+          Explore all available documentation sections, from user interface guides to future development plans.
         </p>
         
-        <div className="grid md:grid-cols-2 gap-8">
-          {featuredSections.map((section, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sections.map((section, index) => (
             <motion.div
               key={section.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-              transition={{ duration: 0.8, delay: 0.6 + index * 0.1 }}
+              transition={{ duration: 0.8, delay: 0.6 + index * 0.05 }}
             >
               <Link 
                 to={section.path}
-                className="block p-8 rounded-xl border transition-all duration-300 hover:border-brand-gold-500/40 hover:shadow-2xl hover:shadow-brand-gold-500/20 hover:-translate-y-1 group h-full"
+                className="block p-6 rounded-xl border transition-all duration-300 hover:border-brand-gold-500/40 hover:shadow-lg hover:shadow-brand-gold-500/10 hover:-translate-y-1 group h-full"
                 style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}
               >
-                <div className="flex items-center mb-6">
-                  <div className="p-4 rounded-xl bg-brand-gold-500/20 text-brand-gold-400 group-hover:bg-brand-gold-500/30 transition-colors">
-                    <section.icon className="h-8 w-8" />
+                <div className="flex items-center mb-4">
+                  <div className="p-3 rounded-lg bg-brand-gold-500/20 text-brand-gold-400 group-hover:bg-brand-gold-500/30 transition-colors">
+                    <section.icon className="h-6 w-6" />
                   </div>
-                  <div className="ml-6 flex-1">
-                    <h3 className="text-xl font-semibold group-hover:text-brand-gold-300 transition-colors mb-2" style={{ color: 'var(--fg-primary)' }}>
+                  <div className="ml-4 flex-1">
+                    <h3 className="text-lg font-semibold group-hover:text-brand-gold-300 transition-colors mb-1" style={{ color: 'var(--fg-primary)' }}>
                       {section.title}
                     </h3>
-                    <div className="flex items-center">
-                      <span className="text-sm text-brand-gold-400 font-medium">
-                        {section.category.replace('-', ' ').toUpperCase()}
-                      </span>
-                      <ChevronRight className="h-4 w-4 ml-2 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                    </div>
+                    <span className="text-xs text-brand-gold-400 font-medium">
+                      {section.category.replace('-', ' ').toUpperCase()}
+                    </span>
                   </div>
+                  <ChevronRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
-                <p style={{ color: 'var(--fg-secondary)' }} className="group-hover:text-gray-300 transition-colors leading-relaxed">
+                <p style={{ color: 'var(--fg-secondary)' }} className="group-hover:text-gray-300 transition-colors leading-relaxed text-sm">
                   {section.description}
                 </p>
               </Link>
@@ -435,13 +454,12 @@ const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) =
         </div>
       </motion.div>
 
-
       {/* Call to Action */}
       <motion.div 
         className="text-center"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: isAnimated ? 1 : 0, y: isAnimated ? 0 : 20 }}
-        transition={{ duration: 0.8, delay: 1.2 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
       >
         <div className="p-8 rounded-xl border" style={{ backgroundColor: 'var(--bg-elevated)', borderColor: 'var(--border-subtle)' }}>
           <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--fg-primary)' }}>

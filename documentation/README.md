@@ -56,6 +56,9 @@ Extended capabilities and integrations:
 - [GitHub Integration](enterprise/github-integration.md) - Repository management system
 - [Security & Privacy](enterprise/security-privacy.md) - Local-first security architecture
 
+### **🔮 [Future Changes](future-changes.md)**
+Planned enhancements and upcoming platform features
+
 ## 🎯 **Quick Navigation by User Type**
 
 ### **For Decision Makers**
