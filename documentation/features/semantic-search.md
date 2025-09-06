@@ -234,7 +234,7 @@ Enhanced Result Display:
 - **Search Latency**: <50ms for vector similarity search
 - **Index Updates**: Real-time with <500ms change detection
 - **Throughput**: 125 queries/second average
-- **Scalability**: Tested with 1M+ documents successfully
+- **Scalability**: Designed for large document collections
 
 ### **Accuracy Benchmarks**
 

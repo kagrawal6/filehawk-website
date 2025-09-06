@@ -923,7 +923,7 @@ Integration Testing:
   Data Integrity: 100% consistency
 
 Production Validation:
-  Large Corpus Testing: 1M+ documents
+  Large Corpus Testing: Scalable collections
   Real-world Query Testing: 10K+ diverse queries
   Edge Case Coverage: 95% boundary conditions
   Regression Prevention: <5% performance degradation

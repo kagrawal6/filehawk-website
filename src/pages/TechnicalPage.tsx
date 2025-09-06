@@ -141,7 +141,7 @@ const TechnicalPage: React.FC = () => {
     {
       category: 'Scalability Limits',
       metrics: [
-        { label: 'Max files', value: '1M+', description: 'Tested with large document collections' },
+        { label: 'Max files', value: 'Large collections', description: 'Scalable to your document needs' },
         { label: 'Max file size', value: '100MB', description: 'Per individual file processing limit' },
         { label: 'Total index size', value: '10GB+', description: 'Maximum recommended index size' },
         { label: 'Languages supported', value: '100+', description: 'Via multilingual transformer models' }

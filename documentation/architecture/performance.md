@@ -13,7 +13,7 @@ Filevate is architected for enterprise-scale performance, handling millions of d
 | **Search Response Time** | <50ms average | Sub-second user experience |
 | **Indexing Throughput** | 5,000 files/min | Enterprise content processing |
 | **Concurrent Operations** | 100+ simultaneous | Multi-user environment support |
-| **Maximum Document Count** | 1M+ files tested | Large-scale enterprise collections |
+| **Maximum Document Count** | Large collections supported | Scalable to enterprise needs |
 | **Memory Efficiency** | 200MB base + 2MB/1K files | Optimized resource utilization |
 | **Database Query Speed** | <10ms vector similarity | Real-time search performance |
 | **API Response Time** | <100ms for 95% endpoints | Production-ready responsiveness |
@@ -413,7 +413,7 @@ Medium Deployment (100K files):
   Storage: 500GB (including indexes)
   Expected Response: <50ms search
 
-Large Deployment (1M+ files):
+Large Deployment (enterprise scale):
   CPU: 16+ cores recommended
   RAM: 32GB+ recommended
   Storage: 2TB+ (including indexes)

@@ -20,7 +20,6 @@ import {
   Building,
   TrendingUp,
   Clock,
-  HardDrive,
   Workflow
 } from 'lucide-react'
 import { useScrollAnimation } from '../../hooks/useScrollAnimation'
@@ -459,10 +458,9 @@ const FeatureCapabilitiesSection: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             { icon: Clock, metric: "<50ms", label: "Average Search Time", description: "Sub-second responses" },
-            { icon: HardDrive, metric: "1M+", label: "Files Supported", description: "Massive collections" },
             { icon: Database, metric: "25+", label: "File Formats", description: "Universal compatibility" },
             { icon: Workflow, metric: "99.9%", label: "Uptime Reliability", description: "Always available" }
           ].map((stat, index) => (
