@@ -349,7 +349,6 @@ const DocumentationPage: React.FC = () => {
 // Documentation Home Page
 const DocumentationHome: React.FC<{ sections: DocSection[] }> = ({ sections }) => {
   const isAnimated = useScrollAnimation()
-  const featuredSections = sections.filter(s => s.featured)
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

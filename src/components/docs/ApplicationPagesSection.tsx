@@ -8,12 +8,7 @@ import {
   Settings, 
   Command, 
   Activity,
-  Search,
-  FolderOpen,
-  Star,
-  GitBranch,
-  Palette,
-  BarChart3
+  FolderOpen
 } from 'lucide-react'
 import { useScrollAnimation } from '../../hooks/useScrollAnimation'
 import { useTheme } from '../../contexts/ThemeContext'
@@ -137,7 +132,7 @@ const ApplicationPagesSection: React.FC = () => {
   const { theme } = useTheme()
   
   // Function to get the appropriate screenshot based on page and theme
-  const getPageScreenshot = (pageId: string) => {
+  const getPageScreenshot = (pageId: string): string | null => {
     
     const screenshots: Record<string, { light: string; dark: string }> = {
       'settings-page': {
@@ -240,7 +235,7 @@ const ApplicationPagesSection: React.FC = () => {
               </div>
 
               {/* Screenshot - only show for certain pages */}
-              {(['settings-page', 'github-connector', 'track-files', 'saved-page', 'home-page'].includes(page.id)) && (
+              {(['settings-page', 'github-connector', 'track-files', 'saved-page', 'home-page'].includes(page.id)) && getPageScreenshot(page.id) && (
                 <motion.div
                   className="lg:sticky lg:top-8"
                   initial={{ opacity: 0, x: 20 }}
@@ -249,7 +244,7 @@ const ApplicationPagesSection: React.FC = () => {
                 >
                   <div className="relative overflow-hidden rounded-xl border shadow-lg" style={{ borderColor: 'var(--border-subtle)' }}>
                     <img
-                      src={getPageScreenshot(page.id)}
+                      src={getPageScreenshot(page.id)!}
                       alt={`${page.title} screenshot`}
                       className="w-full h-auto object-contain max-h-[600px]"
                       onError={(e) => {
