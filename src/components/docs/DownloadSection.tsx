@@ -112,7 +112,7 @@ const DownloadSection: React.FC = () => {
         </h1>
         
         <p className="text-xl leading-relaxed max-w-4xl mx-auto mb-8" style={{ color: 'var(--fg-secondary)' }}>
-          Get FileHawk running on your system in minutes. Currently available as a <strong>GitHub release</strong> - 
+          Get FileHawk running on your system in minutes. Currently available to <strong>install from source</strong> - 
           full installer packages coming soon!
         </p>
 

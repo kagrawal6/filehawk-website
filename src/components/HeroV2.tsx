@@ -3,6 +3,7 @@ import { Search, ArrowRight, Play, Zap, Shield, FileText, Brain, BookOpen } from
 import { Link } from 'react-router-dom'
 import GoldButton from './ui/GoldButton'
 import { useHawk } from './ui/HawkProvider'
+import VideoModal from './ui/VideoModal'
 
 // Sample search queries and results for demonstration
 const searchScenarios = [
@@ -38,6 +39,7 @@ const HeroV2: React.FC = () => {
   const [currentScenario, setCurrentScenario] = useState(0)
   const [isSearching, setIsSearching] = useState(false)
   const [showResults, setShowResults] = useState(true)
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
 
   useEffect(() => {
     setIsVisible(true)
@@ -82,12 +84,15 @@ const HeroV2: React.FC = () => {
 
             {/* Watch Demo Button - Left Aligned */}
             <div className="flex justify-start mb-6">
-              <button className="group flex items-center justify-center px-6 py-3 rounded-xl border-2 font-semibold transition-all duration-300 hover:scale-105"
-                      style={{ 
-                        borderColor: 'var(--border-subtle)', 
-                        color: 'var(--fg-primary)',
-                        backgroundColor: 'transparent'
-                      }}>
+              <button 
+                onClick={() => setIsVideoModalOpen(true)}
+                className="group flex items-center justify-center px-6 py-3 rounded-xl border-2 font-semibold transition-all duration-300 hover:scale-105"
+                style={{ 
+                  borderColor: 'var(--border-subtle)', 
+                  color: 'var(--fg-primary)',
+                  backgroundColor: 'transparent'
+                }}
+              >
                 <Play className="mr-3 h-4 w-4 group-hover:scale-110 transition-transform" />
                 Watch Demo
               </button>
@@ -302,6 +307,13 @@ const HeroV2: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      <VideoModal 
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
+        videoId="Mp5iiorjNto"
+      />
     </section>
   )
 }

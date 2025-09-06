@@ -48,7 +48,7 @@ const docSections: DocSection[] = [
   {
     id: 'download',
     title: 'Download & Install',
-    description: 'Step-by-step installation guide for Windows, macOS, and Linux with GitHub release instructions',
+    description: 'Step-by-step installation guide for Windows, macOS, and Linux with install from source instructions',
     icon: Download,
     path: '/documentation/download',
     component: DownloadSection,

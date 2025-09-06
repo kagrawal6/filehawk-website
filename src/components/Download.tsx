@@ -27,7 +27,7 @@ const Download: React.FC = () => {
       disabled: true
     },
     {
-      platform: 'GitHub Release',
+      platform: 'Install from Source',
       icon: Github,
       format: 'All Platforms',
       description: 'Windows, macOS & Linux',
