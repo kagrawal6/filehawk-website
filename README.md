@@ -1,248 +1,101 @@
-# FileHawk Marketing Website
+# FileHawk Website
 
-A modern, responsive marketing website for FileHawk - Local Semantic File Search Tool. Built with React, TypeScript, Tailwind CSS, and Vite.
+A modern marketing website for FileHawk, the local semantic file search tool. Built with React, TypeScript, and Tailwind CSS.
 
-## 🎯 Project Overview
-
-This website serves as the primary marketing and download portal for FileHawk. It features:
-
-- **Modern Design**: Inspired by the Cursor website layout with FileHawk's signature dark theme and gold accents
-- **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
-- **Interactive Elements**: Animated hawk mascot and engaging UI components
-- **Download Portal**: Easy access to FileHawk installers for all platforms
-- **Performance Optimized**: Built with Vite for fast development and optimal bundle size
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn package manager
+- Node.js 18 or higher
+- npm package manager
 
 ### Installation
-
-1. **Clone or extract the project**:
-   ```bash
-   cd filehawk-website
-   ```
-
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Start development server**:
-   ```bash
-   npm run dev
-   ```
-
-4. **Open your browser**:
-   Navigate to `http://localhost:3000`
-
-### Building for Production
-
 ```bash
-# Build the project
-npm run build
+# Install dependencies
+npm install
 
-# Preview the production build
+# Start development server
+npm run dev
+
+# Open browser to http://localhost:5173
+```
+
+### Build for Production
+```bash
+npm run build
 npm run preview
 ```
 
-## 🎨 Design System
-
-The website uses FileHawk's established design system:
-
-### Color Palette
-- **Primary Dark**: `#0b0e12` (Brand Onyx)
-- **Elevated Surfaces**: `#12151b` (Brand Coal)
-- **Gold Accents**: `#b57a06` to `#f3cc79` (Brand Gold palette)
-- **Text**: Various shades of gray for hierarchy
-
-### Typography
-- **Display Font**: Unbounded (headings and brand text)
-- **Body Font**: Inter (body text and UI elements)
-
-### Components
-- **GoldButton**: Primary action buttons with solid, ghost, and chip variants
-- **SoftCard**: Elevated content containers with hover effects
-- **HawkIcon**: Animated mascot with mood-based states
-- **HawkTrail**: Signature animated line effect
-
-See `DESIGN_SYSTEM.md` for complete design specifications.
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-filehawk-website/
-├── public/                 # Static assets
-│   ├── hawk.png           # FileHawk mascot icon
-│   ├── hawkburgundy.png   # Light theme variant
-│   └── ...
-├── src/
-│   ├── components/        # React components
-│   │   ├── ui/           # Reusable UI components
-│   │   │   ├── GoldButton.tsx
-│   │   │   ├── HawkIcon.tsx
-│   │   │   ├── HawkProvider.tsx
-│   │   │   └── SoftCard.tsx
-│   │   ├── Header.tsx    # Site header and navigation
-│   │   ├── Hero.tsx      # Main hero section
-│   │   ├── Features.tsx  # Features showcase
-│   │   ├── Download.tsx  # Download section
-│   │   └── Footer.tsx    # Site footer
-│   ├── App.tsx           # Main app component
-│   ├── main.tsx          # App entry point
-│   └── index.css         # Global styles
-├── index.html            # HTML template
-├── package.json          # Dependencies and scripts
-├── tailwind.config.js    # Tailwind CSS configuration
-├── vite.config.ts        # Vite configuration
-└── README.md            # This file
+src/
+├── components/          # React components
+│   ├── ui/             # Reusable UI components
+│   ├── docs/           # Documentation components
+│   ├── Header.tsx      # Site navigation
+│   ├── HeroV2.tsx      # Hero section
+│   ├── Download.tsx    # Download section
+│   └── Footer.tsx      # Site footer
+├── pages/              # Page components
+├── contexts/           # React contexts
+└── App.tsx            # Main application
 ```
 
-## 🚢 Deployment
+## Key Features
 
-### Vercel (Recommended)
+- **Responsive Design**: Mobile-first approach optimized for all devices
+- **Theme Support**: Light and dark themes with user preference persistence
+- **Documentation**: Comprehensive technical documentation and guides
+- **Analytics**: Vercel Analytics integration for visitor tracking
+- **SEO Optimized**: Meta tags and semantic HTML structure
 
-This project is optimized for Vercel deployment:
-
-1. **Push to GitHub**:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git remote add origin https://github.com/your-username/filehawk-website.git
-   git push -u origin main
-   ```
-
-2. **Deploy on Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Import your GitHub repository
-   - Vercel will automatically detect the Vite configuration
-   - Deploy with default settings
-
-3. **Custom Domain** (Optional):
-   - Add your custom domain in Vercel dashboard
-   - Update DNS records as instructed
-
-### Other Platforms
-
-The built website is a static site and can be deployed to:
-- **Netlify**: Drag and drop the `dist` folder
-- **GitHub Pages**: Push the `dist` folder to `gh-pages` branch
-- **AWS S3**: Upload the `dist` contents to an S3 bucket
-- **Any static hosting**: Upload the `dist` folder contents
-
-## 🛠️ Development
+## Development
 
 ### Available Scripts
+- `npm run dev` - Development server with hot reload
+- `npm run build` - Production build
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run TypeScript checks
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+### Tech Stack
+- **React 18** - Component framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Utility-first styling
+- **Vite** - Build tool and dev server
+- **React Router** - Client-side routing
+- **Vercel Analytics** - Usage tracking
 
-### Key Features
+## Deployment
 
-1. **Responsive Design**: Mobile-first approach with breakpoints at sm, md, lg, xl
-2. **Dark Theme**: Consistent with FileHawk's desktop application
-3. **Animations**: Smooth transitions and micro-interactions
-4. **SEO Optimized**: Meta tags, semantic HTML, and performance optimizations
-5. **Accessibility**: WCAG 2.1 compliant with keyboard navigation support
+### Vercel (Recommended)
+1. Push code to GitHub repository
+2. Connect repository to Vercel
+3. Deploy automatically with default settings
+
+### Other Platforms
+The built application works on any static hosting platform:
+- Netlify
+- GitHub Pages
+- AWS S3 + CloudFront
+- Firebase Hosting
+
+## Configuration
+
+### Environment Variables
+No environment variables required for basic functionality.
 
 ### Customization
+- **Content**: Edit components in `src/components/`
+- **Styling**: Modify `tailwind.config.js` for design tokens
+- **Routing**: Update routes in `src/App.tsx`
 
-#### Updating Content
-- **Hero Section**: Edit `src/components/Hero.tsx`
-- **Features**: Modify the features array in `src/components/Features.tsx`
-- **Download Links**: Update URLs in `src/components/Download.tsx`
+## Browser Support
 
-#### Styling
-- **Colors**: Modify the Tailwind config in `tailwind.config.js`
-- **Typography**: Update font imports in `src/index.css`
-- **Components**: Customize component styles in individual files
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
-#### Adding Pages
-1. Create new component in `src/components/`
-2. Add route to `src/App.tsx`
-3. Update navigation in `src/components/Header.tsx`
+## License
 
-## 🎯 Performance
-
-The website is optimized for performance:
-
-- **Bundle Size**: < 200KB gzipped
-- **First Paint**: < 1.5s on 3G
-- **Lighthouse Score**: 95+ across all metrics
-- **Image Optimization**: WebP format with fallbacks
-- **Font Loading**: Preloaded and display-swapped
-
-## 🔧 Technical Decisions
-
-### Why Vite?
-- **Fast HMR**: Sub-second hot module replacement
-- **Modern Bundling**: ES modules and efficient tree-shaking
-- **TypeScript Support**: Built-in TypeScript compilation
-- **Easy Configuration**: Minimal setup required
-
-### Why Tailwind CSS?
-- **Design System**: Perfect match for FileHawk's design tokens
-- **Performance**: Purged CSS for minimal bundle size
-- **Developer Experience**: Utility-first approach for rapid development
-- **Consistency**: Enforces design system constraints
-
-### Why React?
-- **Component Reusability**: Matches desktop app's component architecture
-- **Ecosystem**: Rich ecosystem of tools and libraries
-- **Performance**: Virtual DOM and efficient updates
-- **Developer Familiarity**: Team expertise with React
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Build Fails**:
-   ```bash
-   # Clear node_modules and reinstall
-   rm -rf node_modules package-lock.json
-   npm install
-   ```
-
-2. **Images Not Loading**:
-   - Ensure images are in the `public` folder
-   - Check image paths are relative to root (`/image.png`)
-
-3. **Fonts Not Loading**:
-   - Verify font URLs in `index.html`
-   - Check network tab for 404s
-
-4. **Tailwind Classes Not Working**:
-   - Ensure classes are in the content array in `tailwind.config.js`
-   - Check for typos in class names
-
-### Getting Help
-
-- **GitHub Issues**: Report bugs and request features
-- **Discord Community**: Join the FileHawk community
-- **Email Support**: Contact hello@filehawk.dev
-
-## 📝 License
-
-This project is licensed under the MIT License - see the desktop application repository for details.
-
-## 🤝 Contributing
-
-We welcome contributions! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-For major changes, please open an issue first to discuss the proposed changes.
-
----
-
-**Built with ❤️ for the FileHawk community**
+See the main FileHawk repository for license details.
