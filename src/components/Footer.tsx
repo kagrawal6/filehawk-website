@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
     ],
     team: [
       { name: 'Adish Jain', href: 'https://www.linkedin.com/in/adishcjain/' },
-      { name: 'Kushal Agrawal', href: 'https://www.linkedin.com/in/kushal200903/' }
+      { name: 'Kushal Agrawal', href: 'https://www.linkedin.com/in/kushalagrawal0/' }
     ]
   }
 
